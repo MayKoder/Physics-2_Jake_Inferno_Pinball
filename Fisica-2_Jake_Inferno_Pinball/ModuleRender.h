@@ -19,7 +19,54 @@ public:
 	bool DrawLine(int x1, int y1, int x2, int y2, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255, bool use_camera = true);
 	bool DrawCircle(int x1, int y1, int redius, Uint8 r, Uint8 g, Uint8 b, Uint8 a = 255, bool use_camera = true);
 
+	enum dir {
+		up, down
+	};
+
+	void MoveCamera(int y, dir movDir) 
+	{
+		if (movDir == up) {
+
+			if (camera.y + y <= posY_Limit) 
+			{
+				camera.y += y * SCREEN_SIZE;
+			}
+			else
+			{
+				camera.y = posY_Limit;
+			}
+
+		}
+		else
+		{
+			if (camera.y - y >= negY_Limit) 
+			{
+				camera.y -= y * SCREEN_SIZE;
+			}
+			else
+			{
+				camera.y = negY_Limit;
+			}
+		}
+	}
+
+	void MoveCameraToPosition()
+	{
+
+
+
+
+	}
+
+
 public:
 	SDL_Renderer* renderer;
 	SDL_Rect camera;
+	int cameraSpeed = 3;
+
+
+	int posY_Limit;
+	int negY_Limit = 0;
+
+
 };

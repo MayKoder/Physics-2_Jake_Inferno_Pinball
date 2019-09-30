@@ -39,8 +39,13 @@ bool ModuleMainLevel::Start()
 
 	LoadSpriteSheet("Assets/Main_Level/main_level_static_background.png");
 
-	LoadSprite(0, 11, 0, { 580, 0, 327, 1003 }, 1.f);
+	LoadSprite(0, 11, -1003 + (SCREEN_HEIGHT - 8), { 580, 0, 327, 1003 }, 1.f);
 	LoadSprite(0, 0, 0, { 0, 0, 580, 287 }, 0.f);
+
+
+
+	App->renderer->posY_Limit = (sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 14 ) * SCREEN_SIZE);
+
 
 
 	return true;
