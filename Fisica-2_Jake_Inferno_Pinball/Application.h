@@ -1,6 +1,7 @@
 #pragma once
 
 #include "p2List.h"
+#include"p2List_Extended.h"
 #include "Globals.h"
 #include "Module.h"
 #include "Dummy.h"
@@ -12,6 +13,7 @@
 #include "ModulePlayer.h"
 #include "ModulePhysics.h"
 #include "ModuleSceneIntro.h"
+#include"ModuleMainLevel.h"
 
 class Application
 {
@@ -23,6 +25,7 @@ public:
 	ModuleAudio* audio;
 	ModulePlayer* player;
 	ModuleSceneIntro* scene_intro;
+	ModuleMainLevel* main_level;
 	ModulePhysics* physics;
 
 private:

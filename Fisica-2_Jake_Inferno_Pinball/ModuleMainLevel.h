@@ -1,6 +1,9 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include"Application.h"
+
+struct Sprite;
 
 class ModuleMainLevel : public Module
 {
@@ -17,12 +20,17 @@ public:
 
 	struct Sprite 
 	{
-
-		SDL_Texture* image;
+		int spriteSheetIndex;
 		vector2 position;
-
+		SDL_Rect section;
+		float speed;
 	};
 
-	p2List<Sprite> sprite_list;
+	//Speed 0 keeps object relative to the camera
+	void LoadSpriteSheet(const char* load_path);
+	void LoadSprite(int spriteSheetIndex,  float x, float y, SDL_Rect rect, float speed);
+
+	p2List_Extended<SDL_Texture*> sprite_sheet_list;
+	p2List_Extended<Sprite> sprite_list;
 
 };

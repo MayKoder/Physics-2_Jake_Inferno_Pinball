@@ -33,7 +33,7 @@ struct vector2 {
 // Configuration -----------
 #define SCREEN_WIDTH 580
 #define SCREEN_HEIGHT 287
-#define SCREEN_SIZE 1
+#define SCREEN_SIZE 2
 #define WIN_FULLSCREEN false
 #define WIN_RESIZABLE false
 #define WIN_BORDERLESS false

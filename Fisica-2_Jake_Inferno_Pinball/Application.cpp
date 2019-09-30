@@ -9,6 +9,7 @@ Application::Application()
 	audio = new ModuleAudio(this, true);
 	player = new ModulePlayer(this);
 	scene_intro = new ModuleSceneIntro(this);
+	main_level = new ModuleMainLevel(this);
 	physics = new ModulePhysics(this);
 
 	// The order of calls is very important!
@@ -25,6 +26,7 @@ Application::Application()
 	
 	// Scenes
 	AddModule(scene_intro);
+	AddModule(main_level);
 	
 	// Player
 	AddModule(player);

@@ -4,6 +4,8 @@
 
 class b2World;
 enum b2BodyType;
+typedef float float32;
+typedef int int32;
 
 class ModulePhysics : public Module
 {
@@ -19,9 +21,9 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	float timeStep = 1.0f / 60.f;
-	int velocityIterations = 10;
-	int positionIterations = 8;
+	float32 timeStep = 1.0f / 60.f;
+	int32 velocityIterations = 10;
+	int32 positionIterations = 8;
 
 private:
 

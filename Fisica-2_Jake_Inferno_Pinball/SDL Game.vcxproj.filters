@@ -62,6 +62,12 @@
     <ClInclude Include="ModuleMainLevel.h">
       <Filter>Levels</Filter>
     </ClInclude>
+    <ClInclude Include="p2Defs.h">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="p2List_Extended.h">
+      <Filter>Header Files\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
