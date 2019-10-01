@@ -24,13 +24,20 @@ public:
 		vector2 position;
 		SDL_Rect section;
 		float speed;
+		float angle;
+
+		int pivotX, pivotY;
+
 	};
 
 	//Speed 0 keeps object relative to the camera
 	void LoadSpriteSheet(const char* load_path);
-	void LoadSprite(int spriteSheetIndex,  float x, float y, SDL_Rect rect, float speed);
+	void LoadSprite(int spriteSheetIndex,  float x, float y, SDL_Rect rect, float speed, float angle = 0.f, int pivotX = 0, int pivotY = 0);
 
 	p2List_Extended<SDL_Texture*> sprite_sheet_list;
 	p2List_Extended<Sprite> sprite_list;
+
+
+	Sprite *rightPad, *leftPad;
 
 };
