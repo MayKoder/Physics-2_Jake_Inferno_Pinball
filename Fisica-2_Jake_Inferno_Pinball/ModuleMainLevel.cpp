@@ -21,7 +21,7 @@ void ModuleMainLevel::LoadSprite(int spriteSheetIndex, float posX, float posY, S
 
 	tempSprite.spriteSheetIndex = spriteSheetIndex;
 	tempSprite.position.x = (float)posX;
-	tempSprite.position.y = (float)posY;
+	tempSprite.position.y = -(float)posY;
 
 	tempSprite.section = rect;
 
@@ -39,12 +39,24 @@ bool ModuleMainLevel::Start()
 
 	LoadSpriteSheet("Assets/Main_Level/main_level_static_background.png");
 
-	LoadSprite(0, 11, -1003 + (SCREEN_HEIGHT - 8), { 580, 0, 327, 1003 }, 1.f);
+	//Background
+	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 8), { 580, 0, 322, 1000 }, 1.f);
+
+	//Spring
+	LoadSprite(0, 327 - 7, (-SCREEN_HEIGHT) + 73 + 5, { 17, 287, 10, 73 }, 1.f);
+
+	//SpringCover
+	LoadSprite(0, 327 - 10, (-SCREEN_HEIGHT) + 73 + 5, { 0, 287, 17, 73 }, 1.f);
+
+	//Background Top
+	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 9), { 902, 0, 322, 1000 }, 1.f);
+
+	//Screen Cover
 	LoadSprite(0, 0, 0, { 0, 0, 580, 287 }, 0.f);
 
 
 
-	App->renderer->posY_Limit = (sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 14 ) * SCREEN_SIZE);
+	App->renderer->posY_Limit = (sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 16 ) * SCREEN_SIZE);
 
 
 
