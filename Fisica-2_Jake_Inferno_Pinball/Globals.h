@@ -12,9 +12,11 @@ void log(const char file[], int line, const char* format, ...);
 #define RADTODEG 57.295779513082320876f
 
 
-#define M_P_FACTOR 100 //250px = 1 meter
-#define METERS_TO_PIXELS(x) x * M_P_FACTOR
-#define PIXELS_TO_METERS(x) x / M_P_FACTOR
+#define PIXELS_PER_METER 50.0f // if touched change METER_PER_PIXEL too
+#define METER_PER_PIXEL 0.02f // this is 1 / PIXELS_PER_METER !
+
+#define METERS_TO_PIXELS(m) ((int) floor(PIXELS_PER_METER * m))
+#define PIXELS_TO_METERS(p)  ((float) METER_PER_PIXEL * p)
 
 typedef unsigned int uint;
 

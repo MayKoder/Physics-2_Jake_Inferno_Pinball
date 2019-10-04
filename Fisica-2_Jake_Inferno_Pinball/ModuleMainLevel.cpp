@@ -79,10 +79,10 @@ update_status ModuleMainLevel::Update()
 {
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
-		leftPad->angle -= 50;
+		leftPad->angle -= 5;
 	}
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
-		rightPad->angle += 50;
+		rightPad->angle += 5;
 	}
 
 	for (int i = 0; i < sprite_list.count(); i++)

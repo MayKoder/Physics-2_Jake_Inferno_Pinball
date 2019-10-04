@@ -38,32 +38,31 @@ void ModulePhysics::Create_Circle(float meter_x, float meter_y, float meter_radi
 	groundBody->CreateFixture(&groundCircle, density);
 }
 
-//void ModulePhysics::CreateChain(float x, float y, int points[], int count)
-//{
-//
-//	b2Vec2 h_form[95];
-//
-//	int posOnH = 0;
-//	for (int i = 0; i < count; i += 2)
-//	{
-//		h_form[posOnH].x = PIXELS_TO_METERS(points[i]);
-//		h_form[posOnH].y = PIXELS_TO_METERS(points[i + 1]);
-//		posOnH++;
-//	}
-//
-//	b2BodyDef body;
-//	body.type = b2_dynamicBody;
-//	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
-//
-//	b2Body* b = world->CreateBody(&body);
-//
-//	b2ChainShape shape;
-//	shape.CreateLoop(h_form, sizeof(h_form) / sizeof(b2Vec2));
-//	b2FixtureDef fixture;
-//	fixture.shape = &shape;
-//
-//	b->CreateFixture(&fixture);
-//}
+void ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec2 half_Array[])
+{
+
+	int posOnH = 0;
+	for (int i = 0; i < count; i += 2)
+	{
+		half_Array[posOnH].x = PIXELS_TO_METERS(points[i]);
+		half_Array[posOnH].y = PIXELS_TO_METERS(points[i + 1]);
+		posOnH++;
+	}
+
+	b2BodyDef body;
+	body.type = b2_staticBody;
+	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+
+	b2Body* b = world->CreateBody(&body);
+
+	b2ChainShape shape;
+	shape.CreateLoop(half_Array, count / 2);
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+
+	b->CreateFixture(&fixture);
+}
 
 void ModulePhysics::Create_Edge(float meter_x, float meter_y, float meter_x_2, float meter_y_2, b2BodyType type, float density)
 {
@@ -89,106 +88,108 @@ bool ModulePhysics::Start()
 	if(!world)
 		world = new b2World(b2Vec2(0.0f, 10.0f));
 
-	//// Pivot 0, 0
-	//int background_chain[190] = {
-	//	2, 2,
-	//	328, 2,
-	//	328, 1003,
-	//	323, 1003,
-	//	324, 651,
-	//	322, 639,
-	//	319, 626,
-	//	315, 614,
-	//	310, 602,
-	//	305, 592,
-	//	299, 582,
-	//	291, 571,
-	//	282, 560,
-	//	273, 552,
-	//	264, 544,
-	//	254, 537,
-	//	244, 531,
-	//	232, 525,
-	//	220, 521,
-	//	214, 519,
-	//	210, 514,
-	//	210, 508,
-	//	213, 502,
-	//	221, 498,
-	//	232, 494,
-	//	243, 490,
-	//	257, 484,
-	//	273, 478,
-	//	286, 472,
-	//	293, 469,
-	//	298, 463,
-	//	299, 457,
-	//	299, 362,
-	//	275, 339,
-	//	275, 278,
-	//	305, 233,
-	//	305, 148,
-	//	304, 133,
-	//	300, 116,
-	//	293, 97,
-	//	285, 82,
-	//	277, 70,
-	//	264, 55,
-	//	249, 41,
-	//	235, 32,
-	//	221, 25,
-	//	205, 19,
-	//	193, 15,
-	//	180, 13,
-	//	160, 12,
-	//	142, 13,
-	//	124, 17,
-	//	109, 22,
-	//	95, 28,
-	//	82, 36,
-	//	71, 44,
-	//	57, 57,
-	//	46, 70,
-	//	37, 85,
-	//	29, 100,
-	//	24, 114,
-	//	21, 128,
-	//	19, 143,
-	//	18, 165,
-	//	18, 233,
-	//	36, 277,
-	//	36, 340,
-	//	12, 364,
-	//	12, 460,
-	//	15, 465,
-	//	19, 469,
-	//	27, 473,
-	//	97, 501,
-	//	101, 506,
-	//	101, 512,
-	//	99, 517,
-	//	92, 521,
-	//	81, 527,
-	//	71, 534,
-	//	62, 542,
-	//	54, 551,
-	//	46, 560,
-	//	39, 571,
-	//	32, 583,
-	//	26, 597,
-	//	23, 608,
-	//	20, 623,
-	//	18, 638,
-	//	18, 740,
-	//	46, 775,
-	//	46, 835,
-	//	12, 866,
-	//	12, 1003,
-	//	3, 1003,
-	//	3, 768
-	//};
+	// Pivot 0, 0
+	int points[190] = {
+		2, 2,
+		328, 2,
+		328, 1003,
+		323, 1003,
+		324, 651,
+		322, 639,
+		319, 626,
+		315, 614,
+		310, 602,
+		305, 592,
+		299, 582,
+		291, 571,
+		282, 560,
+		273, 552,
+		264, 544,
+		254, 537,
+		244, 531,
+		232, 525,
+		220, 521,
+		214, 519,
+		210, 514,
+		210, 508,
+		213, 502,
+		221, 498,
+		232, 494,
+		243, 490,
+		257, 484,
+		273, 478,
+		286, 472,
+		293, 469,
+		298, 463,
+		299, 457,
+		299, 362,
+		275, 339,
+		275, 278,
+		305, 233,
+		305, 148,
+		304, 133,
+		300, 116,
+		293, 97,
+		285, 82,
+		277, 70,
+		264, 55,
+		249, 41,
+		235, 32,
+		221, 25,
+		205, 19,
+		193, 15,
+		180, 13,
+		160, 12,
+		142, 13,
+		124, 17,
+		109, 22,
+		95, 28,
+		82, 36,
+		71, 44,
+		57, 57,
+		46, 70,
+		37, 85,
+		29, 100,
+		24, 114,
+		21, 128,
+		19, 143,
+		18, 165,
+		18, 233,
+		36, 277,
+		36, 340,
+		12, 364,
+		12, 460,
+		15, 465,
+		19, 469,
+		27, 473,
+		97, 501,
+		101, 506,
+		101, 512,
+		99, 517,
+		92, 521,
+		81, 527,
+		71, 534,
+		62, 542,
+		54, 551,
+		46, 560,
+		39, 571,
+		32, 583,
+		26, 597,
+		23, 608,
+		20, 623,
+		18, 638,
+		18, 740,
+		46, 775,
+		46, 835,
+		12, 866,
+		12, 1003,
+		3, 1003,
+		3, 768
+	};
+	b2Vec2 half_Array[(sizeof(points) / sizeof(int)) /2];
 
-	//CreateChain(0, 11, background_chain, (sizeof(background_chain) / sizeof(int)));
+	CreateChain(8, (-(1000 - (SCREEN_HEIGHT - 12))), *&points, (sizeof(points) / sizeof(int)), *&half_Array);
+
 
 	return true;
 }

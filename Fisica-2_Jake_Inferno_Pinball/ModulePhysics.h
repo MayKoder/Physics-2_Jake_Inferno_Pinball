@@ -4,6 +4,7 @@
 
 class b2World;
 enum b2BodyType;
+struct b2Vec2;
 typedef float float32;
 typedef int int32;
 
@@ -15,7 +16,7 @@ public:
 
 	void Create_Circle(float meter_x, float meter_y, float meter_radius, b2BodyType type, float density);
 	void Create_Edge(float meter_x, float meter_y, float meter_x_2, float meter_y_2, b2BodyType type, float density);
-	//void CreateChain(float, float, int[], int);
+	void CreateChain(float, float, int[], int, b2Vec2[]);
 
 	bool Start();
 	update_status PreUpdate();
