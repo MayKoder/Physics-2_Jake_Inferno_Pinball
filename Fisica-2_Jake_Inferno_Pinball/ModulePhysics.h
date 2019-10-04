@@ -15,6 +15,7 @@ public:
 
 	void Create_Circle(float meter_x, float meter_y, float meter_radius, b2BodyType type, float density);
 	void Create_Edge(float meter_x, float meter_y, float meter_x_2, float meter_y_2, b2BodyType type, float density);
+	//void CreateChain(float, float, int[], int);
 
 	bool Start();
 	update_status PreUpdate();
@@ -24,6 +25,8 @@ public:
 	float32 timeStep = 1.0f / 60.f;
 	int32 velocityIterations = 10;
 	int32 positionIterations = 8;
+
+	
 
 private:
 

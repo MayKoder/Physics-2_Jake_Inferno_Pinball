@@ -38,6 +38,33 @@ void ModulePhysics::Create_Circle(float meter_x, float meter_y, float meter_radi
 	groundBody->CreateFixture(&groundCircle, density);
 }
 
+//void ModulePhysics::CreateChain(float x, float y, int points[], int count)
+//{
+//
+//	b2Vec2 h_form[95];
+//
+//	int posOnH = 0;
+//	for (int i = 0; i < count; i += 2)
+//	{
+//		h_form[posOnH].x = PIXELS_TO_METERS(points[i]);
+//		h_form[posOnH].y = PIXELS_TO_METERS(points[i + 1]);
+//		posOnH++;
+//	}
+//
+//	b2BodyDef body;
+//	body.type = b2_dynamicBody;
+//	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+//
+//	b2Body* b = world->CreateBody(&body);
+//
+//	b2ChainShape shape;
+//	shape.CreateLoop(h_form, sizeof(h_form) / sizeof(b2Vec2));
+//	b2FixtureDef fixture;
+//	fixture.shape = &shape;
+//
+//	b->CreateFixture(&fixture);
+//}
+
 void ModulePhysics::Create_Edge(float meter_x, float meter_y, float meter_x_2, float meter_y_2, b2BodyType type, float density)
 {
 	b2BodyDef groundBodyDef;
@@ -62,14 +89,106 @@ bool ModulePhysics::Start()
 	if(!world)
 		world = new b2World(b2Vec2(0.0f, 10.0f));
 
+	//// Pivot 0, 0
+	//int background_chain[190] = {
+	//	2, 2,
+	//	328, 2,
+	//	328, 1003,
+	//	323, 1003,
+	//	324, 651,
+	//	322, 639,
+	//	319, 626,
+	//	315, 614,
+	//	310, 602,
+	//	305, 592,
+	//	299, 582,
+	//	291, 571,
+	//	282, 560,
+	//	273, 552,
+	//	264, 544,
+	//	254, 537,
+	//	244, 531,
+	//	232, 525,
+	//	220, 521,
+	//	214, 519,
+	//	210, 514,
+	//	210, 508,
+	//	213, 502,
+	//	221, 498,
+	//	232, 494,
+	//	243, 490,
+	//	257, 484,
+	//	273, 478,
+	//	286, 472,
+	//	293, 469,
+	//	298, 463,
+	//	299, 457,
+	//	299, 362,
+	//	275, 339,
+	//	275, 278,
+	//	305, 233,
+	//	305, 148,
+	//	304, 133,
+	//	300, 116,
+	//	293, 97,
+	//	285, 82,
+	//	277, 70,
+	//	264, 55,
+	//	249, 41,
+	//	235, 32,
+	//	221, 25,
+	//	205, 19,
+	//	193, 15,
+	//	180, 13,
+	//	160, 12,
+	//	142, 13,
+	//	124, 17,
+	//	109, 22,
+	//	95, 28,
+	//	82, 36,
+	//	71, 44,
+	//	57, 57,
+	//	46, 70,
+	//	37, 85,
+	//	29, 100,
+	//	24, 114,
+	//	21, 128,
+	//	19, 143,
+	//	18, 165,
+	//	18, 233,
+	//	36, 277,
+	//	36, 340,
+	//	12, 364,
+	//	12, 460,
+	//	15, 465,
+	//	19, 469,
+	//	27, 473,
+	//	97, 501,
+	//	101, 506,
+	//	101, 512,
+	//	99, 517,
+	//	92, 521,
+	//	81, 527,
+	//	71, 534,
+	//	62, 542,
+	//	54, 551,
+	//	46, 560,
+	//	39, 571,
+	//	32, 583,
+	//	26, 597,
+	//	23, 608,
+	//	20, 623,
+	//	18, 638,
+	//	18, 740,
+	//	46, 775,
+	//	46, 835,
+	//	12, 866,
+	//	12, 1003,
+	//	3, 1003,
+	//	3, 768
+	//};
 
-	//// TODO 4: Create a a big static circle as "ground"
-	//Create_Circle(PIXELS_TO_METERS(SCREEN_WIDTH / 2.f), PIXELS_TO_METERS(SCREEN_HEIGHT / 2.f), 2.5f, b2_staticBody, 0.0f);
-
-
-	////Extra TODO create ground
-	//Create_Edge(0.0f, (float)PIXELS_TO_METERS(SCREEN_HEIGHT) - 0.7f, (float)PIXELS_TO_METERS(SCREEN_WIDTH), (float)PIXELS_TO_METERS(SCREEN_HEIGHT) - 0.7f, b2_staticBody, 0.0f);
-
+	//CreateChain(0, 11, background_chain, (sizeof(background_chain) / sizeof(int)));
 
 	return true;
 }
@@ -96,9 +215,6 @@ update_status ModulePhysics::PostUpdate()
 	//	Create_Circle(PIXELS_TO_METERS((float)App->input->GetMouseX()), PIXELS_TO_METERS((float)App->input->GetMouseY()), radius, b2_dynamicBody, 0.0f);
 
 	//}
-
-
-
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 
@@ -107,30 +223,72 @@ update_status ModulePhysics::PostUpdate()
 
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
-	for(b2Body* b = world->GetBodyList(); b; b = b->GetNext())
+	for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
 	{
-		for(b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
+		for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext())
 		{
-			switch(f->GetType())
+			switch (f->GetType())
 			{
-				case b2Shape::e_circle:
+				// Draw circles ------------------------------------------------
+			case b2Shape::e_circle:
+			{
+				b2CircleShape* shape = (b2CircleShape*)f->GetShape();
+				b2Vec2 pos = f->GetBody()->GetPosition();
+				App->renderer->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 255, 255);
+			}
+			break;
+
+			// Draw polygons ------------------------------------------------
+			case b2Shape::e_polygon:
+			{
+				b2PolygonShape* polygonShape = (b2PolygonShape*)f->GetShape();
+				int32 count = polygonShape->GetVertexCount();
+				b2Vec2 prev, v;
+
+				for (int32 i = 0; i < count; ++i)
 				{
-					b2CircleShape* shape = (b2CircleShape*)f->GetShape();
-					b2Vec2 pos = f->GetBody()->GetPosition();
-					App->renderer->DrawCircle(METERS_TO_PIXELS(pos.x), METERS_TO_PIXELS(pos.y), METERS_TO_PIXELS(shape->m_radius), 255, 255, 255);
-				}
-				break;
+					v = b->GetWorldPoint(polygonShape->GetVertex(i));
+					if (i > 0)
+						App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
 
-				// You will have to add more cases to draw boxes, edges, and polygons ...
-				case b2Shape::e_edge:
+					prev = v;
+				}
+
+				v = b->GetWorldPoint(polygonShape->GetVertex(0));
+				App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
+			}
+			break;
+
+			// Draw chains contour -------------------------------------------
+			case b2Shape::e_chain:
+			{
+				b2ChainShape* shape = (b2ChainShape*)f->GetShape();
+				b2Vec2 prev, v;
+
+				for (int32 i = 0; i < shape->m_count; ++i)
 				{
-					b2EdgeShape* shape = (b2EdgeShape*)f->GetShape();
-					App->renderer->DrawLine(METERS_TO_PIXELS(shape->m_vertex1.x), METERS_TO_PIXELS(shape->m_vertex1.y), METERS_TO_PIXELS(shape->m_vertex2.x), METERS_TO_PIXELS(shape->m_vertex2.y), 255, 255, 255);
+					v = b->GetWorldPoint(shape->m_vertices[i]);
+					if (i > 0)
+						App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
+					prev = v;
 				}
-				break;
 
+				v = b->GetWorldPoint(shape->m_vertices[0]);
+				App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
+			}
+			break;
 
+			// Draw a single segment(edge) ----------------------------------
+			case b2Shape::e_edge:
+			{
+				b2EdgeShape* shape = (b2EdgeShape*)f->GetShape();
+				b2Vec2 v1, v2;
 
+				v1 = b->GetWorldPoint(shape->m_vertex0);
+				v1 = b->GetWorldPoint(shape->m_vertex1);
+				App->renderer->DrawLine(METERS_TO_PIXELS(v1.x), METERS_TO_PIXELS(v1.y), METERS_TO_PIXELS(v2.x), METERS_TO_PIXELS(v2.y), 100, 100, 255);
+			}
+			break;
 			}
 		}
 	}
