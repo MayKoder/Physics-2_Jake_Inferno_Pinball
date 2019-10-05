@@ -1,9 +1,11 @@
 #pragma once
 #include "Module.h"
 #include "Globals.h"
+#include"p2List_Extended.h"
 
 class b2World;
 enum b2BodyType;
+class b2Body;
 struct b2Vec2;
 typedef float float32;
 typedef int int32;
@@ -27,10 +29,26 @@ public:
 	int32 velocityIterations = 10;
 	int32 positionIterations = 8;
 
-	
+public:
+	p2List_Extended<BodyClass> *world_body_list;
 
 private:
 
 	b2World *world = nullptr;
 	bool debug;
+};
+
+class BodyClass
+{
+public:
+	BodyClass();
+	~BodyClass();
+
+	b2Body* body;
+
+
+	b2Vec2 GetPositionPixels();
+	b2Vec2 GetPositionMeters();
+
+
 };

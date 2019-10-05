@@ -32,6 +32,7 @@ void ModulePhysics::Create_Circle(float meter_x, float meter_y, float meter_radi
 	groundBodyDef.type = type;
 	groundBodyDef.position.Set(meter_x, meter_y);
 	b2Body* groundBody = world->CreateBody(&groundBodyDef);
+	world_body_list.add(groundBody);
 
 	b2CircleShape groundCircle;
 	groundCircle.m_radius = meter_radius;
@@ -54,6 +55,7 @@ void ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec
 	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
+	world_body_list.add(b);
 
 	b2ChainShape shape;
 	shape.CreateLoop(half_Array, count / 2);
@@ -71,6 +73,7 @@ void ModulePhysics::Create_Edge(float meter_x, float meter_y, float meter_x_2, f
 	b2Vec2 v1(meter_x, meter_y);
 	b2Vec2 v2(meter_x_2, meter_y_2);
 	b2Body* groundBody = world->CreateBody(&groundBodyDef);
+	world_body_list.add(groundBody);
 
 	b2EdgeShape edgeShape;
 	edgeShape.Set(v1, v2);
@@ -187,7 +190,6 @@ bool ModulePhysics::Start()
 		3, 768
 	};
 	b2Vec2 half_Array[(sizeof(points) / sizeof(int)) /2];
-
 	CreateChain(8, (-(1000 - (SCREEN_HEIGHT - 12))), *&points, (sizeof(points) / sizeof(int)), *&half_Array);
 
 
@@ -207,15 +209,6 @@ update_status ModulePhysics::PreUpdate()
 // 
 update_status ModulePhysics::PostUpdate()
 {
-	// TODO 5: On space bar press, create a circle on mouse position
-	// - You need to transform the position / radius
-	//if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN) 
-	//{
-	//	float radius = 0.05f + (float)(rand()) / ((float) (RAND_MAX / (0.3f - 0.05f)));
-	//	//float radius = 0.1f;
-	//	Create_Circle(PIXELS_TO_METERS((float)App->input->GetMouseX()), PIXELS_TO_METERS((float)App->input->GetMouseY()), radius, b2_dynamicBody, 0.0f);
-
-	//}
 	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 
@@ -307,4 +300,25 @@ bool ModulePhysics::CleanUp()
 	delete world;
 
 	return true;
+}
+
+
+//Body class definition
+BodyClass::BodyClass()
+{
+	body = nullptr;
+}
+
+BodyClass::~BodyClass()
+{
+}
+
+b2Vec2 BodyClass::GetPositionMeters() {
+	return body->GetPosition();
+}
+b2Vec2 BodyClass::GetPositionMeters() {
+	b2Vec2 temp;
+	temp.x = METERS_TO_PIXELS(body->GetPosition().x);
+	temp.y = METERS_TO_PIXELS(body->GetPosition().y);
+	return temp;
 }
