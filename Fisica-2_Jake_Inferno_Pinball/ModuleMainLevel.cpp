@@ -2,6 +2,7 @@
 #include "Application.h"
 #include"ModuleMainLevel.h"
 
+
 ModuleMainLevel::ModuleMainLevel(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 }
@@ -75,9 +76,18 @@ bool ModuleMainLevel::Start()
 }
 
 // Update: draw background
+struct b2Vec2;
 update_status ModuleMainLevel::Update()
 {
 
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN) 
+	{
+		App->physics->world_body_list.add(App->physics->Create_Circle(App->input->GetMouseX(),App->input->GetMouseY(), PIXELS_TO_METERS(13/2), 2, 0.f, 0, { 0, 360, 13, 13 }));
+	}
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
+	{
+		App->physics->world_body_list.add(App->physics->Create_Circle(App->input->GetMouseX(), App->input->GetMouseY(), PIXELS_TO_METERS(13/2), 1, 0.f, 0, { 0, 360, 13, 13 }));
+	}
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
 		leftPad->angle -= 5;
 	}
@@ -89,6 +99,29 @@ update_status ModuleMainLevel::Update()
 	{
 		Sprite forSprite = sprite_list[i];
 		App->renderer->Blit(sprite_sheet_list[forSprite.spriteSheetIndex], forSprite.position.x, forSprite.position.y, &forSprite.section, forSprite.speed, forSprite.angle, forSprite.pivotX, forSprite.pivotY);
+	}
+
+
+	for (int i = 0; i < App->physics->world_body_list.count(); i++)
+	{
+
+		if (App->physics->world_body_list[i].spriteSheet != -1)
+		{
+			BodyClass temp = App->physics->world_body_list[i];
+
+			if (temp.needs_Center) 
+			{
+				App->renderer->Blit(sprite_sheet_list[temp.spriteSheet], (temp.GetPositionPixels_X()) - (temp.section.w / 2), (temp.GetPositionPixels_Y()) - (temp.section.h / 2), &temp.section, 1.f);
+			}
+			else
+			{
+				App->renderer->Blit(sprite_sheet_list[temp.spriteSheet], temp.GetPositionPixels_X(), temp.GetPositionPixels_Y(), &temp.section, 1.f);
+			}
+
+
+			
+		}
+		//0, 360, 13, 13
 	}
 
 

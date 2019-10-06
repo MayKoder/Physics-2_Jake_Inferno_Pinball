@@ -35,6 +35,7 @@ struct vector2 {
 // Configuration -----------
 #define SCREEN_WIDTH 580
 #define SCREEN_HEIGHT 287
+//To use fullscreen, set size to 1
 #define SCREEN_SIZE 2
 #define WIN_FULLSCREEN false
 #define WIN_RESIZABLE false

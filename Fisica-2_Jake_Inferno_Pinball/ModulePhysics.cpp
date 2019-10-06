@@ -1,8 +1,9 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleInput.h"
+#include "ModuleRender.h"
 #include "ModulePhysics.h"
 #include "math.h"
-#include<time.h>
 
 // TODO 1
 #include"Box2D/Box2D/Box2D.h"
@@ -26,20 +27,31 @@ ModulePhysics::~ModulePhysics()
 {
 }
 
-void ModulePhysics::Create_Circle(float meter_x, float meter_y, float meter_radius, b2BodyType type, float density)
+BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0})
 {
-	b2BodyDef groundBodyDef;
-	groundBodyDef.type = type;
-	groundBodyDef.position.Set(meter_x, meter_y);
-	b2Body* groundBody = world->CreateBody(&groundBodyDef);
-	world_body_list.add(groundBody);
+	b2BodyDef body;
+	body.type = (b2BodyType)type;
+	body.position.Set(PIXELS_TO_METERS(_x), PIXELS_TO_METERS(_y));
 
-	b2CircleShape groundCircle;
-	groundCircle.m_radius = meter_radius;
-	groundBody->CreateFixture(&groundCircle, density);
+	BodyClass bdy;
+	bdy.body = world->CreateBody(&body);
+	bdy.spriteSheet = sheet;
+	bdy.section = sec;
+
+	b2CircleShape shape;
+	shape.m_radius = meter_radius;
+
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+
+	bdy.body->CreateFixture(&fixture);
+
+	return bdy; 
+
 }
 
-void ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec2 half_Array[])
+BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 })
 {
 
 	int posOnH = 0;
@@ -54,8 +66,11 @@ void ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec
 	body.type = b2_staticBody;
 	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
-	b2Body* b = world->CreateBody(&body);
-	world_body_list.add(b);
+	BodyClass bdy;
+	bdy.body = world->CreateBody(&body);
+	bdy.spriteSheet = sheet;
+	bdy.section = sec;
+	bdy.needs_Center = false;
 
 	b2ChainShape shape;
 	shape.CreateLoop(half_Array, count / 2);
@@ -63,31 +78,15 @@ void ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
 
-	b->CreateFixture(&fixture);
-}
+	bdy.body->CreateFixture(&fixture);
 
-void ModulePhysics::Create_Edge(float meter_x, float meter_y, float meter_x_2, float meter_y_2, b2BodyType type, float density)
-{
-	b2BodyDef groundBodyDef;
-	groundBodyDef.type = type;
-	b2Vec2 v1(meter_x, meter_y);
-	b2Vec2 v2(meter_x_2, meter_y_2);
-	b2Body* groundBody = world->CreateBody(&groundBodyDef);
-	world_body_list.add(groundBody);
-
-	b2EdgeShape edgeShape;
-	edgeShape.Set(v1, v2);
-	groundBody->CreateFixture(&edgeShape, density);
+	return bdy;
 }
 
 bool ModulePhysics::Start()
 {
 	LOG("Creating Physics 2D environment");
-	srand(time(NULL));
-	// TODO 2: Create a private variable for the world
-	// - You need to send it a default gravity
-	// - You need init the world in the constructor
-	// - Remember to destroy the world after using it
+
 	if(!world)
 		world = new b2World(b2Vec2(0.0f, 10.0f));
 
@@ -190,7 +189,7 @@ bool ModulePhysics::Start()
 		3, 768
 	};
 	b2Vec2 half_Array[(sizeof(points) / sizeof(int)) /2];
-	CreateChain(8, (-(1000 - (SCREEN_HEIGHT - 12))), *&points, (sizeof(points) / sizeof(int)), *&half_Array);
+	world_body_list.add(CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&points, (sizeof(points) / sizeof(int)), *&half_Array));
 
 
 	return true;
@@ -209,12 +208,11 @@ update_status ModulePhysics::PreUpdate()
 // 
 update_status ModulePhysics::PostUpdate()
 {
-	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		debug = !debug;
 
-	if(!debug)
+	if (!debug)
 		return UPDATE_CONTINUE;
-
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
 	for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
@@ -290,7 +288,6 @@ update_status ModulePhysics::PostUpdate()
 	return UPDATE_CONTINUE;
 }
 
-
 // Called before quitting
 bool ModulePhysics::CleanUp()
 {
@@ -316,9 +313,13 @@ BodyClass::~BodyClass()
 b2Vec2 BodyClass::GetPositionMeters() {
 	return body->GetPosition();
 }
-b2Vec2 BodyClass::GetPositionMeters() {
-	b2Vec2 temp;
-	temp.x = METERS_TO_PIXELS(body->GetPosition().x);
-	temp.y = METERS_TO_PIXELS(body->GetPosition().y);
-	return temp;
+int BodyClass::GetPositionPixels_X() 
+{
+	int r = METERS_TO_PIXELS(body->GetPosition().x);
+	return r;
+}
+int BodyClass::GetPositionPixels_Y() 
+{
+	int r = METERS_TO_PIXELS(body->GetPosition().y);
+	return r;
 }

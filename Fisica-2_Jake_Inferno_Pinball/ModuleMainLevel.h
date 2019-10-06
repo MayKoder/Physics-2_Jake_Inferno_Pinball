@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include"Application.h"
+#include"ModulePhysics.h"
 
 struct Sprite;
 

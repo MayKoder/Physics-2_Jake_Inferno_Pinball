@@ -12,7 +12,6 @@
 #include "ModuleAudio.h"
 #include "ModulePlayer.h"
 #include "ModulePhysics.h"
-#include "ModuleSceneIntro.h"
 #include"ModuleMainLevel.h"
 
 class Application
@@ -24,7 +23,6 @@ public:
 	ModuleInput* input;
 	ModuleAudio* audio;
 	ModulePlayer* player;
-	ModuleSceneIntro* scene_intro;
 	ModuleMainLevel* main_level;
 	ModulePhysics* physics;
 
