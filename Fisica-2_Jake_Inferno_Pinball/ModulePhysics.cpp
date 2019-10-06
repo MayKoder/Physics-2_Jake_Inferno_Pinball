@@ -43,6 +43,7 @@ BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int t
 
 
 	b2FixtureDef fixture;
+	fixture.density = density;
 	fixture.shape = &shape;
 
 	bdy.body->CreateFixture(&fixture);
@@ -322,4 +323,8 @@ int BodyClass::GetPositionPixels_Y()
 {
 	int r = METERS_TO_PIXELS(body->GetPosition().y);
 	return r;
+}
+
+float BodyClass::GetRotation() {
+	return (body->GetAngle() * RADTODEG);
 }

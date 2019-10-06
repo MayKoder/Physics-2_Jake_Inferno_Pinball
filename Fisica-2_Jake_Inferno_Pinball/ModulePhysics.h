@@ -23,6 +23,9 @@ public:
 
 	int GetPositionPixels_X();
 	int GetPositionPixels_Y();
+
+	float GetRotation();
+
 	b2Vec2 GetPositionMeters();
 };
 

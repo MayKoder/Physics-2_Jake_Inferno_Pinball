@@ -82,7 +82,7 @@ update_status ModuleMainLevel::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN) 
 	{
-		App->physics->world_body_list.add(App->physics->Create_Circle(App->input->GetMouseX(),App->input->GetMouseY(), PIXELS_TO_METERS(13/2), 2, 0.f, 0, { 0, 360, 13, 13 }));
+		App->physics->world_body_list.add(App->physics->Create_Circle(App->input->GetMouseX(),App->input->GetMouseY(), PIXELS_TO_METERS(13/2), 2, 1.f, 0, { 0, 360, 13, 13 }));
 	}
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
 	{
@@ -102,6 +102,7 @@ update_status ModuleMainLevel::Update()
 	}
 
 
+	//PHS Draw
 	for (int i = 0; i < App->physics->world_body_list.count(); i++)
 	{
 
@@ -111,11 +112,12 @@ update_status ModuleMainLevel::Update()
 
 			if (temp.needs_Center) 
 			{
-				App->renderer->Blit(sprite_sheet_list[temp.spriteSheet], (temp.GetPositionPixels_X()) - (temp.section.w / 2), (temp.GetPositionPixels_Y()) - (temp.section.h / 2), &temp.section, 1.f);
+				//LOG("%i", temp.GetRotation())
+				App->renderer->Blit(sprite_sheet_list[temp.spriteSheet], (temp.GetPositionPixels_X()) - (temp.section.w / 2), (temp.GetPositionPixels_Y()) - (temp.section.h / 2), &temp.section, 1.f, temp.GetRotation());
 			}
 			else
 			{
-				App->renderer->Blit(sprite_sheet_list[temp.spriteSheet], temp.GetPositionPixels_X(), temp.GetPositionPixels_Y(), &temp.section, 1.f);
+				App->renderer->Blit(sprite_sheet_list[temp.spriteSheet], temp.GetPositionPixels_X(), temp.GetPositionPixels_Y(), &temp.section, 1.f, temp.GetRotation());
 			}
 
 

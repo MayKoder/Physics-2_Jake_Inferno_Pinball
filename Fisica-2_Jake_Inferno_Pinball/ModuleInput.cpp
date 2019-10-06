@@ -67,7 +67,7 @@ update_status ModuleInput::PreUpdate()
 
 	mouse_x = (int)(-App->renderer->camera.x + mouse_x) / SCREEN_SIZE;
 	mouse_y = (int)(-App->renderer->camera.y + mouse_y) / SCREEN_SIZE;
-	LOG("%i, %i", mouse_x, mouse_y);
+	//LOG("%i, %i", mouse_x, mouse_y);
 
 	return UPDATE_CONTINUE;
 }
