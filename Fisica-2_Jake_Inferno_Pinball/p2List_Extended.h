@@ -69,6 +69,7 @@ public:
 		return(p_data_item);
 	}
 
+
 	/**
 	* Deletes an item from the list
 	*/
@@ -308,5 +309,23 @@ public:
 			p_other_list = p_other_list->next;
 		}
 	}
+
+
+	//void Resize(int position)
+	//{
+
+	//	p2List_item<tdata>* p_item;
+	//	p_item = At(position);
+
+	//	while (p_item != NULL)
+	//	{
+	//		p_item->data = p_item->data;
+	//		p_item = p_item->next;
+
+	//	}
+	//	size--;
+	//}
+
+
 };
 #endif /*__p2List_Extended_H__*/

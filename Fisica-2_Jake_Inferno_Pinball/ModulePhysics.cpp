@@ -52,7 +52,7 @@ BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int t
 
 }
 
-BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 })
+BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec)
 {
 
 	int posOnH = 0;
@@ -90,107 +90,6 @@ bool ModulePhysics::Start()
 
 	if(!world)
 		world = new b2World(b2Vec2(0.0f, 10.0f));
-
-	// Pivot 0, 0
-	int points[190] = {
-		2, 2,
-		328, 2,
-		328, 1003,
-		323, 1003,
-		324, 651,
-		322, 639,
-		319, 626,
-		315, 614,
-		310, 602,
-		305, 592,
-		299, 582,
-		291, 571,
-		282, 560,
-		273, 552,
-		264, 544,
-		254, 537,
-		244, 531,
-		232, 525,
-		220, 521,
-		214, 519,
-		210, 514,
-		210, 508,
-		213, 502,
-		221, 498,
-		232, 494,
-		243, 490,
-		257, 484,
-		273, 478,
-		286, 472,
-		293, 469,
-		298, 463,
-		299, 457,
-		299, 362,
-		275, 339,
-		275, 278,
-		305, 233,
-		305, 148,
-		304, 133,
-		300, 116,
-		293, 97,
-		285, 82,
-		277, 70,
-		264, 55,
-		249, 41,
-		235, 32,
-		221, 25,
-		205, 19,
-		193, 15,
-		180, 13,
-		160, 12,
-		142, 13,
-		124, 17,
-		109, 22,
-		95, 28,
-		82, 36,
-		71, 44,
-		57, 57,
-		46, 70,
-		37, 85,
-		29, 100,
-		24, 114,
-		21, 128,
-		19, 143,
-		18, 165,
-		18, 233,
-		36, 277,
-		36, 340,
-		12, 364,
-		12, 460,
-		15, 465,
-		19, 469,
-		27, 473,
-		97, 501,
-		101, 506,
-		101, 512,
-		99, 517,
-		92, 521,
-		81, 527,
-		71, 534,
-		62, 542,
-		54, 551,
-		46, 560,
-		39, 571,
-		32, 583,
-		26, 597,
-		23, 608,
-		20, 623,
-		18, 638,
-		18, 740,
-		46, 775,
-		46, 835,
-		12, 866,
-		12, 1003,
-		3, 1003,
-		3, 768
-	};
-	b2Vec2 half_Array[(sizeof(points) / sizeof(int)) /2];
-	world_body_list.add(CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&points, (sizeof(points) / sizeof(int)), *&half_Array));
 
 
 	return true;
@@ -289,12 +188,22 @@ update_status ModulePhysics::PostUpdate()
 	return UPDATE_CONTINUE;
 }
 
+void ModulePhysics::DestroyBody(b2Body* bodyToDestroy) 
+{
+	world->DestroyBody(bodyToDestroy);
+}
+
 // Called before quitting
 bool ModulePhysics::CleanUp()
 {
 	LOG("Destroying physics world");
+	for (int i = 0;  i < world_body_list.count();  i++)
+	{
+		DestroyBody(world_body_list[i].body);
+	}
 
 	// Delete the whole physics world!
+	world_body_list.clear();
 	delete world;
 
 	return true;
