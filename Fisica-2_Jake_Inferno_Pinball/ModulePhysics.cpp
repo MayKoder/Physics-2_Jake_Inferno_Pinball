@@ -27,7 +27,7 @@ ModulePhysics::~ModulePhysics()
 {
 }
 
-BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0})
+BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int type, float density, int sheet, SDL_Rect sec)
 {
 	b2BodyDef body;
 	body.type = (b2BodyType)type;
