@@ -47,6 +47,6 @@ public:
 
 	int ball_height_limit;
 	int score = 000000000;
-
+	int leftMovingUp = 0, rightMovingUp = 0;
 
 };

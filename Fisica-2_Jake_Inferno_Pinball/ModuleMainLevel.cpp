@@ -274,7 +274,7 @@ bool ModuleMainLevel::Start()
 		1, 11
 	};
 	half_Array[(sizeof(stick_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->CreateChain(102, SCREEN_HEIGHT - 43, *&stick_left, (sizeof(stick_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }));
+	App->physics->world_body_list.add(App->physics->CreateChain(102, SCREEN_HEIGHT - 43, *&stick_left, (sizeof(stick_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0));
 
 	int stick_right[22] = {
 		2, 28,
@@ -290,7 +290,7 @@ bool ModuleMainLevel::Start()
 		11, 24
 	};
 	half_Array[(sizeof(stick_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->CreateChain(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 77, 287, 50, 28 }));
+	App->physics->world_body_list.add(App->physics->CreateChain(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 77, 287, 50, 28 }, 0));
 
 	//left and right pad set
 	rightPad = &App->physics->world_body_list[App->physics->world_body_list.count() - 1];
@@ -332,14 +332,68 @@ update_status ModuleMainLevel::Update()
 	{
 		App->physics->world_body_list.add(App->physics->Create_Circle(App->input->GetMouseX(), App->input->GetMouseY(), PIXELS_TO_METERS(13/2), 1, 0.f, 0, { 0, 360, 13, 13 }));
 	}
+	//if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	//{
+	//	rightPad->body->SetAngularVelocity(-30);
+	//	rightMovingUp = 1;
+	//}
+	//else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_UP)
+	//{
+	//	rightPad->body->SetAngularVelocity(30);
+	//	rightMovingUp = -1;
+	//}
+
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) 
 	{
-		leftPad->body->SetAngularVelocity(2);
+		leftPad->body->SetAngularVelocity(-30);
+		leftMovingUp = 1;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
-		//rightPad->angle += 5;
+	else if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_UP)
+	{
+		leftPad->body->SetAngularVelocity(30);
+		leftMovingUp = -1;
 	}
 
+	if (leftMovingUp == 1) 
+	{
+		if (leftPad->body->GetAngle() * RADTODEG <= -45) 
+		{
+			leftPad->body->SetAngularVelocity(0);
+			leftPad->body->SetTransform(leftPad->body->GetPosition(), -45 * DEGTORAD);
+			leftMovingUp = 0;
+		}
+	}
+	else if(leftMovingUp == -1)
+	{
+		if (leftPad->body->GetAngle() * RADTODEG >= 0)
+		{
+			leftPad->body->SetAngularVelocity(0);
+			leftPad->body->SetTransform(leftPad->body->GetPosition(), 0 * DEGTORAD);
+			leftMovingUp = 0;
+		}
+	}
+
+	//if (rightMovingUp == 1)
+	//{
+	//	if (rightPad->body->GetAngle() * RADTODEG <= -45)
+	//	{
+	//		rightPad->body->SetAngularVelocity(0);
+	//		rightPad->body->SetTransform(rightPad->body->GetPosition(), -45 * DEGTORAD);
+	//		rightMovingUp = 0;
+	//	}
+	//}
+	//else if (rightMovingUp == -1)
+	//{
+	//	if (rightPad->body->GetAngle() * RADTODEG >= 0)
+	//	{
+	//		rightPad->body->SetAngularVelocity(0);
+	//		rightPad->body->SetTransform(rightPad->body->GetPosition(), 0 * DEGTORAD);
+	//		rightMovingUp = 0;
+	//	}
+	//}
+
+	float angle = leftPad->body->GetAngle();
+	LOG("%f", angle);
 
 	//Gameplay sprite renderer
 	for (int i = 0; i < gameplay_sprite_list.count(); i++)
@@ -375,13 +429,11 @@ update_status ModuleMainLevel::Update()
 				}
 				else
 				{
-					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], temp->GetPositionPixels_X(), temp->GetPositionPixels_Y(), &temp->section, 1.f, temp->GetRotation());
+					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], temp->GetPositionPixels_X(), temp->GetPositionPixels_Y(), &temp->section, 1.f, temp->GetRotation(), temp->pivotX, temp->pivotY);
 				}
 			}
 		}
-		LOG("%i", App->physics->world_body_list.count());
-
-		//0, 360, 13, 13
+		//LOG("%i", App->physics->world_body_list.count());
 	}
 
 	//COver post gameplay screen renderer

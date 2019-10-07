@@ -52,7 +52,7 @@ BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int t
 
 }
 
-BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec)
+BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic)
 {
 
 	int posOnH = 0;
@@ -64,7 +64,13 @@ BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, 
 	}
 
 	b2BodyDef body;
-	body.type = b2_kinematicBody;
+	if (isDynamic == 0) {
+		body.type = b2_kinematicBody;
+	}
+	else
+	{
+		body.type = b2_dynamicBody;
+	}
 	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
 	BodyClass bdy;
@@ -78,7 +84,7 @@ BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, 
 
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
-
+	fixture.density = 1.f;
 	bdy.body->CreateFixture(&fixture);
 
 	return bdy;
