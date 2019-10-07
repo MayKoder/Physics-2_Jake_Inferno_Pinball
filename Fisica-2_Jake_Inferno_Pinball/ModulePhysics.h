@@ -20,6 +20,7 @@ public:
 	SDL_Rect section;
 	bool needs_Center = true;
 	int pivotX = 0, pivotY = 0;
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
 
 
 	int GetPositionPixels_X();
@@ -36,8 +37,8 @@ public:
 	ModulePhysics(Application* app, bool start_enabled = true);
 	~ModulePhysics();
 
-	BodyClass Create_Circle(int _x, int _y, float meter_radius, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0});
-	BodyClass CreateChain(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int isDynamic = 0);
+	BodyClass Create_Circle(int _x, int _y, float meter_radius, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	BodyClass CreateChain(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int isDynamic = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
 	bool Start();
 	update_status PreUpdate();

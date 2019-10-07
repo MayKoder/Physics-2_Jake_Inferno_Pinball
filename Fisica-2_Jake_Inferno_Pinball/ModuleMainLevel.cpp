@@ -290,7 +290,7 @@ bool ModuleMainLevel::Start()
 		11, 24
 	};
 	half_Array[(sizeof(stick_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->CreateChain(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 77, 287, 50, 28 }, 0));
+	App->physics->world_body_list.add(App->physics->CreateChain(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0, SDL_FLIP_HORIZONTAL));
 
 	//left and right pad set
 	rightPad = &App->physics->world_body_list[App->physics->world_body_list.count() - 1];
@@ -425,11 +425,11 @@ update_status ModuleMainLevel::Update()
 				if (temp->needs_Center)
 				{
 					//LOG("%i", temp.GetRotation())
-					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], (temp->GetPositionPixels_X()) - (temp->section.w / 2), (temp->GetPositionPixels_Y()) - (temp->section.h / 2), &temp->section, 1.f, temp->GetRotation());
+					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], (temp->GetPositionPixels_X()) - (temp->section.w / 2), (temp->GetPositionPixels_Y()) - (temp->section.h / 2), &temp->section, 1.f, temp->GetRotation(), 0, 0, temp->flip);
 				}
 				else
 				{
-					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], temp->GetPositionPixels_X(), temp->GetPositionPixels_Y(), &temp->section, 1.f, temp->GetRotation(), temp->pivotX, temp->pivotY);
+					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], temp->GetPositionPixels_X(), temp->GetPositionPixels_Y(), &temp->section, 1.f, temp->GetRotation(), temp->pivotX, temp->pivotY, temp->flip);
 				}
 			}
 		}

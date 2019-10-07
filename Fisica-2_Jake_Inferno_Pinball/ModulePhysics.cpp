@@ -27,7 +27,7 @@ ModulePhysics::~ModulePhysics()
 {
 }
 
-BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int type, float density, int sheet, SDL_Rect sec)
+BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
 {
 	b2BodyDef body;
 	body.type = (b2BodyType)type;
@@ -37,6 +37,7 @@ BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int t
 	bdy.body = world->CreateBody(&body);
 	bdy.spriteSheet = sheet;
 	bdy.section = sec;
+	bdy.flip = flip;
 
 	b2CircleShape shape;
 	shape.m_radius = meter_radius;
@@ -52,7 +53,7 @@ BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int t
 
 }
 
-BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic)
+BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic, SDL_RendererFlip flip)
 {
 
 	int posOnH = 0;
@@ -77,6 +78,7 @@ BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, 
 	bdy.body = world->CreateBody(&body);
 	bdy.spriteSheet = sheet;
 	bdy.section = sec;
+	bdy.flip = flip;
 	bdy.needs_Center = false;
 
 	b2ChainShape shape;
