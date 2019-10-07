@@ -57,11 +57,11 @@ update_status ModuleRender::Update()
 	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
 		MoveCamera(cameraSpeed, down);
 
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		camera.x += cameraSpeed;
+	//if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	//	camera.x += cameraSpeed;
 
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		camera.x -= cameraSpeed;
+	//if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+	//	camera.x -= cameraSpeed;
 
 
 	//LOG("%i", camera.y);

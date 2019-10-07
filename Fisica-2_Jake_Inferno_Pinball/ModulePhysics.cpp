@@ -64,7 +64,7 @@ BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, 
 	}
 
 	b2BodyDef body;
-	body.type = b2_staticBody;
+	body.type = b2_kinematicBody;
 	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
 	BodyClass bdy;
@@ -197,6 +197,7 @@ void ModulePhysics::DestroyBody(b2Body* bodyToDestroy)
 bool ModulePhysics::CleanUp()
 {
 	LOG("Destroying physics world");
+	//Clear world body list
 	for (int i = 0;  i < world_body_list.count();  i++)
 	{
 		DestroyBody(world_body_list[i].body);

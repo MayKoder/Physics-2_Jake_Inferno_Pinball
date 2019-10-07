@@ -15,7 +15,7 @@ void ModuleMainLevel::LoadSpriteSheet(const char* load_path)
 	sprite_sheet_list.add(App->textures->Load(load_path));
 }
 
-void ModuleMainLevel::LoadSprite(int spriteSheetIndex, float posX, float posY, SDL_Rect rect, float speed, float angle, int pivotX, int pivotY)
+void ModuleMainLevel::LoadSprite(int spriteSheetIndex, float posX, float posY, SDL_Rect rect, float speed, float angle, int pivotX, int pivotY, int layer)
 {
 
 	Sprite tempSprite;
@@ -32,7 +32,15 @@ void ModuleMainLevel::LoadSprite(int spriteSheetIndex, float posX, float posY, S
 	tempSprite.pivotY = pivotY;
 
 
-	sprite_list.add(tempSprite);
+	if (layer == 0) 
+	{
+		gameplay_sprite_list.add(tempSprite);
+	}
+	else
+	{
+		cover_sprite_list.add(tempSprite);
+	}
+
 
 }
 
@@ -40,6 +48,9 @@ void ModuleMainLevel::LoadSprite(int spriteSheetIndex, float posX, float posY, S
 bool ModuleMainLevel::Start()
 {
 	LOG("Loading player");
+
+	//height balls will be deleted
+	ball_height_limit = (SCREEN_HEIGHT * SCREEN_SIZE); //+20
 
 	LoadSpriteSheet("Assets/Main_Level/main_level_static_background.png");
 
@@ -60,7 +71,7 @@ bool ModuleMainLevel::Start()
 	//TODO: Render everything with coliders?
 #pragma region Chain Initials
 
-	// Pivot 0, 0
+	// Map 0, 0
 	int points[216] = {
 			0, 0,
 			328, 0,
@@ -174,7 +185,7 @@ bool ModuleMainLevel::Start()
 	b2Vec2 half_Array[(sizeof(points) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&points, (sizeof(points) / sizeof(int)), *&half_Array));
 
-	// Pivot 0, 0
+	// CoverLowLeft 0, 0
 	int cover_left[14] = {
 		31, 1004,
 		105, 1004,
@@ -187,7 +198,7 @@ bool ModuleMainLevel::Start()
 	half_Array[(sizeof(cover_left) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_left, (sizeof(cover_left) / sizeof(int)), *&half_Array));	
 	
-	// Pivot 0, 0
+	// CoverLowRight 0, 0
 	int cover_right[12] = {
 		205, 1004,
 		279, 1004,
@@ -200,7 +211,7 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_right, (sizeof(cover_right) / sizeof(int)), *&half_Array));
 	
 
-	// Pivot 0, 0
+	// LauncherCover 0, 0
 	int launchCover[16] = {
 		300, 1003,
 		300, 860,
@@ -215,7 +226,7 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&launchCover, (sizeof(launchCover) / sizeof(int)), *&half_Array));
 
 
-	// Pivot 0, 0
+	// Slims Left 0, 0
 	int slim_stick_left[20] = {
 		31, 885,
 		31, 940,
@@ -233,7 +244,7 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_left, (sizeof(slim_stick_left) / sizeof(int)), *&half_Array));
 
 
-	// Pivot 0, 0
+	// Slims right 0, 0
 	int slim_stick_right[18] = {
 		221, 971,
 		279, 944,
@@ -249,24 +260,59 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
 	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
 
+	// Stick Right 0, 0
+	int stick_left[20] = {
+		4, 13,
+		49, 28,
+		51, 27,
+		50, 25,
+		10, 0,
+		6, 0,
+		3, 1,
+		1, 4,
+		0, 8,
+		1, 11
+	};
+	half_Array[(sizeof(stick_left) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->CreateChain(102, SCREEN_HEIGHT - 43, *&stick_left, (sizeof(stick_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }));
+
+	int stick_right[22] = {
+		2, 28,
+		0, 27,
+		1, 24,
+		6, 21,
+		40, 0,
+		44, 0,
+		48, 2,
+		50, 6,
+		49, 10,
+		46, 13,
+		11, 24
+	};
+	half_Array[(sizeof(stick_right) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->CreateChain(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 77, 287, 50, 28 }));
+
+	//left and right pad set
+	rightPad = &App->physics->world_body_list[App->physics->world_body_list.count() - 1];
+	leftPad = &App->physics->world_body_list[App->physics->world_body_list.count() - 2];
+
+
 #pragma endregion
 
 
 
 
 	//HitSticks
-	LoadSprite(0, 102, (-SCREEN_HEIGHT) + 43, { 27, 287, 50, 28 }, 1.f, 0, 0);
-	LoadSprite(0, 179, (-SCREEN_HEIGHT) + 43, { 77, 287, 50, 28 }, 1.f, 0, 100);
-	leftPad = &sprite_list[sprite_list.count() - 2];
-	rightPad = &sprite_list[sprite_list.count() - 1];
+	//LoadSprite(0, 102, (-SCREEN_HEIGHT) + 43, { 27, 287, 50, 28 }, 1.f, 0, 0);
+	//LoadSprite(0, 179, (-SCREEN_HEIGHT) + 43, { 77, 287, 50, 28 }, 1.f, 0, 100);
 
 
 	//Screen Cover
-	LoadSprite(0, 0, 0, { 0, 0, 580, 287 }, 0.f);
+	LoadSprite(0, 0, 0, { 0, 0, 580, 287 }, 0.f, 0.f, 0, 0, 1);
 
 
 
-	App->renderer->posY_Limit = (sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 16 ) * SCREEN_SIZE);
+	App->renderer->posY_Limit = (gameplay_sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 16 ) * SCREEN_SIZE);
 
 
 
@@ -286,25 +332,29 @@ update_status ModuleMainLevel::Update()
 	{
 		App->physics->world_body_list.add(App->physics->Create_Circle(App->input->GetMouseX(), App->input->GetMouseY(), PIXELS_TO_METERS(13/2), 1, 0.f, 0, { 0, 360, 13, 13 }));
 	}
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) {
-		leftPad->angle -= 5;
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) 
+	{
+		leftPad->body->SetAngularVelocity(2);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT) {
-		rightPad->angle += 5;
+		//rightPad->angle += 5;
 	}
 
-	for (int i = 0; i < sprite_list.count(); i++)
+
+	//Gameplay sprite renderer
+	for (int i = 0; i < gameplay_sprite_list.count(); i++)
 	{
-		Sprite forSprite = sprite_list[i];
-		App->renderer->Blit(sprite_sheet_list[forSprite.spriteSheetIndex], forSprite.position.x, forSprite.position.y, &forSprite.section, forSprite.speed, forSprite.angle, forSprite.pivotX, forSprite.pivotY);
+		Sprite *forSprite = &gameplay_sprite_list[i];
+		App->renderer->Blit(sprite_sheet_list[forSprite->spriteSheetIndex], forSprite->position.x, forSprite->position.y, &forSprite->section, forSprite->speed, forSprite->angle, forSprite->pivotX, forSprite->pivotY);
 	}
 
 
-	//PHS Draw
+	//PHS Object renderer
 	for (int i = 0; i < App->physics->world_body_list.count(); i++)
 	{
 
-		if (App->physics->world_body_list[i].GetPositionPixels_Y() >= 500)
+		//Is object out of map limits?
+		if (App->physics->world_body_list[i].GetPositionPixels_Y() >= ball_height_limit)
 		{
 
 			App->physics->DestroyBody(App->physics->world_body_list[i].body);
@@ -334,6 +384,13 @@ update_status ModuleMainLevel::Update()
 		//0, 360, 13, 13
 	}
 
+	//COver post gameplay screen renderer
+	for (int i = 0; i < cover_sprite_list.count(); i++)
+	{
+		Sprite *forSprite = &cover_sprite_list[i];
+		App->renderer->Blit(sprite_sheet_list[forSprite->spriteSheetIndex], forSprite->position.x, forSprite->position.y, &forSprite->section, forSprite->speed, forSprite->angle, forSprite->pivotX, forSprite->pivotY);
+	}
+
 
 	return UPDATE_CONTINUE;
 }
@@ -347,13 +404,11 @@ bool ModuleMainLevel::CleanUp()
 	{
 		App->textures->Unload(sprite_sheet_list[i]);
 		//delete sprite_list[i].section;
-		sprite_sheet_list.clear();
 	}
+	sprite_sheet_list.clear();
 
-	for (int i = 0; i < sprite_list.count(); i++)
-	{
-		sprite_sheet_list.clear();
-	}
+	gameplay_sprite_list.clear();
+	cover_sprite_list.clear();
 
 
 

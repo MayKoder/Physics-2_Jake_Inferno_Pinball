@@ -65,6 +65,9 @@
     <ClInclude Include="p2List_Extended.h">
       <Filter>Header Files\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="MemLeaks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
