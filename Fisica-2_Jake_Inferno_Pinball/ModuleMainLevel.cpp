@@ -298,7 +298,7 @@ bool ModuleMainLevel::Start()
 	leftPad = &App->physics->world_body_list[App->physics->world_body_list.count() - 2];
 
 
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - (83 / SCREEN_SIZE), 17 / SCREEN_SIZE, 73 / SCREEN_SIZE }, 0, 0.f));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35}, 0, 0.f));
 
 
 

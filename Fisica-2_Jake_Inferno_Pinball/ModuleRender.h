@@ -33,7 +33,22 @@ public:
 		//{
 		//	camera.y = -(target_y - SCREEN_HEIGHT / 2) * SCREEN_SIZE;
 		//}
-	
+
+
+
+		if (-(target_y -( SCREEN_HEIGHT / 2)) * SCREEN_SIZE  >= posY_Limit) 
+		{
+			camera.y = posY_Limit;
+			return;
+		}
+
+		if (target_y >= negY_Limit + (SCREEN_HEIGHT / 2))
+		{
+			camera.y = negY_Limit;
+			return;
+		}
+		
+		camera.y = -(target_y - SCREEN_HEIGHT / 2) * SCREEN_SIZE;
 
 	}
 
