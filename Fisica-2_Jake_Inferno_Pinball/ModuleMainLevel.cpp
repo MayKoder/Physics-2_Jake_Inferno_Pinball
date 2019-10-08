@@ -51,6 +51,7 @@ bool ModuleMainLevel::Start()
 
 	//height balls will be deleted
 	ball_height_limit = (SCREEN_HEIGHT * SCREEN_SIZE); //+20
+	current_ball_lives = max_ball_lives;
 
 	LoadSpriteSheet("Assets/Main_Level/main_level_static_background.png");
 
@@ -65,7 +66,7 @@ bool ModuleMainLevel::Start()
 
 
 	//Background Top
-	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 9), { 902, 0, 322, 1000 }, 1.f);
+	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 9), { 902, 0, 322, 1000 }, 1.f, 0.f, 0, 0, 1);
 
 
 	//TODO: Render everything with coliders?
@@ -183,7 +184,7 @@ bool ModuleMainLevel::Start()
 			0, 1003
 	};
 	b2Vec2 half_Array[(sizeof(points) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&points, (sizeof(points) / sizeof(int)), *&half_Array));
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&points, (sizeof(points) / sizeof(int)), *&half_Array));
 
 	// CoverLowLeft 0, 0
 	int cover_left[14] = {
@@ -196,7 +197,7 @@ bool ModuleMainLevel::Start()
 		31, 976
 	};
 	half_Array[(sizeof(cover_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_left, (sizeof(cover_left) / sizeof(int)), *&half_Array));	
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_left, (sizeof(cover_left) / sizeof(int)), *&half_Array));	
 	
 	// CoverLowRight 0, 0
 	int cover_right[12] = {
@@ -208,7 +209,7 @@ bool ModuleMainLevel::Start()
 		238, 987
 	};
 	half_Array[(sizeof(cover_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_right, (sizeof(cover_right) / sizeof(int)), *&half_Array));
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_right, (sizeof(cover_right) / sizeof(int)), *&half_Array));
 	
 
 	// LauncherCover 0, 0
@@ -223,7 +224,7 @@ bool ModuleMainLevel::Start()
 		307, 1003
 	};
 	half_Array[(sizeof(launchCover) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&launchCover, (sizeof(launchCover) / sizeof(int)), *&half_Array));
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&launchCover, (sizeof(launchCover) / sizeof(int)), *&half_Array));
 
 
 	// Slims Left 0, 0
@@ -240,8 +241,8 @@ bool ModuleMainLevel::Start()
 		34, 884
 	};
 	half_Array[(sizeof(slim_stick_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_left, (sizeof(slim_stick_left) / sizeof(int)), *&half_Array));
-	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_left, (sizeof(slim_stick_left) / sizeof(int)), *&half_Array));
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_left, (sizeof(slim_stick_left) / sizeof(int)), *&half_Array));
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_left, (sizeof(slim_stick_left) / sizeof(int)), *&half_Array));
 
 
 	// Slims right 0, 0
@@ -257,8 +258,8 @@ bool ModuleMainLevel::Start()
 		218, 969
 	};
 	half_Array[(sizeof(slim_stick_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
-	App->physics->world_body_list.add(App->physics->CreateChain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
 
 	// Stick Right 0, 0
 	int stick_left[20] = {
@@ -274,7 +275,7 @@ bool ModuleMainLevel::Start()
 		1, 11
 	};
 	half_Array[(sizeof(stick_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->CreateChain(102, SCREEN_HEIGHT - 43, *&stick_left, (sizeof(stick_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0));
+	App->physics->world_body_list.add(App->physics->Create_Chain(102, SCREEN_HEIGHT - 43, *&stick_left, (sizeof(stick_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0));
 
 	int stick_right[22] = {
 		2, 28,
@@ -290,15 +291,18 @@ bool ModuleMainLevel::Start()
 		11, 24
 	};
 	half_Array[(sizeof(stick_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->CreateChain(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0, SDL_FLIP_HORIZONTAL));
+	App->physics->world_body_list.add(App->physics->Create_Chain(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0, SDL_FLIP_HORIZONTAL));
 
 	//left and right pad set
 	rightPad = &App->physics->world_body_list[App->physics->world_body_list.count() - 1];
 	leftPad = &App->physics->world_body_list[App->physics->world_body_list.count() - 2];
 
 
-#pragma endregion
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - (83 / SCREEN_SIZE), 17 / SCREEN_SIZE, 73 / SCREEN_SIZE }, 0, 0.f));
 
+
+
+#pragma endregion
 
 
 
@@ -326,7 +330,7 @@ update_status ModuleMainLevel::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN) 
 	{
-		App->physics->world_body_list.add(App->physics->Create_Circle(App->input->GetMouseX(),App->input->GetMouseY(), PIXELS_TO_METERS(13/2), 2, 1.f, 0, { 0, 360, 13, 13 }));
+		Create_Play_Ball(App->input->GetMouseX(), App->input->GetMouseY());
 	}
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
 	{
@@ -392,8 +396,8 @@ update_status ModuleMainLevel::Update()
 	//	}
 	//}
 
-	float angle = leftPad->body->GetAngle();
-	LOG("%f", angle);
+	//float angle = leftPad->body->GetAngle();
+	//LOG("%f", angle);
 
 	//Gameplay sprite renderer
 	for (int i = 0; i < gameplay_sprite_list.count(); i++)
@@ -410,10 +414,7 @@ update_status ModuleMainLevel::Update()
 		//Is object out of map limits?
 		if (App->physics->world_body_list[i].GetPositionPixels_Y() >= ball_height_limit)
 		{
-
-			App->physics->DestroyBody(App->physics->world_body_list[i].body);
-			App->physics->world_body_list.del(App->physics->world_body_list.At(i));
-			LOG("Body deleted")
+			Lose_Ball(i);
 			//Destroy balls on fall or just reposition them?
 		}
 		else
@@ -425,7 +426,7 @@ update_status ModuleMainLevel::Update()
 				if (temp->needs_Center)
 				{
 					//LOG("%i", temp.GetRotation())
-					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], (temp->GetPositionPixels_X()) - (temp->section.w / 2), (temp->GetPositionPixels_Y()) - (temp->section.h / 2), &temp->section, 1.f, temp->GetRotation(), 0, 0, temp->flip);
+					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], (temp->GetPositionPixels_X()) - (temp->section.w / 2), (temp->GetPositionPixels_Y()) - (temp->section.h / 2), &temp->section, 1.f, temp->GetRotation(), INT_MAX, INT_MAX, temp->flip);
 				}
 				else
 				{
@@ -467,6 +468,53 @@ bool ModuleMainLevel::CleanUp()
 	return true;
 }
 
+void ModuleMainLevel::Lose_Ball(int positionOnList)
+{
 
+
+
+	//is ball the only ball on the screen?
+	if (ballsOnScreen == 1) 
+	{
+		//is current_ball_lives - 1 less or equal than 0?
+			//if it is, end game 
+		//if its not, subtract a live current_ball_lives - 1 and spawn a new ball
+			//reset ball launcher stoppers
+		if (current_ball_lives - 1 <= 0) 
+		{
+			//End game
+			current_ball_lives = 0;
+
+
+		}
+		else
+		{
+			current_ball_lives--;
+			//Reset ball to spawn point
+			App->physics->world_body_list[positionOnList].body->SetLinearVelocity({ 0, 0 });
+			App->physics->world_body_list[positionOnList].body->SetAngularVelocity(0);
+			App->physics->world_body_list[positionOnList].body->SetTransform({PIXELS_TO_METERS(324), PIXELS_TO_METERS(60)}, 0);
+			ball_in_spawn = true;
+		}
+
+
+	}
+	else
+	{
+		App->physics->DestroyBody(App->physics->world_body_list[positionOnList].body);
+		App->physics->world_body_list.del(App->physics->world_body_list.At(positionOnList));
+		ballsOnScreen--;
+		//LOG("%i", ballsOnScreen);
+	}
+
+
+}
+
+void ModuleMainLevel::Create_Play_Ball(int x, int y) 
+{
+	App->physics->world_body_list.add(App->physics->Create_Circle(x, y, PIXELS_TO_METERS(13 / 2), 2, 1.f, 0, { 0, 360, 13, 13 }));
+	ballsOnScreen++;
+
+}
 
 

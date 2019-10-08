@@ -46,6 +46,7 @@ BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int t
 	b2FixtureDef fixture;
 	fixture.density = density;
 	fixture.shape = &shape;
+	fixture.restitution = .5f;
 
 	bdy.body->CreateFixture(&fixture);
 
@@ -53,7 +54,32 @@ BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int t
 
 }
 
-BodyClass ModulePhysics::CreateChain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic, SDL_RendererFlip flip)
+BodyClass ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip) 
+{
+	b2BodyDef body;
+	body.type = (b2BodyType)type;
+	body.position.Set(PIXELS_TO_METERS(size.x), PIXELS_TO_METERS(size.y));
+
+	BodyClass bdy;
+	bdy.body = world->CreateBody(&body);
+	bdy.spriteSheet = sheet;
+	bdy.section = sec;
+	bdy.flip = flip;
+
+	b2PolygonShape shape;
+	shape.SetAsBox(PIXELS_TO_METERS(size.w), PIXELS_TO_METERS(size.h));
+
+
+	b2FixtureDef fixture;
+	fixture.density = density;
+	fixture.shape = &shape;
+
+	bdy.body->CreateFixture(&fixture);
+
+	return bdy;
+}
+
+BodyClass ModulePhysics::Create_Chain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic, SDL_RendererFlip flip)
 {
 
 	int posOnH = 0;
