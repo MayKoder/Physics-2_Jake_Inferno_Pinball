@@ -54,6 +54,8 @@ public:
 	void Lose_Ball(int);
 	//void Shoot_Ball_From_Spawn();
 
+	BodyClass* lower_Ball = nullptr;
+
 private:
 	int max_ball_lives = 5;
 	int leftMovingUp = 0, rightMovingUp = 0;

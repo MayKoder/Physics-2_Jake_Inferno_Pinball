@@ -208,3 +208,31 @@ bool ModuleRender::DrawCircle(int x, int y, int radius, Uint8 r, Uint8 g, Uint8 
 
 	return ret;
 }
+
+void ModuleRender::MoveCamera(int y, dir movDir)
+{
+
+	if (movDir == up) {
+
+		if (camera.y + y <= posY_Limit)
+		{
+			camera.y += y * SCREEN_SIZE;
+		}
+		else
+		{
+			camera.y = posY_Limit;
+		}
+
+	}
+	else
+	{
+		if (camera.y - y >= negY_Limit)
+		{
+			camera.y -= y * SCREEN_SIZE;
+		}
+		else
+		{
+			camera.y = negY_Limit;
+		}
+	}
+}

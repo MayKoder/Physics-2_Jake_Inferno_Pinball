@@ -23,38 +23,17 @@ public:
 		up, down
 	};
 
-	void MoveCamera(int y, dir movDir) 
-	{
-		if (movDir == up) {
+	void MoveCamera(int y, dir movDir);
 
-			if (camera.y + y <= posY_Limit) 
-			{
-				camera.y += y * SCREEN_SIZE;
-			}
-			else
-			{
-				camera.y = posY_Limit;
-			}
-
-		}
-		else
-		{
-			if (camera.y - y >= negY_Limit) 
-			{
-				camera.y -= y * SCREEN_SIZE;
-			}
-			else
-			{
-				camera.y = negY_Limit;
-			}
-		}
-	}
-
-	void MoveCameraToPosition()
+	void MoveCameraToPosition(int target_y)
 	{
 
-
-
+		////THIS IS TEMPORAL, NEEDS TO BE SMOOTHER
+		//if (target_y - SCREEN_HEIGHT / 2 <= negY_Limit)
+		//{
+		//	camera.y = -(target_y - SCREEN_HEIGHT / 2) * SCREEN_SIZE;
+		//}
+	
 
 	}
 

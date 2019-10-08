@@ -327,6 +327,8 @@ bool ModuleMainLevel::Start()
 struct b2Vec2;
 update_status ModuleMainLevel::Update()
 {
+	if(lower_Ball)
+		App->renderer->MoveCameraToPosition(lower_Ball->GetPositionPixels_Y());
 
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN) 
 	{
@@ -410,6 +412,21 @@ update_status ModuleMainLevel::Update()
 	//PHS Object renderer
 	for (int i = 0; i < App->physics->world_body_list.count(); i++)
 	{
+
+		//Follow lower ball
+		if(App->physics->world_body_list[i].body->GetType() == b2BodyType::b2_dynamicBody)
+		{
+			LOG("%i", App->physics->world_body_list[i].GetPositionPixels_Y());
+			if(lower_Ball == nullptr)
+			{
+				lower_Ball = &App->physics->world_body_list[i];
+			}
+			else if(App->physics->world_body_list[i].GetPositionPixels_Y() > lower_Ball->GetPositionPixels_Y())
+			{
+				lower_Ball = &App->physics->world_body_list[i];
+			}
+		}
+
 
 		//Is object out of map limits?
 		if (App->physics->world_body_list[i].GetPositionPixels_Y() >= ball_height_limit)
@@ -501,9 +518,15 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 	}
 	else
 	{
+		if (lower_Ball->body == App->physics->world_body_list[positionOnList].body)
+		{
+			lower_Ball = nullptr;
+		}
+
+
 		App->physics->DestroyBody(App->physics->world_body_list[positionOnList].body);
 		App->physics->world_body_list.del(App->physics->world_body_list.At(positionOnList));
-		ballsOnScreen--;
+		ballsOnScreen--;	
 		//LOG("%i", ballsOnScreen);
 	}
 
