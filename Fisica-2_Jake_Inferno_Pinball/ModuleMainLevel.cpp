@@ -68,6 +68,10 @@ bool ModuleMainLevel::Start()
 	//Background Top
 	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 9), { 902, 0, 322, 1000 }, 1.f, 0.f, 0, 0, 1);
 
+	App->physics->world_body_list.add(App->physics->Create_Circle(126, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, 0, 0.f, 0, { 79, 287, 29, 33 })); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(203, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, 0, 0.f, 0, { 79, 287, 29, 33 })); //735s
+
+
 
 	//TODO: Render everything with coliders?
 #pragma region Chain Initials
