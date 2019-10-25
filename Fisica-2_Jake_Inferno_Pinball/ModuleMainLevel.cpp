@@ -266,22 +266,19 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
 
 	// Stick Right 0, 0
-	int stick_left[20] = {
-		4, 13,
-		49, 28,
-		51, 27,
-		50, 25,
-		10, 0,
-		6, 0,
-		3, 1,
+	int stick_left[14] = {
+		4, 14,
+		0, 10,
 		1, 4,
-		0, 8,
-		1, 11
+		5, 0,
+		11, 0,
+		51, 25,
+		49, 29
 	};
 	half_Array[(sizeof(stick_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Chain(102, SCREEN_HEIGHT - 43, *&stick_left, (sizeof(stick_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0));
+	App->physics->world_body_list.add(App->physics->Create_Poly(102, SCREEN_HEIGHT - 43, *&stick_left, (sizeof(stick_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0));
 
-	int stick_right[22] = {
+	/*int stick_right[22] = {
 		2, 28,
 		0, 27,
 		1, 24,
@@ -295,7 +292,20 @@ bool ModuleMainLevel::Start()
 		11, 24
 	};
 	half_Array[(sizeof(stick_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Chain(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0, SDL_FLIP_HORIZONTAL));
+	App->physics->world_body_list.add(App->physics->Create_Chain(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0, SDL_FLIP_HORIZONTAL));*/
+	int stick_right[14] = {
+	44, 0,
+	49, 2,
+	51, 7,
+	49, 12,
+	2, 28,
+	1, 25,
+	35, 4
+	};
+	half_Array[(sizeof(stick_right) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Poly(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0, SDL_FLIP_HORIZONTAL));
+
+
 
 	//left and right pad set
 	rightPad = &App->physics->world_body_list[App->physics->world_body_list.count() - 1];
@@ -420,7 +430,7 @@ update_status ModuleMainLevel::Update()
 		//Follow lower ball
 		if(App->physics->world_body_list[i].body->GetType() == b2BodyType::b2_dynamicBody)
 		{
-			LOG("%i", App->physics->world_body_list[i].GetPositionPixels_Y());
+			//LOG("%i", App->physics->world_body_list[i].GetPositionPixels_Y());
 			if(lower_Ball == nullptr)
 			{
 				lower_Ball = &App->physics->world_body_list[i];

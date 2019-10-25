@@ -5,12 +5,11 @@
 
 #include "SDL\include\SDL.h"
 
-#define MAX_KEYS 300
-
 ModuleInput::ModuleInput(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	keyboard = new KEY_STATE[MAX_KEYS];
 	memset(keyboard, KEY_IDLE, sizeof(KEY_STATE) * MAX_KEYS);
+	memset(mouse_buttons, KEY_IDLE, sizeof(KEY_STATE) * MAX_MOUSE_BUTTONS);
 }
 
 // Destructor
@@ -35,6 +34,7 @@ bool ModuleInput::Init()
 	return ret;
 }
 
+
 // Called every draw update
 update_status ModuleInput::PreUpdate()
 {
@@ -57,6 +57,26 @@ update_status ModuleInput::PreUpdate()
 				keyboard[i] = KEY_UP;
 			else
 				keyboard[i] = KEY_IDLE;
+		}
+	}
+
+	Uint32 buttons = SDL_GetMouseState(&mouse_x, &mouse_y);
+
+	for (int i = 0; i < MAX_MOUSE_BUTTONS; ++i)
+	{
+		if (buttons & SDL_BUTTON(i))
+		{
+			if (mouse_buttons[i] == KEY_IDLE)
+				mouse_buttons[i] = KEY_DOWN;
+			else
+				mouse_buttons[i] = KEY_REPEAT;
+		}
+		else
+		{
+			if (mouse_buttons[i] == KEY_REPEAT || mouse_buttons[i] == KEY_DOWN)
+				mouse_buttons[i] = KEY_UP;
+			else
+				mouse_buttons[i] = KEY_IDLE;
 		}
 	}
 

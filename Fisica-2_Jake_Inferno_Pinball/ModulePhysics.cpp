@@ -54,6 +54,54 @@ BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int t
 
 }
 
+BodyClass ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic, SDL_RendererFlip flip, int type, float density)
+{
+
+
+	if (count / 2 > 8) 
+	{
+
+		LOG("ERROR ON POLY CREATION, TOO MUCH POINTS");
+
+	}
+	else
+	{
+		int posOnH = 0;
+		for (int i = 0; i < count; i += 2)
+		{
+			half_Array[posOnH].x = PIXELS_TO_METERS(points[i]);
+			half_Array[posOnH].y = PIXELS_TO_METERS(points[i + 1]);
+			posOnH++;
+		}
+
+
+		b2BodyDef body;
+		body.type = (b2BodyType)type;
+		body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+
+		BodyClass bdy;
+		bdy.body = world->CreateBody(&body);
+		bdy.spriteSheet = sheet;
+		bdy.section = sec;
+		bdy.flip = flip;
+		bdy.needs_Center = false;
+
+		b2PolygonShape shape;
+		shape.Set(half_Array, count / 2);
+
+
+		b2FixtureDef fixture;
+		fixture.density = density;
+		fixture.shape = &shape;
+
+		bdy.body->CreateFixture(&fixture);
+
+		return bdy;
+	}
+
+}
+
+
 BodyClass ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip) 
 {
 	b2BodyDef body;
@@ -124,6 +172,9 @@ bool ModulePhysics::Start()
 
 	if(!world)
 		world = new b2World(b2Vec2(0.0f, 10.0f));
+
+	b2BodyDef bd;
+	ground = world->CreateBody(&bd);
 
 
 	return true;
@@ -216,7 +267,42 @@ update_status ModulePhysics::PostUpdate()
 			}
 			break;
 			}
+
+
+			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+			{
+				if (f->GetBody()->GetFixtureList()->TestPoint({ PIXELS_TO_METERS(App->input->GetMouseX()),PIXELS_TO_METERS(App->input->GetMouseY()) }))
+				{
+					jointBody = f->GetBody();
+					b2MouseJointDef def;
+					def.bodyA = ground;
+					def.bodyB = jointBody;
+					def.target = { PIXELS_TO_METERS(App->input->GetMouseX()),PIXELS_TO_METERS(App->input->GetMouseY()) };
+					def.dampingRatio = 0.5f;
+					def.frequencyHz = 2.0f;
+					def.maxForce = 100.0f * jointBody->GetMass();
+					mouse_joint = (b2MouseJoint*)world->CreateJoint(&def);
+				}
+			}
+
 		}
+	}
+
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && mouse_joint)
+	{
+		mouse_joint->SetTarget({ PIXELS_TO_METERS(App->input->GetMouseX()),PIXELS_TO_METERS(App->input->GetMouseY()) });
+		App->renderer->DrawLine(METERS_TO_PIXELS(jointBody->GetPosition().x), METERS_TO_PIXELS(jointBody->GetPosition().y), METERS_TO_PIXELS(mouse_joint->GetTarget().x)
+			, METERS_TO_PIXELS(mouse_joint->GetTarget().y), 255, 0, 0, 255);
+	}
+
+
+
+
+	// TODO 4: If the player releases the mouse button, destroy the joint
+	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && mouse_joint != nullptr)
+	{
+		world->DestroyJoint(mouse_joint);
+		mouse_joint = nullptr;
 	}
 
 	return UPDATE_CONTINUE;

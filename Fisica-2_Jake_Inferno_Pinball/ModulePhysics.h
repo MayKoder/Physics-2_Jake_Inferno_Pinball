@@ -2,6 +2,7 @@
 #include "Module.h"
 #include "Globals.h"
 #include"p2List_Extended.h"
+#include "Box2D/Box2D/Box2D.h"
 
 class b2World;
 class b2Body;
@@ -40,6 +41,7 @@ public:
 	BodyClass Create_Circle(int _x, int _y, float meter_radius, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	BodyClass Create_Rectangle(SDL_Rect size, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	BodyClass Create_Chain(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int isDynamic = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	BodyClass Create_Poly(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int isDynamic = 0, SDL_RendererFlip flip = SDL_FLIP_NONE, int type = 1, float density = 1.0f);
 
 	bool Start();
 	update_status PreUpdate();
@@ -57,6 +59,9 @@ public:
 private:
 	b2World *world = nullptr;
 	bool debug;
+	b2MouseJoint* mouse_joint;
+	b2Body* jointBody;
+	b2Body* ground;
 };
 
 
