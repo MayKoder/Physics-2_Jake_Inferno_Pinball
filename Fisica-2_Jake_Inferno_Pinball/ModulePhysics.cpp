@@ -54,7 +54,7 @@ BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int t
 
 }
 
-BodyClass ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic, SDL_RendererFlip flip, int type, float density)
+BodyClass ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int type, SDL_RendererFlip flip, float density)
 {
 
 
@@ -269,7 +269,7 @@ update_status ModulePhysics::PostUpdate()
 			}
 
 
-			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN)
+			if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_DOWN && f->GetBody()->GetType() != b2BodyType::b2_kinematicBody)
 			{
 				if (f->GetBody()->GetFixtureList()->TestPoint({ PIXELS_TO_METERS(App->input->GetMouseX()),PIXELS_TO_METERS(App->input->GetMouseY()) }))
 				{
@@ -328,6 +328,27 @@ bool ModulePhysics::CleanUp()
 	delete world;
 
 	return true;
+}
+
+b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Fixture* ball, b2Fixture* body)
+{
+
+	b2RevoluteJointDef def;
+	def.bodyA = ball->GetBody();
+	def.bodyB = body->GetBody();
+	def.collideConnected = true;
+	//def.localAnchorB = ball->GetBody()->GetPosition();
+
+	//def.localAnchorA = ball->GetBody()->GetPosition();
+	//def.localAnchorB = ball->GetBody()->GetPosition();
+
+
+	b2RevoluteJoint* revolute_joint_pointer = (b2RevoluteJoint*)world->CreateJoint(&def);
+
+
+	return revolute_joint_pointer;
+
+
 }
 
 

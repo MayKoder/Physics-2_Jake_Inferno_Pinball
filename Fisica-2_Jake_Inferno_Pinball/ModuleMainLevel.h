@@ -56,6 +56,10 @@ public:
 
 	BodyClass* lower_Ball = nullptr;
 
+	b2RevoluteJoint* righBumper;
+	b2RevoluteJoint* leftBumper;
+
+
 private:
 	int max_ball_lives = 5;
 	int leftMovingUp = 0, rightMovingUp = 0;

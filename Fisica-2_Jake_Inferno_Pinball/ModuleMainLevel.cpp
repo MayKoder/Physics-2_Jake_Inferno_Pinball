@@ -266,7 +266,7 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
 
 	// Stick Right 0, 0
-	int stick_left[14] = {
+	int bumper_left[14] = {
 		4, 14,
 		0, 10,
 		1, 4,
@@ -275,36 +275,25 @@ bool ModuleMainLevel::Start()
 		51, 25,
 		49, 29
 	};
-	half_Array[(sizeof(stick_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(102, SCREEN_HEIGHT - 43, *&stick_left, (sizeof(stick_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0));
+	half_Array[(sizeof(bumper_left) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Poly(102, SCREEN_HEIGHT - 43, *&bumper_left, (sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2));
+	App->physics->world_body_list.add(App->physics->Create_Circle(102 + 7, SCREEN_HEIGHT - 43 + 7, PIXELS_TO_METERS(3), 1, 0.f)); //735s
+	leftBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1].body->GetFixtureList(), App->physics->world_body_list[App->physics->world_body_list.count() - 2].body->GetFixtureList());
 
-	/*int stick_right[22] = {
-		2, 28,
+	
+
+	int bumper_right[14] = {
+		39, 0,
+		0, 24,
 		0, 27,
-		1, 24,
-		6, 21,
-		40, 0,
-		44, 0,
-		48, 2,
-		50, 6,
-		49, 10,
-		46, 13,
-		11, 24
+		4, 27,
+		48, 10,
+		49, 4,
+		46, 0
 	};
-	half_Array[(sizeof(stick_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Chain(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0, SDL_FLIP_HORIZONTAL));*/
-	int stick_right[14] = {
-	44, 0,
-	49, 2,
-	51, 7,
-	49, 12,
-	2, 28,
-	1, 25,
-	35, 4
-	};
-	half_Array[(sizeof(stick_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(179, SCREEN_HEIGHT - 43, *&stick_right, (sizeof(stick_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 0, SDL_FLIP_HORIZONTAL));
-
+	half_Array[(sizeof(bumper_right) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Poly(179, SCREEN_HEIGHT - 43, *&bumper_right, (sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2, SDL_FLIP_HORIZONTAL));
+	App->physics->world_body_list.add(App->physics->Create_Circle(179 + 43, SCREEN_HEIGHT - 43 + 7, PIXELS_TO_METERS(3), 0, 0.f)); //735s
 
 
 	//left and right pad set
@@ -363,58 +352,6 @@ update_status ModuleMainLevel::Update()
 	//	rightMovingUp = -1;
 	//}
 
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT) 
-	{
-		leftPad->body->SetAngularVelocity(-30);
-		leftMovingUp = 1;
-	}
-	else if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_UP)
-	{
-		leftPad->body->SetAngularVelocity(30);
-		leftMovingUp = -1;
-	}
-
-	if (leftMovingUp == 1) 
-	{
-		if (leftPad->body->GetAngle() * RADTODEG <= -45) 
-		{
-			leftPad->body->SetAngularVelocity(0);
-			leftPad->body->SetTransform(leftPad->body->GetPosition(), -45 * DEGTORAD);
-			leftMovingUp = 0;
-		}
-	}
-	else if(leftMovingUp == -1)
-	{
-		if (leftPad->body->GetAngle() * RADTODEG >= 0)
-		{
-			leftPad->body->SetAngularVelocity(0);
-			leftPad->body->SetTransform(leftPad->body->GetPosition(), 0 * DEGTORAD);
-			leftMovingUp = 0;
-		}
-	}
-
-	//if (rightMovingUp == 1)
-	//{
-	//	if (rightPad->body->GetAngle() * RADTODEG <= -45)
-	//	{
-	//		rightPad->body->SetAngularVelocity(0);
-	//		rightPad->body->SetTransform(rightPad->body->GetPosition(), -45 * DEGTORAD);
-	//		rightMovingUp = 0;
-	//	}
-	//}
-	//else if (rightMovingUp == -1)
-	//{
-	//	if (rightPad->body->GetAngle() * RADTODEG >= 0)
-	//	{
-	//		rightPad->body->SetAngularVelocity(0);
-	//		rightPad->body->SetTransform(rightPad->body->GetPosition(), 0 * DEGTORAD);
-	//		rightMovingUp = 0;
-	//	}
-	//}
-
-	//float angle = leftPad->body->GetAngle();
-	//LOG("%f", angle);
-
 	//Gameplay sprite renderer
 	for (int i = 0; i < gameplay_sprite_list.count(); i++)
 	{
@@ -428,7 +365,7 @@ update_status ModuleMainLevel::Update()
 	{
 
 		//Follow lower ball
-		if(App->physics->world_body_list[i].body->GetType() == b2BodyType::b2_dynamicBody)
+		if(App->physics->world_body_list[i].body->GetType() == b2BodyType::b2_dynamicBody && App->physics->world_body_list[i].body->GetFixtureList()->GetType() == b2Shape::e_circle)
 		{
 			//LOG("%i", App->physics->world_body_list[i].GetPositionPixels_Y());
 			if(lower_Ball == nullptr)
@@ -445,7 +382,8 @@ update_status ModuleMainLevel::Update()
 		//Is object out of map limits?
 		if (App->physics->world_body_list[i].GetPositionPixels_Y() >= ball_height_limit)
 		{
-			Lose_Ball(i);
+			if(App->physics->world_body_list[i].body->GetFixtureList()->GetType() == b2Shape::e_circle)
+				Lose_Ball(i);
 			//Destroy balls on fall or just reposition them?
 		}
 		else
@@ -493,6 +431,16 @@ bool ModuleMainLevel::CleanUp()
 
 	gameplay_sprite_list.clear();
 	cover_sprite_list.clear();
+
+
+	if (righBumper != nullptr) {
+		App->physics->world->DestroyJoint(righBumper);
+		righBumper = nullptr;
+	}
+	if (leftBumper != nullptr) {
+		App->physics->world->DestroyJoint(leftBumper);
+		leftBumper = nullptr;
+	}
 
 
 
