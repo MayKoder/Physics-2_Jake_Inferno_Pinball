@@ -8,11 +8,11 @@
 // TODO 1
 #include"Box2D/Box2D/Box2D.h"
 #ifdef _DEBUG
-	#pragma comment( lib, "Box2D/libx86/Debug/Box2D.lib" )
+	#pragma comment( lib, "Box2D/libx86/Debug_Box2D/Box2D.lib" )
 
 #else
 
-	#pragma comment( lib, "Box2D/libx86/Release/Box2D.lib" )
+	#pragma comment( lib, "Box2D/libx86/Release_Box2D/Box2D.lib" )
 
 #endif // _DEBUG
 
