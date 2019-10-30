@@ -184,6 +184,13 @@ bool ModulePhysics::CleanUp()
 
 	// Delete the whole physics world!
 	world_body_list.clear();
+
+	for (int i = 0; i < joint_body_list.count(); i++)
+	{
+		world->DestroyBody(joint_body_list[i]);
+	}
+	joint_body_list.clear();
+
 	delete world;
 
 	return true;
@@ -322,14 +329,21 @@ PhysBody ModulePhysics::Create_Chain(float x, float y, int points[], int count, 
 	return bdy;
 }
 
-b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Fixture* ball, b2Fixture* body, float angle)
+b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Body* body, float angle, int x, int y)
 {
 
 	b2RevoluteJointDef def;
 
-	def.Initialize(ball->GetBody(), body->GetBody(), ball->GetBody()->GetWorldCenter());
+	b2BodyDef pin;
+	pin.position.x = PIXELS_TO_METERS(x);
+	pin.position.y = PIXELS_TO_METERS(y);
+	b2Body* deleteBd = world->CreateBody(&pin);
+	joint_body_list.add(deleteBd);
+
+	def.Initialize(deleteBd, body, deleteBd->GetWorldCenter());
+	def.collideConnected = false;
 	def.enableLimit = true;
-	def.enableMotor = true;
+	//def.enableMotor = true;
 	if (angle < 0) 
 	{
 		def.lowerAngle = angle * DEGTORAD;

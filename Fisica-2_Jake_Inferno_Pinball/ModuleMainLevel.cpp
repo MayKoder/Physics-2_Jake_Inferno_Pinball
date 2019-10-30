@@ -104,13 +104,8 @@ bool ModuleMainLevel::Start()
 
 	// CoverLowLeft 0, 0
 	int cover_left[14] = {
-		31, 1004,
-		105, 1004,
-		105, 1002,
-		41, 972,
-		37, 972,
-		34, 973,
-		31, 976
+		31, 1004, 105, 1004, 105, 1002, 41, 972,
+		37, 972, 34, 973, 31, 976
 	};
 	half_Array[(sizeof(cover_left) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_left, (sizeof(cover_left) / sizeof(int)), *&half_Array));	
@@ -189,10 +184,7 @@ bool ModuleMainLevel::Start()
 	};
 	half_Array[(sizeof(bumper_left) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left, (sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2));
-	App->physics->world_body_list.add(App->physics->Create_Circle(102 + 10, SCREEN_HEIGHT - 43 + 7, PIXELS_TO_METERS(3), b2BodyType::b2_staticBody, 0.f)); //735s
-	
-	leftBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1].body->GetFixtureList(),
-		App->physics->world_body_list[App->physics->world_body_list.count() - 2].body->GetFixtureList(), -45);
+	leftBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1].body, -45, 102 + 10, SCREEN_HEIGHT - 43 + 7);
 
 	
 
@@ -207,11 +199,7 @@ bool ModuleMainLevel::Start()
 	};
 	half_Array[(sizeof(bumper_right) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Poly(178, SCREEN_HEIGHT - 43, *&bumper_right, (sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2, SDL_FLIP_HORIZONTAL));
-	App->physics->world_body_list.add(App->physics->Create_Circle(220, SCREEN_HEIGHT - 43 + 7, PIXELS_TO_METERS(3), b2BodyType::b2_staticBody, 0.f)); //735s
-	
-	righBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1].body->GetFixtureList(), 
-		App->physics->world_body_list[App->physics->world_body_list.count() - 2].body->GetFixtureList(), 45);
-
+	righBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1].body, 45, 220, SCREEN_HEIGHT - 43 + 7);
 
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35}, b2BodyType::b2_staticBody, 0.f));
 
@@ -239,7 +227,7 @@ update_status ModuleMainLevel::Update()
 {
 
 	//TODO: Delete this, just for map building
-	//LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
+	LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
 
 	if(lower_Ball)
 		App->renderer->MoveCameraToPosition(lower_Ball->GetPositionPixels_Y());
@@ -254,26 +242,16 @@ update_status ModuleMainLevel::Update()
 	}
 
 	//Left Bumper Movement
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN && leftBumper) 
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && leftBumper)
 	{
-		leftBumper->SetMaxMotorTorque(20);
-		leftBumper->SetMotorSpeed(-2);
-	}
-	else if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_UP)
-	{
-		leftBumper->SetMaxMotorTorque(0);
-		leftBumper->SetMotorSpeed(0);
+		//leftBumper->GetBodyB()->ApplyForceToCenter({ 0, -50 }, true);
+		leftBumper->GetBodyB()->ApplyForce({ 0, -30 }, {PIXELS_TO_METERS(150), PIXELS_TO_METERS(269)}, true);
 	}
 
 	//Right Bumper Movement
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN && righBumper)
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && righBumper)
 	{
-		righBumper->SetMaxMotorTorque(-1);
-	}
-	else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_UP)
-	{
-		righBumper->SetMaxMotorTorque(0);
-		righBumper->SetMotorSpeed(0);
+		righBumper->GetBodyB()->ApplyForce({ 0, -30 }, { PIXELS_TO_METERS(181), PIXELS_TO_METERS(269) }, true);
 	}
 
 	//LOG("%i", launchSpring->position.x)

@@ -94,34 +94,34 @@ void ModuleFonts::UnLoad(int font_id)
 }
 
 //// Render text using a bitmap font
-//void ModuleFonts::BlitText(int x, int y, int font_id, const char* text, int space) const
-//{
-//	if (text == nullptr || font_id < 0 || font_id >= MAX_FONTS || main_font.font_spritesheet == nullptr)
-//	{
-//		LOG("Unable to render text with bmp font id %d", font_id);
-//		return;
-//	}
-//
-//	const Font* font = &fonts[font_id];
-//	RectSprites rect;
-//	uint len = strlen(text);
-//	int y2 = y;
-//	rect.rect.w = font->char_w;
-//	rect.rect.h = font->char_h;
-//
-//	for (int i = 0; i < len; ++i)
-//	{
-//		for (int j = 0; j < MAX_FONT_CHARS; j++) {
-//			if (text[i] == font->table[j]) {
-//				rect.rect.x = j * font->char_w;
-//				rect.rect.y = 0;
-//				if (font_id == 0 && j == 36) { y -= 2; }
-//				App->render->Blit(font->graphic, x, y, &rect, 0, 1, false);
-//				y = y2;
-//				x += font->char_w + space;
-//				break;
-//			}
-//			if (j > font->row_chars) { break; }
-//		}
-//	}
-//}
+void ModuleFonts::BlitText(int x, int y, int font_id, const char* text, int space) const
+{
+	if (text == nullptr || font_id < 0 || font_id >= MAX_FONTS || main_font.font_spritesheet == nullptr)
+	{
+		LOG("Unable to render text with bmp font id %d", font_id);
+		return;
+	}
+
+	const Font_Data* font = &main_font;
+	SDL_Rect rect;
+	uint len = strlen(text);
+	int y2 = y;
+	rect.w = font->char_w;
+	rect.h = font->char_h;
+
+	for (int i = 0; i < len; ++i)
+	{
+		for (int j = 0; j < MAX_FONT_CHARS; j++) {
+			if (text[i] == font->table[j]) {
+				rect.x = j * font->char_w;
+				rect.y = 0;
+				if (font_id == 0 && j == 36) { y -= 2; }
+				App->renderer->Blit(main_font.font_spritesheet, x, y, &rect, 0);
+				y = y2;
+				x += font->char_w + space;
+				break;
+			}
+			if (j > font->row_chars) { break; }
+		}
+	}
+}
