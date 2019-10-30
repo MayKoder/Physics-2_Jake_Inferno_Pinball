@@ -27,13 +27,13 @@ ModulePhysics::~ModulePhysics()
 {
 }
 
-BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
+PhysBody ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
 {
 	b2BodyDef body;
 	body.type = type;
 	body.position.Set(PIXELS_TO_METERS(_x), PIXELS_TO_METERS(_y));
 
-	BodyClass bdy;
+	PhysBody bdy;
 	bdy.body = world->CreateBody(&body);
 	bdy.spriteSheet = sheet;
 	bdy.section = sec;
@@ -54,7 +54,7 @@ BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Bod
 
 }
 
-BodyClass ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int type, SDL_RendererFlip flip, float density)
+PhysBody ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int type, SDL_RendererFlip flip, float density)
 {
 
 
@@ -79,7 +79,7 @@ BodyClass ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 		body.type = (b2BodyType)type;
 		body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
-		BodyClass bdy;
+		PhysBody bdy;
 		bdy.body = world->CreateBody(&body);
 		bdy.spriteSheet = sheet;
 		bdy.section = sec;
@@ -102,13 +102,13 @@ BodyClass ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 }
 
 
-BodyClass ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip) 
+PhysBody ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip) 
 {
 	b2BodyDef body;
 	body.type = (b2BodyType)type;
 	body.position.Set(PIXELS_TO_METERS(size.x), PIXELS_TO_METERS(size.y));
 
-	BodyClass bdy;
+	PhysBody bdy;
 	bdy.body = world->CreateBody(&body);
 	bdy.spriteSheet = sheet;
 	bdy.section = sec;
@@ -127,7 +127,7 @@ BodyClass ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density
 	return bdy;
 }
 
-BodyClass ModulePhysics::Create_Chain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic, SDL_RendererFlip flip)
+PhysBody ModulePhysics::Create_Chain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic, SDL_RendererFlip flip)
 {
 
 	int posOnH = 0;
@@ -148,7 +148,7 @@ BodyClass ModulePhysics::Create_Chain(float x, float y, int points[], int count,
 	}
 	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
-	BodyClass bdy;
+	PhysBody bdy;
 	bdy.body = world->CreateBody(&body);
 	bdy.spriteSheet = sheet;
 	bdy.section = sec;
@@ -354,30 +354,30 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Fixture* ball, b2Fixture
 
 
 //Body class definition
-BodyClass::BodyClass()
+PhysBody::PhysBody()
 {
 	body = nullptr;
 }
 
-BodyClass::~BodyClass()
+PhysBody::~PhysBody()
 {
 }
 
-b2Vec2 BodyClass::GetPositionMeters() {
+b2Vec2 PhysBody::GetPositionMeters() {
 	return body->GetPosition();
 }
-int BodyClass::GetPositionPixels_X() 
+int PhysBody::GetPositionPixels_X() 
 {
 	int r = METERS_TO_PIXELS(body->GetPosition().x);
 	return r;
 }
-int BodyClass::GetPositionPixels_Y() 
+int PhysBody::GetPositionPixels_Y() 
 {
 	int r = METERS_TO_PIXELS(body->GetPosition().y);
 	return r;
 }
 
-float BodyClass::GetRotation() {
+float PhysBody::GetRotation() {
 	return (body->GetAngle() * RADTODEG);
 }
 

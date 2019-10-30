@@ -444,7 +444,7 @@ update_status ModuleMainLevel::Update()
 		{
 			if (App->physics->world_body_list[i].spriteSheet != -1)
 			{
-				BodyClass *temp = &App->physics->world_body_list[i];
+				PhysBody *temp = &App->physics->world_body_list[i];
 
 				if (temp->needs_Center)
 				{
@@ -552,14 +552,14 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 
 }
 
-BodyClass* ModuleMainLevel::Create_Play_Ball(int x, int y) 
+PhysBody* ModuleMainLevel::Create_Play_Ball(int x, int y) 
 {
 	ballsOnScreen++;
-	BodyClass* ret = &App->physics->world_body_list.add(App->physics->Create_Circle(x, y, PIXELS_TO_METERS(13 / 2), b2BodyType::b2_dynamicBody, 1.f, 0, { 0, 360, 13, 13 }))->data;
+	PhysBody* ret = &App->physics->world_body_list.add(App->physics->Create_Circle(x, y, PIXELS_TO_METERS(13 / 2), b2BodyType::b2_dynamicBody, 1.f, 0, { 0, 360, 13, 13 }))->data;
 	return ret;
 }
 
-void ModuleMainLevel::SetBallOnSpawn(BodyClass* spawn_ball)
+void ModuleMainLevel::SetBallOnSpawn(PhysBody* spawn_ball)
 {
 	spawn_ball->body->SetLinearVelocity({ 0, 0 });
 	spawn_ball->body->SetAngularVelocity(0);
