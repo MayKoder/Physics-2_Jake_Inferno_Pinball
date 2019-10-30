@@ -28,14 +28,6 @@ public:
 	void MoveCameraToPosition(int target_y)
 	{
 
-		////THIS IS TEMPORAL, NEEDS TO BE SMOOTHER
-		//if (target_y - SCREEN_HEIGHT / 2 <= negY_Limit)
-		//{
-		//	camera.y = -(target_y - SCREEN_HEIGHT / 2) * SCREEN_SIZE;
-		//}
-
-
-
 		if (-(target_y -( SCREEN_HEIGHT / 2)) * SCREEN_SIZE  >= posY_Limit) 
 		{
 			camera.y = posY_Limit;
