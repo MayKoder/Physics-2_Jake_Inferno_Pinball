@@ -22,7 +22,7 @@ public:
 	struct Sprite 
 	{
 		int spriteSheetIndex;
-		vector2 position;
+		b2Vec2 position;
 		SDL_Rect section;
 		float speed;
 		float angle;
@@ -41,9 +41,6 @@ public:
 	p2List_Extended<Sprite> gameplay_sprite_list;
 	p2List_Extended<Sprite> cover_sprite_list;
 
-
-	BodyClass *rightPad, *leftPad;
-
 //Gameplay refs
 public:
 
@@ -58,12 +55,13 @@ public:
 
 	b2RevoluteJoint* righBumper;
 	b2RevoluteJoint* leftBumper;
+	Sprite* launchSpring;
 
 
 private:
 	int max_ball_lives = 5;
-	int leftMovingUp = 0, rightMovingUp = 0;
 	uint ballsOnScreen = 0;
 	bool ball_in_spawn = false;
+	bool launchingBall;
 
 };

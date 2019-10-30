@@ -23,6 +23,7 @@ bool ModuleInput::Init()
 {
 	LOG("Init SDL input event system");
 	bool ret = true;
+	debug = false;
 	SDL_Init(0);
 
 	if (SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)

@@ -51,17 +51,14 @@ update_status ModuleRender::PreUpdate()
 update_status ModuleRender::Update()
 {
 
-	if(App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		MoveCamera(cameraSpeed, up);
+	if(App->input->debug) 
+	{
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+			MoveCamera(cameraSpeed, up);
 
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		MoveCamera(cameraSpeed, down);
-
-	//if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-	//	camera.x += cameraSpeed;
-
-	//if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-	//	camera.x -= cameraSpeed;
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+			MoveCamera(cameraSpeed, down);
+	}
 
 
 	//LOG("%i", camera.y);

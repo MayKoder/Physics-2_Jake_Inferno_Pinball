@@ -19,7 +19,7 @@
 
 ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-	debug = true;
+
 }
 
 // Destructor
@@ -194,9 +194,9 @@ update_status ModulePhysics::PreUpdate()
 update_status ModulePhysics::PostUpdate()
 {
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-		debug = !debug;
+		App->input->debug = !App->input->debug;
 
-	if (!debug)
+	if (!App->input->debug)
 		return UPDATE_CONTINUE;
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
@@ -330,7 +330,7 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Fixture* ball, b2Fixture* body)
+b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Fixture* ball, b2Fixture* body, float angle)
 {
 
 	b2RevoluteJointDef def;
@@ -339,11 +339,16 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Fixture* ball, b2Fixture
 	//def.collideConnected = true;
 
 	def.Initialize(ball->GetBody(), body->GetBody(), ball->GetBody()->GetWorldCenter());
-	//def.localAnchorB = ball->GetBody()->GetPosition();
-
-	//def.localAnchorA = ball->GetBody()->GetPosition();
-	//def.localAnchorB = ball->GetBody()->GetPosition();
-
+	def.enableLimit = true;
+	def.enableMotor = true;
+	if (angle < 0) 
+	{
+		def.lowerAngle = angle * DEGTORAD;
+	}
+	else
+	{
+		def.upperAngle = angle * DEGTORAD;
+	}
 
 	b2RevoluteJoint* revolute_joint_pointer = (b2RevoluteJoint*)world->CreateJoint(&def);
 
@@ -379,4 +384,62 @@ int BodyClass::GetPositionPixels_Y()
 
 float BodyClass::GetRotation() {
 	return (body->GetAngle() * RADTODEG);
+}
+
+bool ModulePhysics::MoveObjectSmooth(b2Vec2* position, b2Vec2 target_point, float32 speed) 
+{
+
+	bool retX = false;
+	bool retY = false;
+
+	//X MOVEMENT
+	if (target_point.x == 0) 
+	{
+
+	}
+	else if (target_point.x > 0) 
+	{
+
+		if (position->x + speed >= target_point.x) 
+		{
+			position->x = target_point.x;
+			retX = true;
+		}
+		else
+		{
+			position->x += speed;
+		}
+
+	}
+	else if (target_point.x < 0) 
+	{
+
+	}
+
+	//Y MOVEMENT
+	if (target_point.y == 0)
+	{
+
+	}
+	else if (target_point.y > 0)
+	{
+
+		if (position->y + speed >= target_point.y)
+		{
+			position->y = target_point.y;
+			retY = true;
+		}
+		else
+		{
+			position->y += speed;
+		}
+
+	}
+	else if (target_point.y < 0)
+	{
+
+	}
+
+	return retX && retY;
+
 }

@@ -41,7 +41,6 @@ void ModuleMainLevel::LoadSprite(int spriteSheetIndex, float posX, float posY, S
 		cover_sprite_list.add(tempSprite);
 	}
 
-
 }
 
 // Load assets
@@ -60,6 +59,8 @@ bool ModuleMainLevel::Start()
 
 	//Spring
 	LoadSprite(0, 327 - 7, (-SCREEN_HEIGHT) + 73 + 5, { 17, 287, 10, 73 }, 1.f);
+	//TODO: Millorar aquest sistema
+	launchSpring = &gameplay_sprite_list[gameplay_sprite_list.count() - 1];
 
 	//SpringCover
 	LoadSprite(0, 327 - 10, (-SCREEN_HEIGHT) + 73 + 5, { 0, 287, 17, 73 }, 1.f);
@@ -278,7 +279,9 @@ bool ModuleMainLevel::Start()
 	half_Array[(sizeof(bumper_left) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left, (sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2));
 	App->physics->world_body_list.add(App->physics->Create_Circle(102 + 10, SCREEN_HEIGHT - 43 + 7, PIXELS_TO_METERS(3), b2BodyType::b2_staticBody, 0.f)); //735s
-	leftBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1].body->GetFixtureList(), App->physics->world_body_list[App->physics->world_body_list.count() - 2].body->GetFixtureList());
+	
+	leftBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1].body->GetFixtureList(),
+		App->physics->world_body_list[App->physics->world_body_list.count() - 2].body->GetFixtureList(), -45);
 
 	
 
@@ -292,13 +295,11 @@ bool ModuleMainLevel::Start()
 		46, 0
 	};
 	half_Array[(sizeof(bumper_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(179, SCREEN_HEIGHT - 43, *&bumper_right, (sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2, SDL_FLIP_HORIZONTAL));
-	App->physics->world_body_list.add(App->physics->Create_Circle(179 + 43, SCREEN_HEIGHT - 43 + 7, PIXELS_TO_METERS(3), b2BodyType::b2_staticBody, 0.f)); //735s
-
-
-	//left and right pad set
-	rightPad = &App->physics->world_body_list[App->physics->world_body_list.count() - 1];
-	leftPad = &App->physics->world_body_list[App->physics->world_body_list.count() - 2];
+	App->physics->world_body_list.add(App->physics->Create_Poly(178, SCREEN_HEIGHT - 43, *&bumper_right, (sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2, SDL_FLIP_HORIZONTAL));
+	App->physics->world_body_list.add(App->physics->Create_Circle(220, SCREEN_HEIGHT - 43 + 7, PIXELS_TO_METERS(3), b2BodyType::b2_staticBody, 0.f)); //735s
+	
+	righBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1].body->GetFixtureList(), 
+		App->physics->world_body_list[App->physics->world_body_list.count() - 2].body->GetFixtureList(), 45);
 
 
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35}, b2BodyType::b2_staticBody, 0.f));
@@ -306,12 +307,6 @@ bool ModuleMainLevel::Start()
 
 
 #pragma endregion
-
-
-
-	//HitSticks
-	//LoadSprite(0, 102, (-SCREEN_HEIGHT) + 43, { 27, 287, 50, 28 }, 1.f, 0, 0);
-	//LoadSprite(0, 179, (-SCREEN_HEIGHT) + 43, { 77, 287, 50, 28 }, 1.f, 0, 100);
 
 
 	//Screen Cover
@@ -345,16 +340,43 @@ update_status ModuleMainLevel::Update()
 	{
 		App->physics->world_body_list.add(App->physics->Create_Circle(App->input->GetMouseX(), App->input->GetMouseY(), PIXELS_TO_METERS(13/2), b2BodyType::b2_dynamicBody, 0.f, 0, { 0, 360, 13, 13 }));
 	}
-	//if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-	//{
-	//	rightPad->body->SetAngularVelocity(-30);
-	//	rightMovingUp = 1;
-	//}
-	//else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_UP)
-	//{
-	//	rightPad->body->SetAngularVelocity(30);
-	//	rightMovingUp = -1;
-	//}
+
+	//Left Bumper Movement
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN && leftBumper) 
+	{
+		leftBumper->SetMaxMotorTorque(20);
+		leftBumper->SetMotorSpeed(-2);
+	}
+	else if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_UP)
+	{
+		leftBumper->SetMaxMotorTorque(0);
+		leftBumper->SetMotorSpeed(0);
+	}
+
+	//Right Bumper Movement
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN && righBumper)
+	{
+		righBumper->SetMaxMotorTorque(-1);
+	}
+	else if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_UP)
+	{
+		righBumper->SetMaxMotorTorque(0);
+		righBumper->SetMotorSpeed(0);
+	}
+
+	//LOG("%i", launchSpring->position.x)
+	//Down key movement
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && !launchingBall)
+	{
+		launchingBall = App->physics->MoveObjectSmooth(&launchSpring->position, {0, 255}, 2);
+	}
+	else if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP)
+	{
+		launchingBall = App->physics->MoveObjectSmooth(&launchSpring->position, { 0, 50}, -2);
+	}
+
+
+
 
 	//Gameplay sprite renderer
 	for (int i = 0; i < gameplay_sprite_list.count(); i++)

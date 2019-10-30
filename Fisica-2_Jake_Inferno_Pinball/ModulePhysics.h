@@ -43,7 +43,7 @@ public:
 	BodyClass Create_Chain(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int isDynamic = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	BodyClass Create_Poly(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int type = 1, SDL_RendererFlip flip = SDL_FLIP_NONE, float density = 1.0f);
 
-	b2RevoluteJoint* Create_Revolute_Joint(b2Fixture*, b2Fixture*);
+	b2RevoluteJoint* Create_Revolute_Joint(b2Fixture*, b2Fixture*, float);
 
 	bool Start();
 	update_status PreUpdate();
@@ -57,10 +57,10 @@ public:
 public:
 	p2List_Extended<BodyClass> world_body_list;
 	void DestroyBody(b2Body*);
+	bool MoveObjectSmooth(b2Vec2* position, b2Vec2 target_point,float32 speed);
 	b2World *world = nullptr;
 
 private:
-	bool debug;
 	b2MouseJoint* mouse_joint;
 	b2Body* jointBody;
 	b2Body* ground;
