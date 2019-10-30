@@ -51,8 +51,8 @@ public:
 	bool CleanUp();
 
 	float32 timeStep = 1.0f / 60.f;
-	int32 velocityIterations = 10;
-	int32 positionIterations = 8;
+	int32 velocityIterations = 12;
+	int32 positionIterations = 10;
 
 public:
 	p2List_Extended<BodyClass> world_body_list;

@@ -52,6 +52,8 @@ bool ModuleMainLevel::Start()
 	ball_height_limit = (SCREEN_HEIGHT * SCREEN_SIZE); //+20
 	current_ball_lives = max_ball_lives;
 
+	SetBallOnSpawn(Create_Play_Ball(324, 60));
+
 	LoadSpriteSheet("Assets/Main_Level/main_level_static_background.png");
 
 	//Background
@@ -330,7 +332,7 @@ update_status ModuleMainLevel::Update()
 {
 
 	//TODO: Delete this, just for map building
-	LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
+	//LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
 
 	if(lower_Ball)
 		App->renderer->MoveCameraToPosition(lower_Ball->GetPositionPixels_Y());
@@ -369,12 +371,13 @@ update_status ModuleMainLevel::Update()
 
 	//LOG("%i", launchSpring->position.x)
 	//Down key movement
-	if (!App->input->debug) 
+	if (!App->input->debug && ball_in_spawn) 
 	{
 		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) 
 		{
 			springDown = true;
 			springUp = false;
+			launch_Force = 0;
 		}
 		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) 
 		{
@@ -385,11 +388,21 @@ update_status ModuleMainLevel::Update()
 
 	if (springDown) 
 	{
-		springDown = !App->physics->MoveObjectSmooth(&launchSpring->position, { 0, 255 }, 2);
+		springDown = !App->physics->MoveObjectSmooth(&launchSpring->position, { 0, 255 }, 1);
 	}
 	if (springUp) 
 	{
-		springUp = !App->physics->MoveObjectSmooth(&launchSpring->position, { 0, 209 }, 2);
+		springUp = !App->physics->MoveObjectSmooth(&launchSpring->position, { 0, 209 }, 9);
+		launch_Force += 10.f;
+		if (!springUp) 
+		{
+			//LOG("%f", launch_Force);
+			ball_body_in_spawn->body->ApplyForceToCenter({0, -launch_Force}, true);
+			//Ball_in_spawn can only change if wall is out the spawn area
+			//launch_Force = 0;
+			//ball_in_spawn = false;
+			//ball_body_in_spawn = nullptr;
+		}
 	}
 
 
@@ -500,8 +513,6 @@ bool ModuleMainLevel::CleanUp()
 void ModuleMainLevel::Lose_Ball(int positionOnList)
 {
 
-
-
 	//is ball the only ball on the screen?
 	if (ballsOnScreen == 1) 
 	{
@@ -520,10 +531,7 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 		{
 			current_ball_lives--;
 			//Reset ball to spawn point
-			App->physics->world_body_list[positionOnList].body->SetLinearVelocity({ 0, 0 });
-			App->physics->world_body_list[positionOnList].body->SetAngularVelocity(0);
-			App->physics->world_body_list[positionOnList].body->SetTransform({PIXELS_TO_METERS(324), PIXELS_TO_METERS(60)}, 0);
-			ball_in_spawn = true;
+			SetBallOnSpawn(&App->physics->world_body_list[positionOnList]);
 		}
 
 
@@ -535,7 +543,6 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 			lower_Ball = nullptr;
 		}
 
-
 		App->physics->DestroyBody(App->physics->world_body_list[positionOnList].body);
 		App->physics->world_body_list.del(App->physics->world_body_list.At(positionOnList));
 		ballsOnScreen--;	
@@ -545,11 +552,18 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 
 }
 
-void ModuleMainLevel::Create_Play_Ball(int x, int y) 
+BodyClass* ModuleMainLevel::Create_Play_Ball(int x, int y) 
 {
-	App->physics->world_body_list.add(App->physics->Create_Circle(x, y, PIXELS_TO_METERS(13 / 2), b2BodyType::b2_dynamicBody, 1.f, 0, { 0, 360, 13, 13 }));
 	ballsOnScreen++;
-
+	BodyClass* ret = &App->physics->world_body_list.add(App->physics->Create_Circle(x, y, PIXELS_TO_METERS(13 / 2), b2BodyType::b2_dynamicBody, 1.f, 0, { 0, 360, 13, 13 }))->data;
+	return ret;
 }
 
-
+void ModuleMainLevel::SetBallOnSpawn(BodyClass* spawn_ball)
+{
+	spawn_ball->body->SetLinearVelocity({ 0, 0 });
+	spawn_ball->body->SetAngularVelocity(0);
+	spawn_ball->body->SetTransform({ PIXELS_TO_METERS(324), PIXELS_TO_METERS(60) }, 0);
+	ball_body_in_spawn = spawn_ball;
+	ball_in_spawn = true;
+}
