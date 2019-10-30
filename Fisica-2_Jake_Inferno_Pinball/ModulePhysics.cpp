@@ -27,10 +27,10 @@ ModulePhysics::~ModulePhysics()
 {
 }
 
-BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
+BodyClass ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
 {
 	b2BodyDef body;
-	body.type = (b2BodyType)type;
+	body.type = type;
 	body.position.Set(PIXELS_TO_METERS(_x), PIXELS_TO_METERS(_y));
 
 	BodyClass bdy;
@@ -334,9 +334,11 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Fixture* ball, b2Fixture
 {
 
 	b2RevoluteJointDef def;
-	def.bodyA = ball->GetBody();
-	def.bodyB = body->GetBody();
-	def.collideConnected = true;
+	//def.bodyA = ball->GetBody();
+	//def.bodyB = body->GetBody();
+	//def.collideConnected = true;
+
+	def.Initialize(ball->GetBody(), body->GetBody(), ball->GetBody()->GetWorldCenter());
 	//def.localAnchorB = ball->GetBody()->GetPosition();
 
 	//def.localAnchorA = ball->GetBody()->GetPosition();
@@ -344,7 +346,6 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Fixture* ball, b2Fixture
 
 
 	b2RevoluteJoint* revolute_joint_pointer = (b2RevoluteJoint*)world->CreateJoint(&def);
-
 
 	return revolute_joint_pointer;
 

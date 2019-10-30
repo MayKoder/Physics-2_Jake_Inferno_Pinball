@@ -68,8 +68,8 @@ bool ModuleMainLevel::Start()
 	//Background Top
 	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 9), { 902, 0, 322, 1000 }, 1.f, 0.f, 0, 0, 1);
 
-	App->physics->world_body_list.add(App->physics->Create_Circle(126, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, 0, 0.f, 0, { 79, 287, 29, 33 })); //735s
-	App->physics->world_body_list.add(App->physics->Create_Circle(203, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, 0, 0.f, 0, { 79, 287, 29, 33 })); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(126, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 })); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(203, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 })); //735s
 
 
 
@@ -276,8 +276,8 @@ bool ModuleMainLevel::Start()
 		49, 29
 	};
 	half_Array[(sizeof(bumper_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(102, SCREEN_HEIGHT - 43, *&bumper_left, (sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2));
-	App->physics->world_body_list.add(App->physics->Create_Circle(102 + 7, SCREEN_HEIGHT - 43 + 7, PIXELS_TO_METERS(3), 1, 0.f)); //735s
+	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left, (sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2));
+	App->physics->world_body_list.add(App->physics->Create_Circle(102 + 10, SCREEN_HEIGHT - 43 + 7, PIXELS_TO_METERS(3), b2BodyType::b2_staticBody, 0.f)); //735s
 	leftBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1].body->GetFixtureList(), App->physics->world_body_list[App->physics->world_body_list.count() - 2].body->GetFixtureList());
 
 	
@@ -293,7 +293,7 @@ bool ModuleMainLevel::Start()
 	};
 	half_Array[(sizeof(bumper_right) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Poly(179, SCREEN_HEIGHT - 43, *&bumper_right, (sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2, SDL_FLIP_HORIZONTAL));
-	App->physics->world_body_list.add(App->physics->Create_Circle(179 + 43, SCREEN_HEIGHT - 43 + 7, PIXELS_TO_METERS(3), 0, 0.f)); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(179 + 43, SCREEN_HEIGHT - 43 + 7, PIXELS_TO_METERS(3), b2BodyType::b2_staticBody, 0.f)); //735s
 
 
 	//left and right pad set
@@ -301,7 +301,7 @@ bool ModuleMainLevel::Start()
 	leftPad = &App->physics->world_body_list[App->physics->world_body_list.count() - 2];
 
 
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35}, 0, 0.f));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35}, b2BodyType::b2_staticBody, 0.f));
 
 
 
@@ -330,6 +330,10 @@ bool ModuleMainLevel::Start()
 struct b2Vec2;
 update_status ModuleMainLevel::Update()
 {
+
+	//TODO: Delete this, just for map building
+	LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
+
 	if(lower_Ball)
 		App->renderer->MoveCameraToPosition(lower_Ball->GetPositionPixels_Y());
 
@@ -339,7 +343,7 @@ update_status ModuleMainLevel::Update()
 	}
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
 	{
-		App->physics->world_body_list.add(App->physics->Create_Circle(App->input->GetMouseX(), App->input->GetMouseY(), PIXELS_TO_METERS(13/2), 1, 0.f, 0, { 0, 360, 13, 13 }));
+		App->physics->world_body_list.add(App->physics->Create_Circle(App->input->GetMouseX(), App->input->GetMouseY(), PIXELS_TO_METERS(13/2), b2BodyType::b2_dynamicBody, 0.f, 0, { 0, 360, 13, 13 }));
 	}
 	//if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	//{
@@ -497,7 +501,7 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 
 void ModuleMainLevel::Create_Play_Ball(int x, int y) 
 {
-	App->physics->world_body_list.add(App->physics->Create_Circle(x, y, PIXELS_TO_METERS(13 / 2), 2, 1.f, 0, { 0, 360, 13, 13 }));
+	App->physics->world_body_list.add(App->physics->Create_Circle(x, y, PIXELS_TO_METERS(13 / 2), b2BodyType::b2_dynamicBody, 1.f, 0, { 0, 360, 13, 13 }));
 	ballsOnScreen++;
 
 }
