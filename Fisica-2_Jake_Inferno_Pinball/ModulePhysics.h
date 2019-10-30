@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __ModulePhysics_H__
+#define __ModulePhysics_H__
+
 #include "Module.h"
 #include "Globals.h"
 #include"p2List_Extended.h"
@@ -16,20 +18,20 @@ public:
 	PhysBody();
 	~PhysBody();
 
+
+public:
+	int GetPositionPixels_X();
+	int GetPositionPixels_Y();
+	float GetRotation();
+	b2Vec2 GetPositionMeters();
+
+public:
 	b2Body* body;
 	int spriteSheet;
 	SDL_Rect section;
 	bool needs_Center = true;
 	int pivotX = 0, pivotY = 0;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
-
-
-	int GetPositionPixels_X();
-	int GetPositionPixels_Y();
-
-	float GetRotation();
-
-	b2Vec2 GetPositionMeters();
 };
 
 class ModulePhysics : public Module
@@ -38,18 +40,22 @@ public:
 	ModulePhysics(Application* app, bool start_enabled = true);
 	~ModulePhysics();
 
-	PhysBody Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
-	PhysBody Create_Rectangle(SDL_Rect size, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
-	PhysBody Create_Chain(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int isDynamic = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
-	PhysBody Create_Poly(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int type = 1, SDL_RendererFlip flip = SDL_FLIP_NONE, float density = 1.0f);
-
-	b2RevoluteJoint* Create_Revolute_Joint(b2Fixture*, b2Fixture*, float);
-
 	bool Start();
 	update_status PreUpdate();
 	update_status PostUpdate();
 	bool CleanUp();
 
+public:
+	//Shape creation
+	PhysBody Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	PhysBody Create_Rectangle(SDL_Rect size, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	PhysBody Create_Chain(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int isDynamic = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	PhysBody Create_Poly(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int type = 1, SDL_RendererFlip flip = SDL_FLIP_NONE, float density = 1.0f);
+
+	//Joint creation
+	b2RevoluteJoint* Create_Revolute_Joint(b2Fixture*, b2Fixture*, float);
+
+	//World settings
 	float32 timeStep = 1.0f / 60.f;
 	int32 velocityIterations = 12;
 	int32 positionIterations = 10;
@@ -66,4 +72,4 @@ private:
 	b2Body* ground;
 };
 
-
+#endif

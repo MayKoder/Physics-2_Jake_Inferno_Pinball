@@ -27,145 +27,6 @@ ModulePhysics::~ModulePhysics()
 {
 }
 
-PhysBody ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
-{
-	b2BodyDef body;
-	body.type = type;
-	body.position.Set(PIXELS_TO_METERS(_x), PIXELS_TO_METERS(_y));
-
-	PhysBody bdy;
-	bdy.body = world->CreateBody(&body);
-	bdy.spriteSheet = sheet;
-	bdy.section = sec;
-	bdy.flip = flip;
-
-	b2CircleShape shape;
-	shape.m_radius = meter_radius;
-
-
-	b2FixtureDef fixture;
-	fixture.density = density;
-	fixture.shape = &shape;
-	fixture.restitution = .5f;
-
-	bdy.body->CreateFixture(&fixture);
-
-	return bdy; 
-
-}
-
-PhysBody ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int type, SDL_RendererFlip flip, float density)
-{
-
-
-	if (count / 2 > 8) 
-	{
-
-		LOG("ERROR ON POLY CREATION, TOO MUCH POINTS");
-
-	}
-	else
-	{
-		int posOnH = 0;
-		for (int i = 0; i < count; i += 2)
-		{
-			half_Array[posOnH].x = PIXELS_TO_METERS(points[i]);
-			half_Array[posOnH].y = PIXELS_TO_METERS(points[i + 1]);
-			posOnH++;
-		}
-
-
-		b2BodyDef body;
-		body.type = (b2BodyType)type;
-		body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
-
-		PhysBody bdy;
-		bdy.body = world->CreateBody(&body);
-		bdy.spriteSheet = sheet;
-		bdy.section = sec;
-		bdy.flip = flip;
-		bdy.needs_Center = false;
-
-		b2PolygonShape shape;
-		shape.Set(half_Array, count / 2);
-
-
-		b2FixtureDef fixture;
-		fixture.density = density;
-		fixture.shape = &shape;
-
-		bdy.body->CreateFixture(&fixture);
-
-		return bdy;
-	}
-
-}
-
-
-PhysBody ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip) 
-{
-	b2BodyDef body;
-	body.type = (b2BodyType)type;
-	body.position.Set(PIXELS_TO_METERS(size.x), PIXELS_TO_METERS(size.y));
-
-	PhysBody bdy;
-	bdy.body = world->CreateBody(&body);
-	bdy.spriteSheet = sheet;
-	bdy.section = sec;
-	bdy.flip = flip;
-
-	b2PolygonShape shape;
-	shape.SetAsBox(PIXELS_TO_METERS(size.w), PIXELS_TO_METERS(size.h));
-
-
-	b2FixtureDef fixture;
-	fixture.density = density;
-	fixture.shape = &shape;
-
-	bdy.body->CreateFixture(&fixture);
-
-	return bdy;
-}
-
-PhysBody ModulePhysics::Create_Chain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic, SDL_RendererFlip flip)
-{
-
-	int posOnH = 0;
-	for (int i = 0; i < count; i += 2)
-	{
-		half_Array[posOnH].x = PIXELS_TO_METERS(points[i]);
-		half_Array[posOnH].y = PIXELS_TO_METERS(points[i + 1]);
-		posOnH++;
-	}
-
-	b2BodyDef body;
-	if (isDynamic == 0) {
-		body.type = b2_kinematicBody;
-	}
-	else
-	{
-		body.type = b2_dynamicBody;
-	}
-	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
-
-	PhysBody bdy;
-	bdy.body = world->CreateBody(&body);
-	bdy.spriteSheet = sheet;
-	bdy.section = sec;
-	bdy.flip = flip;
-	bdy.needs_Center = false;
-
-	b2ChainShape shape;
-	shape.CreateLoop(half_Array, count / 2);
-
-	b2FixtureDef fixture;
-	fixture.shape = &shape;
-	fixture.density = 1.f;
-	bdy.body->CreateFixture(&fixture);
-
-	return bdy;
-}
-
 bool ModulePhysics::Start()
 {
 	LOG("Creating Physics 2D environment");
@@ -291,7 +152,7 @@ update_status ModulePhysics::PostUpdate()
 		if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_REPEAT && mouse_joint)
 		{
 			mouse_joint->SetTarget({ PIXELS_TO_METERS(App->input->GetMouseX()),PIXELS_TO_METERS(App->input->GetMouseY()) });
-			App->renderer->DrawLine(METERS_TO_PIXELS(jointBody->GetPosition().x), METERS_TO_PIXELS(jointBody->GetPosition().y), METERS_TO_PIXELS(mouse_joint->GetTarget().x)
+			App->renderer->DrawLine(METERS_TO_PIXELS(mouse_joint->GetAnchorB().x), METERS_TO_PIXELS(mouse_joint->GetAnchorB().y), METERS_TO_PIXELS(mouse_joint->GetTarget().x)
 				, METERS_TO_PIXELS(mouse_joint->GetTarget().y), 255, 0, 0, 255);
 		}
 
@@ -326,6 +187,139 @@ bool ModulePhysics::CleanUp()
 	delete world;
 
 	return true;
+}
+
+PhysBody ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
+{
+	b2BodyDef body;
+	body.type = type;
+	body.position.Set(PIXELS_TO_METERS(_x), PIXELS_TO_METERS(_y));
+
+	PhysBody bdy;
+	bdy.body = world->CreateBody(&body);
+	bdy.spriteSheet = sheet;
+	bdy.section = sec;
+	bdy.flip = flip;
+
+	b2CircleShape shape;
+	shape.m_radius = meter_radius;
+
+
+	b2FixtureDef fixture;
+	fixture.density = density;
+	fixture.shape = &shape;
+	fixture.restitution = .5f;
+
+	bdy.body->CreateFixture(&fixture);
+
+	return bdy;
+
+}
+PhysBody ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int type, SDL_RendererFlip flip, float density)
+{
+	if (count / 2 > 8)
+	{
+
+		LOG("ERROR ON POLY CREATION, TOO MUCH POINTS");
+
+	}
+	else
+	{
+		int posOnH = 0;
+		for (int i = 0; i < count; i += 2)
+		{
+			half_Array[posOnH].x = PIXELS_TO_METERS(points[i]);
+			half_Array[posOnH].y = PIXELS_TO_METERS(points[i + 1]);
+			posOnH++;
+		}
+
+
+		b2BodyDef body;
+		body.type = (b2BodyType)type;
+		body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+
+		PhysBody bdy;
+		bdy.body = world->CreateBody(&body);
+		bdy.spriteSheet = sheet;
+		bdy.section = sec;
+		bdy.flip = flip;
+		bdy.needs_Center = false;
+
+		b2PolygonShape shape;
+		shape.Set(half_Array, count / 2);
+
+
+		b2FixtureDef fixture;
+		fixture.density = density;
+		fixture.shape = &shape;
+
+		bdy.body->CreateFixture(&fixture);
+
+		return bdy;
+	}
+
+}
+PhysBody ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
+{
+	b2BodyDef body;
+	body.type = (b2BodyType)type;
+	body.position.Set(PIXELS_TO_METERS(size.x), PIXELS_TO_METERS(size.y));
+
+	PhysBody bdy;
+	bdy.body = world->CreateBody(&body);
+	bdy.spriteSheet = sheet;
+	bdy.section = sec;
+	bdy.flip = flip;
+
+	b2PolygonShape shape;
+	shape.SetAsBox(PIXELS_TO_METERS(size.w), PIXELS_TO_METERS(size.h));
+
+
+	b2FixtureDef fixture;
+	fixture.density = density;
+	fixture.shape = &shape;
+
+	bdy.body->CreateFixture(&fixture);
+
+	return bdy;
+}
+PhysBody ModulePhysics::Create_Chain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic, SDL_RendererFlip flip)
+{
+
+	int posOnH = 0;
+	for (int i = 0; i < count; i += 2)
+	{
+		half_Array[posOnH].x = PIXELS_TO_METERS(points[i]);
+		half_Array[posOnH].y = PIXELS_TO_METERS(points[i + 1]);
+		posOnH++;
+	}
+
+	b2BodyDef body;
+	if (isDynamic == 0) {
+		body.type = b2_kinematicBody;
+	}
+	else
+	{
+		body.type = b2_dynamicBody;
+	}
+	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
+
+	PhysBody bdy;
+	bdy.body = world->CreateBody(&body);
+	bdy.spriteSheet = sheet;
+	bdy.section = sec;
+	bdy.flip = flip;
+	bdy.needs_Center = false;
+
+	b2ChainShape shape;
+	shape.CreateLoop(half_Array, count / 2);
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+	fixture.density = 1.f;
+	bdy.body->CreateFixture(&fixture);
+
+	return bdy;
 }
 
 b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Fixture* ball, b2Fixture* body, float angle)

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __ModuleMainLevel_H__
+#define __ModuleMainLevel_H__
+
 #include "Module.h"
 #include "Globals.h"
 #include"Application.h"
@@ -70,3 +72,5 @@ private: //Spawn settings//
 	float32 launch_Force = 0;
 
 };
+
+#endif

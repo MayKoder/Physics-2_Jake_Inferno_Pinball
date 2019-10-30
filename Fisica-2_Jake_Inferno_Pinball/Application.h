@@ -13,6 +13,7 @@
 #include "ModulePlayer.h"
 #include "ModulePhysics.h"
 #include"ModuleMainLevel.h"
+#include"ModuleFonts.h"
 
 class Application
 {
@@ -25,6 +26,7 @@ public:
 	ModulePlayer* player;
 	ModuleMainLevel* main_level;
 	ModulePhysics* physics;
+	ModuleFonts* fonts;
 
 private:
 

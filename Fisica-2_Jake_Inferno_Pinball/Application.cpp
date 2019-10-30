@@ -11,6 +11,7 @@ Application::Application()
 	main_level = new ModuleMainLevel(this);
 	physics = new ModulePhysics(this);
 
+	fonts = new ModuleFonts(this);
 	// The order of calls is very important!
 	// Modules will Init() Start() and Update in this order
 	// They will CleanUp() in reverse order
@@ -25,6 +26,7 @@ Application::Application()
 	
 	// Scenes
 	AddModule(main_level);
+	AddModule(fonts);
 	
 	// Player
 	AddModule(player);
