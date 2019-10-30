@@ -69,6 +69,8 @@ bool ModuleMainLevel::Start()
 	//Background Top
 	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 9), { 902, 0, 322, 1000 }, 1.f, 0.f, 0, 0, 1);
 
+
+
 	App->physics->world_body_list.add(App->physics->Create_Circle(126, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 })); //735s
 	App->physics->world_body_list.add(App->physics->Create_Circle(203, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 })); //735s
 
@@ -312,7 +314,8 @@ bool ModuleMainLevel::Start()
 	//Screen Cover
 	LoadSprite(0, 0, 0, { 0, 0, 580, 287 }, 0.f, 0.f, 0, 0, 1);
 
-
+	//Score Display
+	LoadSprite(0, SCREEN_WIDTH - 221 - 10, 0, { 1228, 0, 221, 153 }, 0.f, 0.f, 0, 0, 1);
 
 	App->renderer->posY_Limit = (gameplay_sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 16 ) * SCREEN_SIZE);
 
@@ -366,16 +369,28 @@ update_status ModuleMainLevel::Update()
 
 	//LOG("%i", launchSpring->position.x)
 	//Down key movement
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT && !launchingBall)
+	if (!App->input->debug) 
 	{
-		launchingBall = App->physics->MoveObjectSmooth(&launchSpring->position, {0, 255}, 2);
-	}
-	else if(App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP)
-	{
-		launchingBall = App->physics->MoveObjectSmooth(&launchSpring->position, { 0, 50}, -2);
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) 
+		{
+			springDown = true;
+			springUp = false;
+		}
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) 
+		{
+			springDown = false;
+			springUp = true;
+		}
 	}
 
-
+	if (springDown) 
+	{
+		springDown = !App->physics->MoveObjectSmooth(&launchSpring->position, { 0, 255 }, 2);
+	}
+	if (springUp) 
+	{
+		springUp = !App->physics->MoveObjectSmooth(&launchSpring->position, { 0, 209 }, 2);
+	}
 
 
 	//Gameplay sprite renderer
@@ -437,6 +452,15 @@ update_status ModuleMainLevel::Update()
 	{
 		Sprite *forSprite = &cover_sprite_list[i];
 		App->renderer->Blit(sprite_sheet_list[forSprite->spriteSheetIndex], forSprite->position.x, forSprite->position.y, &forSprite->section, forSprite->speed, forSprite->angle, forSprite->pivotX, forSprite->pivotY);
+	}
+
+	//Render UI elements
+	int lives_Sprite_Position = 483;
+	for (int i = 0; i < current_ball_lives; i++)
+	{
+		SDL_Rect sec = { 0, 360, 13, 13 };
+		App->renderer->Blit(sprite_sheet_list[0], lives_Sprite_Position, 129, &sec, 0.f);
+		lives_Sprite_Position -= sec.w + 9;
 	}
 
 

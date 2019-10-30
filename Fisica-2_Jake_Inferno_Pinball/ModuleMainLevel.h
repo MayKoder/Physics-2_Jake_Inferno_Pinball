@@ -57,11 +57,13 @@ public:
 	b2RevoluteJoint* leftBumper;
 	Sprite* launchSpring;
 
+	bool springDown = false, springUp = false;
+
+
 
 private:
 	int max_ball_lives = 5;
 	uint ballsOnScreen = 0;
 	bool ball_in_spawn = false;
-	bool launchingBall;
 
 };
