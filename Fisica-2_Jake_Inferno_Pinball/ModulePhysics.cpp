@@ -19,7 +19,8 @@
 
 ModulePhysics::ModulePhysics(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
-
+	world = NULL;
+	mouse_joint = NULL;
 }
 
 // Destructor
@@ -31,8 +32,11 @@ bool ModulePhysics::Start()
 {
 	LOG("Creating Physics 2D environment");
 
-	if(!world)
+	if (!world)
+	{
 		world = new b2World(b2Vec2(0.0f, 10.0f));
+		world->SetContactListener(this);
+	}
 
 	b2BodyDef bd;
 	ground = world->CreateBody(&bd);
@@ -47,6 +51,16 @@ update_status ModulePhysics::PreUpdate()
 	// TODO 3: Update the simulation ("step" the world)
 	world->Step(timeStep, velocityIterations, positionIterations);
 
+	for (b2Contact* c = world->GetContactList(); c; c = c->GetNext())
+	{
+		if (/*c->GetFixtureA()->IsSensor() && */c->IsTouching())
+		{
+			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
+			PhysBody* pb2 = (PhysBody*)c->GetFixtureB()->GetBody()->GetUserData();
+			if (pb1 && pb2 && pb1->listener)
+				pb1->listener->OnCollision(pb1, pb2);
+		}
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -179,7 +193,8 @@ bool ModulePhysics::CleanUp()
 	//Clear world body list
 	for (int i = 0;  i < world_body_list.count();  i++)
 	{
-		DestroyBody(world_body_list[i].body);
+		DestroyBody(world_body_list[i]->body);
+		delete world_body_list[i];
 	}
 
 	// Delete the whole physics world!
@@ -196,18 +211,14 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-PhysBody ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
+PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
 {
 	b2BodyDef body;
 	body.type = type;
 	body.position.Set(PIXELS_TO_METERS(_x), PIXELS_TO_METERS(_y));
 	body.bullet = true;
 
-	PhysBody bdy;
-	bdy.body = world->CreateBody(&body);
-	bdy.spriteSheet = sheet;
-	bdy.section = sec;
-	bdy.flip = flip;
+	b2Body* b = world->CreateBody(&body);
 
 	b2CircleShape shape;
 	shape.m_radius = meter_radius;
@@ -218,12 +229,21 @@ PhysBody ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Body
 	fixture.shape = &shape;
 	fixture.restitution = .5f;
 
-	bdy.body->CreateFixture(&fixture);
+	b->CreateFixture(&fixture);
+
+	PhysBody* bdy = new PhysBody();
+	bdy->body = b;
+	bdy->spriteSheet = sheet;
+	bdy->section = sec;
+	bdy->flip = flip;
+	bdy->listener = App->main_level;
+
+	b->SetUserData(bdy);
 
 	return bdy;
 
 }
-PhysBody ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int type, SDL_RendererFlip flip, float density)
+PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int type, SDL_RendererFlip flip, float density)
 {
 	if (count / 2 > 8)
 	{
@@ -246,12 +266,12 @@ PhysBody ModulePhysics::Create_Poly(float x, float y, int points[], int count, b
 		body.type = (b2BodyType)type;
 		body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
-		PhysBody bdy;
-		bdy.body = world->CreateBody(&body);
-		bdy.spriteSheet = sheet;
-		bdy.section = sec;
-		bdy.flip = flip;
-		bdy.needs_Center = false;
+		PhysBody* bdy = new PhysBody();
+		bdy->body = world->CreateBody(&body);
+		bdy->spriteSheet = sheet;
+		bdy->section = sec;
+		bdy->flip = flip;
+		bdy->needs_Center = false;
 
 		b2PolygonShape shape;
 		shape.Set(half_Array, count / 2);
@@ -261,24 +281,20 @@ PhysBody ModulePhysics::Create_Poly(float x, float y, int points[], int count, b
 		fixture.density = density;
 		fixture.shape = &shape;
 
-		bdy.body->CreateFixture(&fixture);
+		bdy->body->CreateFixture(&fixture);
 
 		return bdy;
 	}
 
 }
-PhysBody ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
+PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
 {
 	b2BodyDef body;
 	body.type = (b2BodyType)type;
 	body.position.Set(PIXELS_TO_METERS(size.x), PIXELS_TO_METERS(size.y));
 	//body.active = false;
 
-	PhysBody bdy;
-	bdy.body = world->CreateBody(&body);
-	bdy.spriteSheet = sheet;
-	bdy.section = sec;
-	bdy.flip = flip;
+	b2Body* b = world->CreateBody(&body);
 
 	b2PolygonShape shape;
 	shape.SetAsBox(PIXELS_TO_METERS(size.w), PIXELS_TO_METERS(size.h));
@@ -286,12 +302,18 @@ PhysBody ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density,
 	b2FixtureDef fixture;
 	fixture.density = density;
 	fixture.shape = &shape;
+	b->CreateFixture(&fixture);
 
-	bdy.body->CreateFixture(&fixture);
+	PhysBody* bdy = new PhysBody();
+	bdy->body = b;
+	bdy->spriteSheet = sheet;
+	bdy->section = sec;
+	bdy->flip = flip;
+	b->SetUserData(bdy);
 
 	return bdy;
 }
-PhysBody ModulePhysics::Create_Chain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int isDynamic, SDL_RendererFlip flip)
+PhysBody* ModulePhysics::Create_Chain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, SDL_RendererFlip flip)
 {
 
 	int posOnH = 0;
@@ -303,29 +325,26 @@ PhysBody ModulePhysics::Create_Chain(float x, float y, int points[], int count, 
 	}
 
 	b2BodyDef body;
-	if (isDynamic == 0) {
-		body.type = b2_kinematicBody;
-	}
-	else
-	{
-		body.type = b2_dynamicBody;
-	}
+	body.type = b2BodyType::b2_staticBody;
 	body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
-
-	PhysBody bdy;
-	bdy.body = world->CreateBody(&body);
-	bdy.spriteSheet = sheet;
-	bdy.section = sec;
-	bdy.flip = flip;
-	bdy.needs_Center = false;
+	
+	b2Body* b = world->CreateBody(&body);
 
 	b2ChainShape shape;
 	shape.CreateLoop(half_Array, count / 2);
 
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
-	fixture.density = 1.f;
-	bdy.body->CreateFixture(&fixture);
+	b->CreateFixture(&fixture);
+
+	PhysBody* bdy = new PhysBody();
+	bdy->body = b;
+	bdy->spriteSheet = sheet;
+	bdy->section = sec;
+	bdy->flip = flip;
+	bdy->needs_Center = false;
+		
+	b->SetUserData(bdy);
 
 	return bdy;
 }
@@ -364,11 +383,6 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Body* body, float angle,
 
 
 //Body class definition
-PhysBody::PhysBody()
-{
-	body = nullptr;
-}
-
 PhysBody::~PhysBody()
 {
 }
@@ -424,4 +438,16 @@ bool ModulePhysics::MoveObjectSmooth(b2Vec2* position, b2Vec2 target_point, floa
 
 	return ret;
 
+}
+
+void ModulePhysics::BeginContact(b2Contact* contact)
+{
+	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
+	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
+
+	if (physA && physA->listener != NULL)
+		physA->listener->OnCollision(physA, physB);
+
+	if (physB && physB->listener != NULL)
+		physB->listener->OnCollision(physB, physA);
 }

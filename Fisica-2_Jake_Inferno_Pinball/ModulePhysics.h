@@ -15,7 +15,8 @@ typedef int int32;
 class PhysBody
 {
 public:
-	PhysBody();
+	PhysBody() : listener(NULL), body(NULL)
+	{}
 	~PhysBody();
 
 
@@ -27,6 +28,8 @@ public:
 
 public:
 	b2Body* body;
+	Module* listener;
+
 	int spriteSheet;
 	SDL_Rect section;
 	bool needs_Center = true;
@@ -34,7 +37,7 @@ public:
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 };
 
-class ModulePhysics : public Module
+class ModulePhysics : public Module, public b2ContactListener
 {
 public:
 	ModulePhysics(Application* app, bool start_enabled = true);
@@ -47,13 +50,14 @@ public:
 
 public:
 	//Shape creation
-	PhysBody Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
-	PhysBody Create_Rectangle(SDL_Rect size, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
-	PhysBody Create_Chain(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int isDynamic = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
-	PhysBody Create_Poly(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int type = 1, SDL_RendererFlip flip = SDL_FLIP_NONE, float density = 1.0f);
+	PhysBody* Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	PhysBody* Create_Rectangle(SDL_Rect size, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	PhysBody* Create_Chain(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	PhysBody* Create_Poly(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int type = 1, SDL_RendererFlip flip = SDL_FLIP_NONE, float density = 1.0f);
 
 	//Joint creation
 	b2RevoluteJoint* Create_Revolute_Joint(b2Body*, float, int, int);
+	void BeginContact(b2Contact* contact);
 
 	//World settings
 	float32 timeStep = 1.0f / 60.f;
@@ -61,15 +65,16 @@ public:
 	int32 positionIterations = 10;
 
 public:
-	p2List_Extended<PhysBody> world_body_list;
+	p2List_Extended<PhysBody*> world_body_list;
 	p2List_Extended<b2Body*> joint_body_list;
 	void DestroyBody(b2Body*);
 	bool MoveObjectSmooth(b2Vec2* position, b2Vec2 target_point,float32 speed);
-	b2World *world = nullptr;
+	b2World* world;
 
 private:
-	b2MouseJoint* mouse_joint;
+
 	b2Body* jointBody;
+	b2MouseJoint* mouse_joint;
 	b2Body* ground;
 };
 

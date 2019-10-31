@@ -5,6 +5,8 @@
 
 ModuleMainLevel::ModuleMainLevel(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
+	ray_on = false;
+	sensed = false;
 }
 
 ModuleMainLevel::~ModuleMainLevel()
@@ -146,7 +148,7 @@ bool ModuleMainLevel::Start()
 	};
 	half_Array[(sizeof(bumper_left) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left, (sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2));
-	leftBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1].body, -45, 102 + 10, SCREEN_HEIGHT - 43 + 7);
+	leftBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, -45, 102 + 10, SCREEN_HEIGHT - 43 + 7);
 
 	
 
@@ -156,7 +158,7 @@ bool ModuleMainLevel::Start()
 	};
 	half_Array[(sizeof(bumper_right) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Poly(178, SCREEN_HEIGHT - 43, *&bumper_right, (sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2, SDL_FLIP_HORIZONTAL));
-	righBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1].body, 45, 220, SCREEN_HEIGHT - 43 + 7);
+	righBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, 45, 220, SCREEN_HEIGHT - 43 + 7);
 
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35}, b2BodyType::b2_staticBody, 0.f));
 
@@ -184,7 +186,7 @@ update_status ModuleMainLevel::Update()
 {
 
 	//TODO: Delete this, just for map building
-	LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
+	//LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
 
 	if(lower_Ball)
 		App->renderer->MoveCameraToPosition(lower_Ball->GetPositionPixels_Y());
@@ -261,32 +263,32 @@ update_status ModuleMainLevel::Update()
 	{
 
 		//Follow lower ball
-		if(App->physics->world_body_list[i].body->GetType() == b2BodyType::b2_dynamicBody && App->physics->world_body_list[i].body->GetFixtureList()->GetType() == b2Shape::e_circle)
+		if(App->physics->world_body_list[i]->body->GetType() == b2BodyType::b2_dynamicBody && App->physics->world_body_list[i]->body->GetFixtureList()->GetType() == b2Shape::e_circle)
 		{
 			//LOG("%i", App->physics->world_body_list[i].GetPositionPixels_Y());
 			if(lower_Ball == nullptr)
 			{
-				lower_Ball = &App->physics->world_body_list[i];
+				lower_Ball = App->physics->world_body_list[i];
 			}
-			else if(App->physics->world_body_list[i].GetPositionPixels_Y() > lower_Ball->GetPositionPixels_Y())
+			else if(App->physics->world_body_list[i]->GetPositionPixels_Y() > lower_Ball->GetPositionPixels_Y())
 			{
-				lower_Ball = &App->physics->world_body_list[i];
+				lower_Ball = App->physics->world_body_list[i];
 			}
 		}
 
 
 		//Is object out of map limits?
-		if (App->physics->world_body_list[i].GetPositionPixels_Y() >= ball_height_limit)
+		if (App->physics->world_body_list[i]->GetPositionPixels_Y() >= ball_height_limit)
 		{
-			if(App->physics->world_body_list[i].body->GetFixtureList()->GetType() == b2Shape::e_circle)
+			if(App->physics->world_body_list[i]->body->GetFixtureList()->GetType() == b2Shape::e_circle)
 				Lose_Ball(i);
 			//Destroy balls on fall or just reposition them?
 		}
 		else
 		{
-			if (App->physics->world_body_list[i].spriteSheet != -1)
+			if (App->physics->world_body_list[i]->spriteSheet != -1)
 			{
-				PhysBody *temp = &App->physics->world_body_list[i];
+				PhysBody *temp = App->physics->world_body_list[i];
 
 				if (temp->needs_Center)
 				{
@@ -373,19 +375,19 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 		{
 			current_ball_lives--;
 			//Reset ball to spawn point
-			SetBallOnSpawn(&App->physics->world_body_list[positionOnList]);
+			SetBallOnSpawn(App->physics->world_body_list[positionOnList]);
 		}
 
 
 	}
 	else
 	{
-		if (lower_Ball->body == App->physics->world_body_list[positionOnList].body)
+		if (lower_Ball->body == App->physics->world_body_list[positionOnList]->body)
 		{
 			lower_Ball = nullptr;
 		}
 
-		App->physics->DestroyBody(App->physics->world_body_list[positionOnList].body);
+		App->physics->DestroyBody(App->physics->world_body_list[positionOnList]->body);
 		App->physics->world_body_list.del(App->physics->world_body_list.At(positionOnList));
 		ballsOnScreen--;	
 		//LOG("%i", ballsOnScreen);
@@ -397,7 +399,7 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 PhysBody* ModuleMainLevel::Create_Play_Ball(int x, int y) 
 {
 	ballsOnScreen++;
-	PhysBody* ret = &App->physics->world_body_list.add(App->physics->Create_Circle(x, y, PIXELS_TO_METERS(13 / 2), b2BodyType::b2_dynamicBody, 1.f, 0, { 0, 360, 13, 13 }))->data;
+	PhysBody* ret = App->physics->world_body_list.add(App->physics->Create_Circle(x, y, PIXELS_TO_METERS(13 / 2), b2BodyType::b2_dynamicBody, 1.f, 0, { 0, 360, 13, 13 }))->data;
 	return ret;
 }
 
@@ -408,4 +410,10 @@ void ModuleMainLevel::SetBallOnSpawn(PhysBody* spawn_ball)
 	spawn_ball->body->SetTransform({ PIXELS_TO_METERS(324), PIXELS_TO_METERS(60) }, 0);
 	ball_body_in_spawn = spawn_ball;
 	ball_in_spawn = true;
+}
+
+
+void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
+{
+	LOG("WORKS")
 }

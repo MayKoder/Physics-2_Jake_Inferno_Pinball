@@ -7,6 +7,7 @@
 #include"ModulePhysics.h"
 
 struct Sprite;
+class PhysBody;
 
 class ModuleMainLevel : public Module
 {
@@ -18,6 +19,13 @@ public:
 	bool Start();
 	update_status Update();
 	bool CleanUp();
+
+	//Coll detection
+	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
+	PhysBody* sensor;
+	bool sensed;
+	p2Point<int> ray;
+	bool ray_on;
 
 	const char* assets_path = "Assets/Main_Level/";
 
