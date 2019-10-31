@@ -83,21 +83,13 @@ bool ModuleMainLevel::Start()
 
 	// Map 0, 0
 	int points[216] = {
-			0, 0, 328, 0, 328, 1004, 323, 1004, 323, 650, 321, 639, 319, 628,
-			316, 619, 313, 609, 309, 600, 304, 590, 298, 581, 292, 573, 286, 566,
-			280, 559, 273, 552, 264, 544, 256, 539, 247, 533, 240, 529, 231, 525,
-			221, 521, 216, 520, 212, 518, 210, 514, 210, 505, 214, 501, 293, 469,
-			297, 464, 299, 460, 299, 362, 275, 338, 275, 277, 305, 233, 305, 142,
-			302, 124, 297, 108, 293, 98, 288, 88, 283, 79, 277, 70, 269, 61,
-			262, 54, 255, 47, 249, 42, 243, 38, 237, 34, 231, 30, 224, 26,
-			215, 22, 206, 19, 198, 17, 191, 15, 184, 14, 176, 13, 167, 12,
-			147, 12, 136, 14, 124, 17, 111, 21, 100, 26, 89, 32, 79, 39, 70, 45,
-			62, 52, 55, 60, 48, 68, 42, 77, 37, 85, 31, 96, 27, 106, 24, 116, 21, 125,
-			20, 134, 19, 147, 19, 235, 36, 277, 36, 339, 13, 362, 13, 460, 14, 463,
-			17, 467, 22, 471, 31, 474, 98, 501, 101, 505, 101, 514, 98, 517, 94, 520,
-			88, 523, 81, 527, 72, 534, 64, 541, 56, 549, 49, 556, 43, 564, 38, 573, 33, 582,
-			28, 593, 24, 606, 21, 617, 19, 631, 19, 741, 45, 774, 45, 835, 12, 864, 12, 1003,
-			0, 1003
+			0, 0, 328, 0, 328, 1004, 323, 1004, 323, 650, 321, 639, 319, 628, 316, 619, 313, 609, 309, 600, 304, 590, 298, 581, 292, 573, 286, 566,
+			280, 559, 273, 552, 264, 544, 256, 539, 247, 533, 240, 529, 231, 525, 221, 521, 216, 520, 212, 518, 210, 514, 210, 505, 214, 501, 293, 469,
+			297, 464, 299, 460, 299, 362, 275, 338, 275, 277, 305, 233, 305, 142, 302, 124, 297, 108, 293, 98, 288, 88, 283, 79, 277, 70, 269, 61,
+			262, 54, 255, 47, 249, 42, 243, 38, 237, 34, 231, 30, 224, 26, 215, 22, 206, 19, 198, 17, 191, 15, 184, 14, 176, 13, 167, 12,
+			147, 12, 136, 14, 124, 17, 111, 21, 100, 26, 89, 32, 79, 39, 70, 45, 62, 52, 55, 60, 48, 68, 42, 77, 37, 85, 31, 96, 27, 106, 24, 116, 21, 125,
+			20, 134, 19, 147, 19, 235, 36, 277, 36, 339, 13, 362, 13, 460, 14, 463, 17, 467, 22, 471, 31, 474, 98, 501, 101, 505, 101, 514, 98, 517, 94, 520,
+			88, 523, 81, 527, 72, 534, 64, 541, 56, 549, 49, 556, 43, 564, 38, 573, 33, 582, 28, 593, 24, 606, 21, 617, 19, 631, 19, 741, 45, 774, 45, 835, 12, 864, 12, 1003, 0, 1003
 	};
 	b2Vec2 half_Array[(sizeof(points) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&points, (sizeof(points) / sizeof(int)), *&half_Array));
@@ -112,12 +104,8 @@ bool ModuleMainLevel::Start()
 	
 	// CoverLowRight 0, 0
 	int cover_right[12] = {
-		205, 1004,
-		279, 1004,
-		279, 976,
-		277, 973,
-		272, 971,
-		238, 987
+		205, 1004, 279, 1004, 279, 976,
+		277, 973, 272, 971, 238, 987
 	};
 	half_Array[(sizeof(cover_right) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_right, (sizeof(cover_right) / sizeof(int)), *&half_Array));
@@ -125,14 +113,8 @@ bool ModuleMainLevel::Start()
 
 	// LauncherCover 0, 0
 	int launchCover[16] = {
-		300, 1003,
-		300, 860,
-		277, 837,
-		275, 834,
-		275, 774,
-		303, 744,
-		307, 744,
-		307, 1003
+		300, 1003, 300, 860, 277, 837, 275, 834,
+		275, 774, 303, 744, 307, 744, 307, 1003
 	};
 	half_Array[(sizeof(launchCover) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&launchCover, (sizeof(launchCover) / sizeof(int)), *&half_Array));
@@ -140,16 +122,8 @@ bool ModuleMainLevel::Start()
 
 	// Slims Left 0, 0
 	int slim_stick_left[20] = {
-		31, 885,
-		31, 940,
-		35, 944,
-		93, 971,
-		96, 969,
-		95, 966,
-		41, 941,
-		36, 938,
-		36, 885,
-		34, 884
+		31, 885, 31, 940, 35, 944, 93, 971, 96, 969,
+		95, 966, 41, 941, 36, 938, 36, 885, 34, 884
 	};
 	half_Array[(sizeof(slim_stick_left) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_left, (sizeof(slim_stick_left) / sizeof(int)), *&half_Array));
@@ -158,15 +132,8 @@ bool ModuleMainLevel::Start()
 
 	// Slims right 0, 0
 	int slim_stick_right[18] = {
-		221, 971,
-		279, 944,
-		283, 940,
-		283, 886,
-		280, 883,
-		277, 884,
-		277, 939,
-		219, 966,
-		218, 969
+		221, 971, 279, 944, 283, 940, 283, 886,
+		280, 883, 277, 884, 277, 939, 219, 966, 218, 969
 	};
 	half_Array[(sizeof(slim_stick_right) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
@@ -174,13 +141,8 @@ bool ModuleMainLevel::Start()
 
 	// Stick Right 0, 0
 	int bumper_left[14] = {
-		4, 14,
-		0, 10,
-		1, 4,
-		5, 0,
-		11, 0,
-		51, 25,
-		49, 29
+		4, 14, 0, 10, 1, 4,
+		5, 0, 11, 0, 51, 25, 49, 29
 	};
 	half_Array[(sizeof(bumper_left) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left, (sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2));
@@ -189,13 +151,8 @@ bool ModuleMainLevel::Start()
 	
 
 	int bumper_right[14] = {
-		39, 0,
-		0, 24,
-		0, 27,
-		4, 27,
-		48, 10,
-		49, 4,
-		46, 0
+		39, 0, 0, 24, 0, 27, 4, 27,
+		48, 10, 49, 4, 46, 0
 	};
 	half_Array[(sizeof(bumper_right) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Poly(178, SCREEN_HEIGHT - 43, *&bumper_right, (sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2, SDL_FLIP_HORIZONTAL));

@@ -201,6 +201,7 @@ PhysBody ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Body
 	b2BodyDef body;
 	body.type = type;
 	body.position.Set(PIXELS_TO_METERS(_x), PIXELS_TO_METERS(_y));
+	body.bullet = true;
 
 	PhysBody bdy;
 	bdy.body = world->CreateBody(&body);
@@ -271,6 +272,7 @@ PhysBody ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density,
 	b2BodyDef body;
 	body.type = (b2BodyType)type;
 	body.position.Set(PIXELS_TO_METERS(size.x), PIXELS_TO_METERS(size.y));
+	//body.active = false;
 
 	PhysBody bdy;
 	bdy.body = world->CreateBody(&body);
@@ -280,7 +282,6 @@ PhysBody ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density,
 
 	b2PolygonShape shape;
 	shape.SetAsBox(PIXELS_TO_METERS(size.w), PIXELS_TO_METERS(size.h));
-
 
 	b2FixtureDef fixture;
 	fixture.density = density;
@@ -337,6 +338,7 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Body* body, float angle,
 	b2BodyDef pin;
 	pin.position.x = PIXELS_TO_METERS(x);
 	pin.position.y = PIXELS_TO_METERS(y);
+	body->SetBullet(true);
 	b2Body* deleteBd = world->CreateBody(&pin);
 	joint_body_list.add(deleteBd);
 

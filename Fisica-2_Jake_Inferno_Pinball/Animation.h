@@ -1,48 +1,56 @@
-#pragma once
-#include "p2DynArray.h"
+#ifndef __ANIMATION_H__
+#define __ANIMATION_H__
+
+#include "SDL/include/SDL_rect.h"
+#define MAX_FRAMES 10
 
 class Animation
 {
 public:
-	float speed;
-	bool loop;
-	p2DynArray<SDL_Rect> frames;
-
-private:
-	float current_frame;
-	int loops;
+	float speed = 1.0f;
+	SDL_Rect frames[MAX_FRAMES];
 
 public:
-	Animation() : frames(5), speed(1.0f), current_frame(0), loop(true), loops(0)
-	{}
+	float current_frame;
+	int last_frame = 0;
+	int finished = 0;
 
-	Animation(const Animation& a) : frames(a.frames), speed(a.speed), current_frame(0), loop(a.loop), loops(0)
-	{}
+public:
+
+	void PushBack(const SDL_Rect& rect)
+	{
+		frames[last_frame++] = rect;
+	}
 
 	SDL_Rect& GetCurrentFrame()
 	{
 		current_frame += speed;
-		if(current_frame >= frames.Count())
+		if (current_frame >= last_frame) 
 		{
-			current_frame = (loop) ? 0.0f : frames.Count() - 1;
-			loops++;
+			current_frame = 0;
+			finished = 1;
 		}
+		else finished = 0;
 
 		return frames[(int)current_frame];
 	}
-
-	const SDL_Rect& PeekCurrentFrame() const
+	SDL_Rect& GetCurrentFrameWithoutAnim() 
 	{
 		return frames[(int)current_frame];
 	}
-
-	bool Finished()
-	{
-		return loops > 0;
+	int GetFinished()
+	{ 
+		return finished; 
 	}
-
+	void Finish() 
+	{ 
+		finished = 1; 
+	}
 	void Reset()
-	{
+	{ 
 		current_frame = 0;
+		finished = 0; 
 	}
 };
+
+#endif
