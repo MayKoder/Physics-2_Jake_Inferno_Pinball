@@ -31,6 +31,30 @@ struct vector2 {
 	float x;
 	float y;
 };
+struct vector3 
+{
+	int x;
+	int y;
+	int z;
+
+	void Init_Zeros() {
+		x = 0; y = 0; z = 0;
+	}
+
+	void Increment(int increment) 
+	{
+		if (z + increment >= 999) 
+		{
+
+
+		}
+		else
+		{
+			z += increment;
+		}
+	}
+
+};
 
 // Configuration -----------
 #define SCREEN_WIDTH 580

@@ -13,35 +13,37 @@ ModuleFonts::ModuleFonts(Application* app, bool start_enabled) : Module(app, sta
 ModuleFonts::~ModuleFonts()
 {}
 
-// Called before render is available
-//bool ModuleFonts::Init()
-//{
-//	LOG("Loading Fonts");
-//	bool ret = true;
-//
-//	main_font.graphic = App->textures->Load("Assets/Fonts/font_normal.png");
-//
-//	Load("Assets / Fonts / font_normal.png", " !,.0123456789?ABCDEFGHIJKLMNOPQRSTUWYabcdefghiklmnopqrstuwxy'", 8, 48, 48, 8);
-//
-//
-//	return ret;
-//}
+//Called before render is available
+bool ModuleFonts::Init()
+{
+	LOG("Loading Fonts");
+	bool ret = true;
+
+	//App->textures->Load("Assets/Fonts/font_normal.png");
+
+	Load("Assets/Fonts/font_normal.png", " !,.0123456789?ABCDEFGHIJKLMNOPQRSTUWYabcdefghiklmnopqrstuwxy'", 8);
+
+
+	return ret;
+}
 
 // Called before quitting
-//bool ModuleFonts::CleanUp()
-//{
-//
-//	if (main_font.graphic)
-//		App->textures->Unload(main_font.graphic);
-//
-//	return true;
-//}
+bool ModuleFonts::CleanUp()
+{
+
+	for (int i = 0; i < MAX_FONTS; i++)
+	{
+		UnLoad(i);
+	}
+
+	return true;
+}
 
 
 // Load new texture from file path
 int ModuleFonts::Load(const char* texture_path, const char* characters, uint rows)
 {
-	int id = -1;
+	int id = 0;
 
 	if (texture_path == nullptr || characters == nullptr || rows == 0)
 	{
@@ -114,14 +116,27 @@ void ModuleFonts::BlitText(int x, int y, int font_id, const char* text) const
 	rect.w = font->char_w;
 	rect.h = font->char_h;
 	rect.y = 0;
+
+	SDL_Rect rect_copy = rect;
 	for (uint i = 0; i < len; ++i)
 	{
 		//Looking through table to compare character against char from our text introduced.
-		for (uint j = 0; j < fonts[font_id].row_chars; ++j) {
-			if (fonts[font_id].table[j] == text[i]) {
-				rect.x = j * fonts[font_id].char_w;
-				App->renderer->Blit(fonts[font_id].graphic, x, y, &rect, false);
+		for (uint j = 0; j < fonts[font_id].row_chars; ++j) 
+		{
+			if (fonts[font_id].table[j] == text[i]) 
+			{
+				rect.x = j * (fonts[font_id].char_w / 1.3);
+
+				if (j == 2) 
+				{
+					rect.w -= 17;
+					x += 7;
+				}
+
+				//App->renderer->DrawQuad({x, y, rect.w, rect.h}, 255, 255, 255, 50);
+				App->renderer->Blit(fonts[font_id].graphic, x - (38 * i), y, &rect, false);
 				x += rect.w;
+				rect = rect_copy;
 			}
 		}
 

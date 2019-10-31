@@ -25,8 +25,8 @@ public:
 	ModuleFonts(Application* app, bool start_enabled = true);
 	~ModuleFonts();
 
-	//bool Init();
-	//bool CleanUp();
+	bool Init();
+	bool CleanUp();
 
 	//// Load Font
 	//int Load(const char* texture_path, const char* characters, uint rows, uint h, uint w, uint rc);

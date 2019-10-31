@@ -2,6 +2,8 @@
 #include "Application.h"
 #include"ModuleMainLevel.h"
 #include"Box2D/Box2D/Box2D.h"
+#include"p2SString.h"
+#include<string>
 
 ModuleMainLevel::ModuleMainLevel(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -53,8 +55,6 @@ bool ModuleMainLevel::Start()
 	//height balls will be deleted
 	ball_height_limit = (SCREEN_HEIGHT * SCREEN_SIZE); //+20
 	current_ball_lives = max_ball_lives;
-
-	SetBallOnSpawn(Create_Play_Ball(324, 60));
 
 	LoadSpriteSheet("Assets/Main_Level/main_level_static_background.png");
 
@@ -142,12 +142,13 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
 
 
-	int block1[14] = {
-		52, 882, 56, 879, 61, 880, 93, 935,
-		92, 941, 86, 942, 52, 926
+	int block1[10] = {
+		12, 4, 46, 61, 40, 68,
+		4, 51, 4, 7
 	};
 	half_Array[(sizeof(block1) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(64, 158, *&block1, (sizeof(block1) / sizeof(int)), *&half_Array, 0, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody));
+	App->physics->world_body_list.add(App->physics->Create_Poly(58, 153, *&block1, 
+		(sizeof(block1) / sizeof(int)), *&half_Array, 0, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_NONE, {-5, 0}));
 
 
 	//BUMPERS	
@@ -156,7 +157,9 @@ bool ModuleMainLevel::Start()
 		5, 0, 11, 0, 51, 25, 49, 29
 	};
 	half_Array[(sizeof(bumper_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left, (sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody));
+	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left, 
+		(sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody));
+
 	leftBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, -45, 102 + 10, SCREEN_HEIGHT - 43 + 7);
 
 	
@@ -166,7 +169,9 @@ bool ModuleMainLevel::Start()
 		48, 10, 49, 4, 46, 0
 	};
 	half_Array[(sizeof(bumper_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(178, SCREEN_HEIGHT - 43, *&bumper_right, (sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody, SDL_FLIP_HORIZONTAL));
+	App->physics->world_body_list.add(App->physics->Create_Poly(178, SCREEN_HEIGHT - 43, *&bumper_right, 
+		(sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody, SDL_FLIP_HORIZONTAL));
+
 	righBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, 45, 220, SCREEN_HEIGHT - 43 + 7);
 
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35}, b2BodyType::b2_staticBody, 0.f));
@@ -182,6 +187,7 @@ bool ModuleMainLevel::Start()
 	//Score Display
 	LoadSprite(0, SCREEN_WIDTH - 221 - 10, 0, { 1228, 0, 221, 153 }, 0.f, 0.f, 0, 0, 1);
 
+	SetBallOnSpawn(Create_Play_Ball(324, 60));
 	App->renderer->posY_Limit = (gameplay_sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 16 ) * SCREEN_SIZE);
 
 
@@ -285,7 +291,6 @@ update_status ModuleMainLevel::Update()
 			}
 		}
 
-
 		//Is object out of map limits?
 		if (App->physics->world_body_list[i]->GetPositionPixels_Y() >= ball_height_limit)
 		{
@@ -302,11 +307,26 @@ update_status ModuleMainLevel::Update()
 				if (temp->needs_Center)
 				{
 					//LOG("%i", temp.GetRotation())
-					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], (temp->GetPositionPixels_X()) - (temp->section.w / 2), (temp->GetPositionPixels_Y()) - (temp->section.h / 2), &temp->section, 1.f, temp->GetRotation(), INT_MAX, INT_MAX, temp->flip);
+					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], 
+						(temp->GetPositionPixels_X()) - (temp->section.w / 2),
+						(temp->GetPositionPixels_Y()) - (temp->section.h / 2),
+						&temp->section, 
+						1.f, 
+						temp->GetRotation(), 
+						INT_MAX, INT_MAX, 
+						temp->flip);
 				}
 				else
 				{
-					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], temp->GetPositionPixels_X(), temp->GetPositionPixels_Y(), &temp->section, 1.f, temp->GetRotation(), temp->pivotX, temp->pivotY, temp->flip);
+					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], 
+						temp->GetPositionPixels_X() - temp->offset.x, 
+						temp->GetPositionPixels_Y() - temp->offset.x,
+						&temp->section, 
+						1.f, 
+						temp->GetRotation(), 
+						temp->pivotX, 
+						temp->pivotY, 
+						temp->flip);
 				}
 			}
 		}
@@ -328,6 +348,11 @@ update_status ModuleMainLevel::Update()
 		App->renderer->Blit(sprite_sheet_list[0], lives_Sprite_Position, 129, &sec, 0.f);
 		lives_Sprite_Position -= sec.w + 9;
 	}
+
+
+	//Print UI
+	App->fonts->BlitText(345, 44, 0, "000,000,000");
+	App->fonts->BlitText(485, 109, 0, lives_text.c_str());
 
 
 	return UPDATE_CONTINUE;
@@ -358,6 +383,8 @@ bool ModuleMainLevel::CleanUp()
 		leftBumper = nullptr;
 	}
 
+	score_text.clear();
+	lives_text.clear();
 
 
 	return true;
@@ -386,7 +413,7 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 			//Reset ball to spawn point
 			SetBallOnSpawn(App->physics->world_body_list[positionOnList]);
 		}
-
+		lives_text = "x" + std::to_string(current_ball_lives);
 
 	}
 	else

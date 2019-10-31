@@ -244,7 +244,7 @@ PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Bod
 	return bdy;
 
 }
-PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, b2BodyType type, SDL_RendererFlip flip, float density)
+PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, b2BodyType type, SDL_RendererFlip flip, b2Vec2 offset, float density)
 {
 	if (count / 2 > 8)
 	{
@@ -272,6 +272,7 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 		bdy->spriteSheet = sheet;
 		bdy->section = sec;
 		bdy->flip = flip;
+		bdy->offset = offset;
 		bdy->needs_Center = false;
 
 		b2PolygonShape shape;
@@ -286,6 +287,8 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 
 		return bdy;
 	}
+
+	return nullptr;
 
 }
 PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)

@@ -5,6 +5,8 @@
 #include "Globals.h"
 #include"Application.h"
 #include"ModulePhysics.h"
+#include"p2SString.h"
+#include<string>
 
 struct Sprite;
 class PhysBody;
@@ -57,6 +59,8 @@ public:
 
 	int ball_height_limit;
 	int score = 000000000;
+	std::string score_text;
+	std::string lives_text;
 	int current_ball_lives;
 
 	void Lose_Ball(int);
