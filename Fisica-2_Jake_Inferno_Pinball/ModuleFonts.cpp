@@ -14,32 +14,32 @@ ModuleFonts::~ModuleFonts()
 {}
 
 // Called before render is available
-bool ModuleFonts::Init()
-{
-	LOG("Loading Fonts");
-	bool ret = true;
-
-	main_font.font_spritesheet = App->textures->Load("Assets/Fonts/font_normal.png");
-
-	Load("Assets / Fonts / font_normal.png", " !,.0123456789?ABCDEFGHIJKLMNOPQRSTUWYabcdefghiklmnopqrstuwxy'", 8, 48, 48, 8);
-
-
-	return ret;
-}
+//bool ModuleFonts::Init()
+//{
+//	LOG("Loading Fonts");
+//	bool ret = true;
+//
+//	main_font.graphic = App->textures->Load("Assets/Fonts/font_normal.png");
+//
+//	Load("Assets / Fonts / font_normal.png", " !,.0123456789?ABCDEFGHIJKLMNOPQRSTUWYabcdefghiklmnopqrstuwxy'", 8, 48, 48, 8);
+//
+//
+//	return ret;
+//}
 
 // Called before quitting
-bool ModuleFonts::CleanUp()
-{
-
-	if (main_font.font_spritesheet)
-		App->textures->Unload(main_font.font_spritesheet);
-
-	return true;
-}
+//bool ModuleFonts::CleanUp()
+//{
+//
+//	if (main_font.graphic)
+//		App->textures->Unload(main_font.graphic);
+//
+//	return true;
+//}
 
 
 // Load new texture from file path
-int ModuleFonts::Load(const char* texture_path, const char* characters, uint rows, uint w, uint h, uint rc)
+int ModuleFonts::Load(const char* texture_path, const char* characters, uint rows)
 {
 	int id = -1;
 
@@ -64,19 +64,24 @@ int ModuleFonts::Load(const char* texture_path, const char* characters, uint row
 		return id;
 	}
 
-	main_font.font_spritesheet = tex; // graphic: pointer to the texture
-	main_font.rows = rows; // rows: rows of characters in the texture
-	main_font.len = 0; // len: length of the table
+	fonts[id].graphic = tex; // graphic: pointer to the texture
+	fonts[id].rows = rows; // rows: rows of characters in the texture
+	fonts[id].len = strlen(characters); // len: length of the table
 
-	main_font.char_h = h;
-	main_font.char_w = w;
-	main_font.row_chars = rc;
-
-	for (int i = 0; i < MAX_FONT_CHARS; i++)
-	{
-		main_font.table[i] = characters[i];
-		if (characters[i] == NULL) { break; }
+	// table: array of chars to have the list of characters
+	for (uint i = 0; i < MAX_FONT_CHARS; i++) {
+		fonts[id].table[i] = characters[i];
 	}
+
+
+	uint width, height;
+	App->textures->GetSize(tex, width, height);
+	// row_chars: amount of chars per row of the texture
+	fonts[id].row_chars = strlen(characters) / fonts[id].rows;
+	// char_w: width of each character
+	fonts[id].char_w = width / fonts[id].row_chars;  //10
+	// char_h: height of each character
+	fonts[id].char_h = height / rows;
 
 	LOG("Successfully loaded BMP font from %s", texture_path);
 
@@ -85,43 +90,56 @@ int ModuleFonts::Load(const char* texture_path, const char* characters, uint row
 
 void ModuleFonts::UnLoad(int font_id)
 {
-	if (font_id >= 0 && font_id < MAX_FONTS && main_font.font_spritesheet != nullptr)
+	if (font_id >= 0 && font_id < MAX_FONTS && fonts[font_id].graphic != nullptr)
 	{
-		App->textures->Unload(main_font.font_spritesheet);
-		main_font.font_spritesheet = nullptr;
+		App->textures->Unload(fonts[font_id].graphic);
+		fonts[font_id].graphic = nullptr;
 		LOG("Successfully Unloaded BMP font_id %d", font_id);
 	}
 }
 
 //// Render text using a bitmap font
-void ModuleFonts::BlitText(int x, int y, int font_id, const char* text, int space) const
+void ModuleFonts::BlitText(int x, int y, int font_id, const char* text) const
 {
-	if (text == nullptr || font_id < 0 || font_id >= MAX_FONTS || main_font.font_spritesheet == nullptr)
+	if (text == nullptr || font_id < 0 || font_id >= MAX_FONTS || fonts[font_id].graphic == nullptr)
 	{
 		LOG("Unable to render text with bmp font id %d", font_id);
 		return;
 	}
 
-	const Font_Data* font = &main_font;
+	const Font* font = &fonts[font_id];
 	SDL_Rect rect;
 	uint len = strlen(text);
-	int y2 = y;
+	
 	rect.w = font->char_w;
 	rect.h = font->char_h;
+	rect.y = 0;
+	for (uint i = 0; i < len; ++i)
+	{
+		//Looking through table to compare character against char from our text introduced.
+		for (uint j = 0; j < fonts[font_id].row_chars; ++j) {
+			if (fonts[font_id].table[j] == text[i]) {
+				rect.x = j * fonts[font_id].char_w;
+				App->renderer->Blit(fonts[font_id].graphic, x, y, &rect, false);
+				x += rect.w;
+			}
+		}
 
-	for (int i = 0; i < len; ++i)
+	}
+
+	/*for (int i = 0; i < len; ++i)
 	{
 		for (int j = 0; j < MAX_FONT_CHARS; j++) {
 			if (text[i] == font->table[j]) {
 				rect.x = j * font->char_w;
 				rect.y = 0;
 				if (font_id == 0 && j == 36) { y -= 2; }
-				App->renderer->Blit(main_font.font_spritesheet, x, y, &rect, 0);
+				App->renderer->Blit(main_font.graphic, x, y, &rect, 0);
 				y = y2;
-				x += font->char_w + space;
+				x += font->char_w;
 				break;
 			}
 			if (j > font->row_chars) { break; }
 		}
-	}
+	}*/
 }
