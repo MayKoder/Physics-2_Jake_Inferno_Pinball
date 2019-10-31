@@ -211,7 +211,7 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
+PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, int hit_score, SDL_RendererFlip flip)
 {
 	b2BodyDef body;
 	body.type = type;
@@ -236,6 +236,7 @@ PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Bod
 	bdy->spriteSheet = sheet;
 	bdy->section = sec;
 	bdy->flip = flip;
+	bdy->scoreOnHit = hit_score;
 	bdy->listener = App->main_level;
 
 	b->SetUserData(bdy);
@@ -243,7 +244,7 @@ PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Bod
 	return bdy;
 
 }
-PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, int type, SDL_RendererFlip flip, float density)
+PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, b2BodyType type, SDL_RendererFlip flip, float density)
 {
 	if (count / 2 > 8)
 	{
@@ -263,7 +264,7 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 
 
 		b2BodyDef body;
-		body.type = (b2BodyType)type;
+		body.type = type;
 		body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
 		PhysBody* bdy = new PhysBody();

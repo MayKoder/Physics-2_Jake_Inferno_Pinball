@@ -30,6 +30,9 @@ public:
 	b2Body* body;
 	Module* listener;
 
+	//Sound and score
+	int scoreOnHit = 0;
+
 	int spriteSheet;
 	SDL_Rect section;
 	bool needs_Center = true;
@@ -50,10 +53,10 @@ public:
 
 public:
 	//Shape creation
-	PhysBody* Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	PhysBody* Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, int hit_score = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	PhysBody* Create_Rectangle(SDL_Rect size, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	PhysBody* Create_Chain(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, SDL_RendererFlip flip = SDL_FLIP_NONE);
-	PhysBody* Create_Poly(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int type = 1, SDL_RendererFlip flip = SDL_FLIP_NONE, float density = 1.0f);
+	PhysBody* Create_Poly(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, b2BodyType type = b2BodyType::b2_dynamicBody, SDL_RendererFlip flip = SDL_FLIP_NONE, float density = 1.0f);
 
 	//Joint creation
 	b2RevoluteJoint* Create_Revolute_Joint(b2Body*, float, int, int);
