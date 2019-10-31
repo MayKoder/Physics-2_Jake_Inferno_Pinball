@@ -352,7 +352,6 @@ PhysBody* ModulePhysics::Create_Chain(float x, float y, int points[], int count,
 
 	return bdy;
 }
-
 b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Body* body, float angle, int x, int y)
 {
 
@@ -383,6 +382,31 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Body* body, float angle,
 	return revolute_joint_pointer;
 
 
+}
+
+PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation)
+{
+	b2BodyDef body;
+	body.type = b2BodyType::b2_staticBody;
+	body.position.Set(PIXELS_TO_METERS(rectangle.x), PIXELS_TO_METERS(rectangle.y));
+	body.angle = rotation * DEGTORAD;
+
+	b2Body* b = world->CreateBody(&body);
+
+	b2PolygonShape shape;
+	shape.SetAsBox(PIXELS_TO_METERS(rectangle.w), PIXELS_TO_METERS(rectangle.h));
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+	fixture.isSensor = true;
+
+	b->CreateFixture(&fixture);
+
+	PhysBody* bdy = new PhysBody();
+	bdy->body = b;
+	b->SetUserData(bdy);
+
+	return bdy;
 }
 
 

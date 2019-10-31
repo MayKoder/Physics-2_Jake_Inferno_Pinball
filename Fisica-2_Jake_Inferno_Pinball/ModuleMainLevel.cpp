@@ -3,7 +3,6 @@
 #include"ModuleMainLevel.h"
 #include"Box2D/Box2D/Box2D.h"
 #include"p2SString.h"
-#include<string>
 
 ModuleMainLevel::ModuleMainLevel(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -55,6 +54,7 @@ bool ModuleMainLevel::Start()
 	//height balls will be deleted
 	ball_height_limit = (SCREEN_HEIGHT * SCREEN_SIZE); //+20
 	current_ball_lives = max_ball_lives;
+	lives_text[1] = App->IntToChar(current_ball_lives);
 
 	LoadSpriteSheet("Assets/Main_Level/main_level_static_background.png");
 
@@ -77,6 +77,7 @@ bool ModuleMainLevel::Start()
 
 	App->physics->world_body_list.add(App->physics->Create_Circle(126, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
 	App->physics->world_body_list.add(App->physics->Create_Circle(203, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
+	spawn_sensor = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({323, 15, 10, 3}, -45))->data; //735s
 
 
 
@@ -190,8 +191,6 @@ bool ModuleMainLevel::Start()
 	SetBallOnSpawn(Create_Play_Ball(324, 60));
 	App->renderer->posY_Limit = (gameplay_sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 16 ) * SCREEN_SIZE);
 
-
-
 	return true;
 }
 
@@ -201,7 +200,8 @@ update_status ModuleMainLevel::Update()
 {
 
 	//TODO: Delete this, just for map building
-	LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
+	if(App->input->debug)
+		LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
 
 	if(lower_Ball)
 		App->renderer->MoveCameraToPosition(lower_Ball->GetPositionPixels_Y());
@@ -232,13 +232,13 @@ update_status ModuleMainLevel::Update()
 	//Down key movement
 	if (!App->input->debug && ball_in_spawn) 
 	{
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN) 
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN && ball_body_in_spawn) 
 		{
 			springDown = true;
 			springUp = false;
 			launch_Force = 0;
 		}
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP) 
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP && ball_body_in_spawn)
 		{
 			springDown = false;
 			springUp = true;
@@ -257,10 +257,6 @@ update_status ModuleMainLevel::Update()
 		{
 			//LOG("%f", launch_Force);
 			ball_body_in_spawn->body->ApplyForceToCenter({0, -launch_Force}, true);
-			//Ball_in_spawn can only change if wall is out the spawn area
-			//launch_Force = 0;
-			//ball_in_spawn = false;
-			//ball_body_in_spawn = nullptr;
 		}
 	}
 
@@ -352,7 +348,7 @@ update_status ModuleMainLevel::Update()
 
 	//Print UI
 	App->fonts->BlitText(345, 44, 0, "000,000,000");
-	App->fonts->BlitText(485, 109, 0, lives_text.c_str());
+	App->fonts->BlitText(485, 109, 0, lives_text);
 
 
 	return UPDATE_CONTINUE;
@@ -383,10 +379,6 @@ bool ModuleMainLevel::CleanUp()
 		leftBumper = nullptr;
 	}
 
-	score_text.clear();
-	lives_text.clear();
-
-
 	return true;
 }
 
@@ -413,7 +405,7 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 			//Reset ball to spawn point
 			SetBallOnSpawn(App->physics->world_body_list[positionOnList]);
 		}
-		lives_text = "x" + std::to_string(current_ball_lives);
+		lives_text[1] = App->IntToChar(current_ball_lives);
 
 	}
 	else
@@ -457,8 +449,45 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 		if (bodyA->scoreOnHit != 0) 
 		{
-			score += bodyA->scoreOnHit;
+			IncrementScore(bodyA->scoreOnHit);
 			LOG("%i", score);
+		}
+
+		if (bodyB == spawn_sensor)
+		{
+			LOG("Out of spawn");
+			//TODO: FIX Hitting the ball 2 times will cause a soflock
+			launch_Force = 0;
+			ball_in_spawn = false;
+			ball_body_in_spawn = nullptr;
+		}
+	}
+}
+
+void ModuleMainLevel::IncrementScore(int increment) 
+{
+	if (score + increment <= 999999999)
+	{
+		score += increment;
+
+		p2SString currenttext = p2SString(score);
+
+
+		//Text update
+		for (int i = 0; i < 11; i++)
+		{
+
+			if (i == 3 || i == 7) 
+			{
+				score_text[i] = ',';
+			}
+			else
+			{
+
+			}
+
+
+
 		}
 
 

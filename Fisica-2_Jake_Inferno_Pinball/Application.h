@@ -40,6 +40,9 @@ public:
 	bool Init();
 	update_status Update();
 	bool CleanUp();
+	char IntToChar(int num) {
+		return (num + '0');
+	}
 
 private:
 

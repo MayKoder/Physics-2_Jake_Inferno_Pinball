@@ -46,8 +46,11 @@ public:
 	//Speed 0 keeps object relative to the camera
 	void LoadSpriteSheet(const char* load_path);
 	void LoadSprite(int spriteSheetIndex,  float x, float y, SDL_Rect rect, float speed, float angle = 0.f, int pivotX = 0, int pivotY = 0, int layer = 0);
-	PhysBody* Create_Play_Ball(int x, int y);
 	void SetBallOnSpawn(PhysBody*);
+
+	void IncrementScore(int);
+
+	PhysBody* Create_Play_Ball(int x, int y);
 
 
 	p2List_Extended<SDL_Texture*> sprite_sheet_list;
@@ -59,8 +62,8 @@ public:
 
 	int ball_height_limit;
 	int score = 000000000;
-	std::string score_text;
-	std::string lives_text;
+	char score_text[11] = {'0', '0', '0', ',', '0', '0', '0', ',', '0', '0', '0'};
+	char lives_text[2] = { 'x', '0'};
 	int current_ball_lives;
 
 	void Lose_Ball(int);
@@ -81,6 +84,7 @@ private: //Spawn settings//
 	uint ballsOnScreen = 0;
 	bool ball_in_spawn = false;
 	PhysBody* ball_body_in_spawn;
+	PhysBody* spawn_sensor = nullptr;
 	float32 launch_Force = 0;
 
 };
