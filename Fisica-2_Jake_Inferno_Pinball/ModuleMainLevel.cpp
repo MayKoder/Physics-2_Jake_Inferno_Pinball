@@ -75,8 +75,8 @@ bool ModuleMainLevel::Start()
 
 
 
-	App->physics->world_body_list.add(App->physics->Create_Circle(126, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 })); //735s
-	App->physics->world_body_list.add(App->physics->Create_Circle(203, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 })); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(126, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(203, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
 
 
 
@@ -141,13 +141,22 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
 	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
 
-	// Stick Right 0, 0
+
+	int block1[14] = {
+		52, 882, 56, 879, 61, 880, 93, 935,
+		92, 941, 86, 942, 52, 926
+	};
+	half_Array[(sizeof(block1) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Poly(64, 158, *&block1, (sizeof(block1) / sizeof(int)), *&half_Array, 0, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody));
+
+
+	//BUMPERS	
 	int bumper_left[14] = {
 		4, 14, 0, 10, 1, 4,
 		5, 0, 11, 0, 51, 25, 49, 29
 	};
 	half_Array[(sizeof(bumper_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left, (sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2));
+	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left, (sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody));
 	leftBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, -45, 102 + 10, SCREEN_HEIGHT - 43 + 7);
 
 	
@@ -157,7 +166,7 @@ bool ModuleMainLevel::Start()
 		48, 10, 49, 4, 46, 0
 	};
 	half_Array[(sizeof(bumper_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(178, SCREEN_HEIGHT - 43, *&bumper_right, (sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, 2, SDL_FLIP_HORIZONTAL));
+	App->physics->world_body_list.add(App->physics->Create_Poly(178, SCREEN_HEIGHT - 43, *&bumper_right, (sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody, SDL_FLIP_HORIZONTAL));
 	righBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, 45, 220, SCREEN_HEIGHT - 43 + 7);
 
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35}, b2BodyType::b2_staticBody, 0.f));
@@ -186,7 +195,7 @@ update_status ModuleMainLevel::Update()
 {
 
 	//TODO: Delete this, just for map building
-	//LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
+	LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
 
 	if(lower_Ball)
 		App->renderer->MoveCameraToPosition(lower_Ball->GetPositionPixels_Y());
@@ -415,5 +424,18 @@ void ModuleMainLevel::SetBallOnSpawn(PhysBody* spawn_ball)
 
 void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
-	LOG("WORKS")
+
+	if (bodyA) 
+	{
+
+		if (bodyA->scoreOnHit != 0) 
+		{
+			score += bodyA->scoreOnHit;
+			LOG("%i", score);
+		}
+
+
+
+
+	}
 }
