@@ -230,7 +230,7 @@ update_status ModuleMainLevel::Update()
 
 	//LOG("%i", launchSpring->position.x)
 	//Down key movement
-	if (!App->input->debug && ball_in_spawn) 
+	if (ball_in_spawn) 
 	{
 		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN && ball_body_in_spawn) 
 		{
