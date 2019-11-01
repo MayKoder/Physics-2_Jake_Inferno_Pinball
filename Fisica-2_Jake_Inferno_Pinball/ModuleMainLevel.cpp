@@ -437,8 +437,11 @@ update_status ModuleMainLevel::Update()
 	//Print UI
 	App->fonts->BlitText(410, 170, 2, "Last Score", { 0, 0, 8, 14 }, 14, 11);
 	App->fonts->BlitText(398, 225, 2, "Highest Score", { 0, 0, 8, 14 }, 13, 11);
-	App->fonts->BlitText(361, 59, 0, score_text, {0, 0, 13, 24}, 11, 4);
+	App->fonts->BlitText(349, 59, 0, score_text, {0, 0, 20, 24}, 11, 2);
 	App->fonts->BlitText(498, 124, 0, lives_text, { 0, 0, 12, 23 }, 2, 8);
+
+	App->fonts->BlitText(387, 190, 0, prev_score_text, { 0, 0, 12, 20 }, 11, 7);
+	App->fonts->BlitText(387, 246, 0, highest_score_text, { 0, 0, 12, 20 }, 11, 7);
 
 
 	return UPDATE_CONTINUE;
