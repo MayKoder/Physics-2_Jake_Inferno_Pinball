@@ -490,6 +490,7 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 			{
 				highestScore = score;
 			}
+			score = 0;
 		}
 		else
 		{
@@ -544,7 +545,7 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyB->scoreOnHit != 0) 
 		{
 			IncrementScore(bodyB->scoreOnHit);
-			LOG("%s", score_text);
+			//LOG("%s", score_text);
 		}
 
 		if (bodyB == spawn_sensor)
