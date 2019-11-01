@@ -103,6 +103,27 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->Create_Circle(226 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 541 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 2000));
 	App->physics->world_body_list.add(App->physics->Create_Circle(198 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 524 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 2000));
 	App->physics->world_body_list.add(App->physics->Create_Circle(99 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 524 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 279 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 298 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 317 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 279 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 298 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 317 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 2000));
+
+	//circulos rojos
+	App->physics->world_body_list.add(App->physics->Create_Circle(205 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 233 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(85 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 233 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(102 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 192 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(188 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 192 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(146 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 174 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(23 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 119 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(32 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 90 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(46 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 65 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(67 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 43 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(238 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 43 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(258 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 65 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(271 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 90 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(282 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 119 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
 
 	//palos rojos
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 89 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
