@@ -121,12 +121,12 @@ void ModuleFonts::BlitText(int x, int y, int font_id, const char* text, SDL_Rect
 			if (fonts[font_id].table[j] == text[i]) 
 			{
 				rect.x = rect.w * j;
-				x += rect.w;
-				App->renderer->Blit(fonts[font_id].graphic, x, y, &rect, 0.f);
+				x += rect.w - spacing;
+				App->renderer->Blit(fonts[font_id].graphic, x, y, &rect, 0.f, 0, INT_MAX, INT_MAX, SDL_FLIP_NONE, &section);
 				
 				if (text[i] == ',') 
 				{
-					x -= 10;
+					x -= 7;
 				}
 			}
 			//rect = rect_copy;
