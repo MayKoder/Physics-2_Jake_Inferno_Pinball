@@ -67,3 +67,5 @@ struct vector3
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC true
 #define TITLE "2D Physics Playground"
+#define MARGIN_X 18
+#define MARGIN_Y 8
