@@ -33,7 +33,6 @@ public:
 
 	//Sound and score
 	int scoreOnHit = 0;
-	unsigned int hit_sound;
 
 
 	int spriteSheet;

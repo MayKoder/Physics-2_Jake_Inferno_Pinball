@@ -51,6 +51,11 @@ bool ModuleMainLevel::Start()
 {
 	LOG("Loading player");
 
+
+	//Audio loading
+	bumper_down_sound = App->audio->LoadFx("Assets/Audio/fx/bumper_down.wav");
+	bumper_up_sound = App->audio->LoadFx("Assets/Audio/fx/bumper_up.wav");
+
 	//height balls will be deleted
 	ball_height_limit = (SCREEN_HEIGHT * SCREEN_SIZE); //+20
 	current_ball_lives = max_ball_lives;
@@ -222,6 +227,16 @@ update_status ModuleMainLevel::Update()
 		leftBumper->GetBodyB()->ApplyForce({ 0, -30 }, {PIXELS_TO_METERS(150), PIXELS_TO_METERS(269)}, true);
 	}
 
+	//Bumper sound
+	if(App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_DOWN)
+	{
+		App->audio->PlayFx(bumper_up_sound);
+	}
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_UP || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_UP)
+	{
+		App->audio->PlayFx(bumper_down_sound);
+	}
+
 	//Right Bumper Movement
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && righBumper)
 	{
@@ -300,29 +315,32 @@ update_status ModuleMainLevel::Update()
 			{
 				PhysBody *temp = App->physics->world_body_list[i];
 
-				if (temp->needs_Center)
+				if (temp->body->IsActive()) 
 				{
-					//LOG("%i", temp.GetRotation())
-					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], 
-						(temp->GetPositionPixels_X()) - (temp->section.w / 2),
-						(temp->GetPositionPixels_Y()) - (temp->section.h / 2),
-						&temp->section, 
-						1.f, 
-						temp->GetRotation(), 
-						INT_MAX, INT_MAX, 
-						temp->flip);
-				}
-				else
-				{
-					App->renderer->Blit(sprite_sheet_list[temp->spriteSheet], 
-						temp->GetPositionPixels_X() - temp->offset.x, 
-						temp->GetPositionPixels_Y() - temp->offset.x,
-						&temp->section, 
-						1.f, 
-						temp->GetRotation(), 
-						temp->pivotX, 
-						temp->pivotY, 
-						temp->flip);
+					if (temp->needs_Center)
+					{
+						//LOG("%i", temp.GetRotation())
+						App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
+							(temp->GetPositionPixels_X()) - (temp->section.w / 2),
+							(temp->GetPositionPixels_Y()) - (temp->section.h / 2),
+							&temp->section,
+							1.f,
+							temp->GetRotation(),
+							INT_MAX, INT_MAX,
+							temp->flip);
+					}
+					else
+					{
+						App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
+							temp->GetPositionPixels_X() - temp->offset.x,
+							temp->GetPositionPixels_Y() - temp->offset.x,
+							&temp->section,
+							1.f,
+							temp->GetRotation(),
+							temp->pivotX,
+							temp->pivotY,
+							temp->flip);
+					}
 				}
 			}
 		}

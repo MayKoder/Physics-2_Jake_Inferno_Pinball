@@ -75,6 +75,10 @@ public:
 	b2RevoluteJoint* leftBumper;
 	Sprite* launchSpring;
 
+	unsigned int bumper_up_sound;
+	unsigned int bumper_down_sound;
+
+
 	bool springDown = false, springUp = false;
 
 
