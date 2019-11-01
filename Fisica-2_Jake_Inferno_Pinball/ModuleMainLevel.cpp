@@ -224,9 +224,11 @@ bool ModuleMainLevel::Start()
 	half_Array[(sizeof(bumper_left) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left, 
 		(sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody));
+	leftBumper[0] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, -45, 102 + 10, SCREEN_HEIGHT - 43 + 7);
 
-	leftBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, -45, 102 + 10, SCREEN_HEIGHT - 43 + 7);
-
+	App->physics->world_body_list.add(App->physics->Create_Poly(105, -254, *&bumper_left,
+		(sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody));
+	leftBumper[1] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, -45, 102 + 10, -254 + 7);
 	
 
 	int bumper_right[14] = {
@@ -236,12 +238,14 @@ bool ModuleMainLevel::Start()
 	half_Array[(sizeof(bumper_right) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Poly(178, SCREEN_HEIGHT - 43, *&bumper_right, 
 		(sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody, SDL_FLIP_HORIZONTAL));
+	righBumper[0] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, 45, 220, SCREEN_HEIGHT - 43 + 7);
 
-	righBumper = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, 45, 220, SCREEN_HEIGHT - 43 + 7);
+	App->physics->world_body_list.add(App->physics->Create_Poly(178, -254, *&bumper_right,
+		(sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody, SDL_FLIP_HORIZONTAL));
+	righBumper[1] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, 45, 220, -254 + 7);
+
 
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35}, b2BodyType::b2_staticBody, 0.f));
-
-
 
 #pragma endregion
 
@@ -287,7 +291,8 @@ update_status ModuleMainLevel::Update()
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && leftBumper)
 	{
 		//leftBumper->GetBodyB()->ApplyForceToCenter({ 0, -50 }, true);
-		leftBumper->GetBodyB()->ApplyForce({ 0, -30 }, {PIXELS_TO_METERS(150), PIXELS_TO_METERS(269)}, true);
+		leftBumper[0]->GetBodyB()->ApplyForce({ 0, -30 }, {PIXELS_TO_METERS(150), PIXELS_TO_METERS(269)}, true);
+		leftBumper[1]->GetBodyB()->ApplyForce({ 0, -30 }, {PIXELS_TO_METERS(150), PIXELS_TO_METERS(269)}, true);
 	}
 
 	//Bumper sound
@@ -303,7 +308,8 @@ update_status ModuleMainLevel::Update()
 	//Right Bumper Movement
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && righBumper)
 	{
-		righBumper->GetBodyB()->ApplyForce({ 0, -30 }, { PIXELS_TO_METERS(181), PIXELS_TO_METERS(269) }, true);
+		righBumper[0]->GetBodyB()->ApplyForce({ 0, -30 }, { PIXELS_TO_METERS(181), PIXELS_TO_METERS(269) }, true);
+		righBumper[1]->GetBodyB()->ApplyForce({ 0, -30 }, { PIXELS_TO_METERS(181), PIXELS_TO_METERS(269) }, true);
 	}
 
 	//LOG("%i", launchSpring->position.x)
@@ -455,13 +461,18 @@ bool ModuleMainLevel::CleanUp()
 	gameplay_sprite_list.clear();
 	cover_sprite_list.clear();
 
-	if (righBumper != nullptr) {
-		App->physics->world->DestroyJoint(righBumper);
-		righBumper = nullptr;
+	if (righBumper != nullptr) 
+	{
+		App->physics->world->DestroyJoint(righBumper[0]);
+		righBumper[0] = nullptr;
+		App->physics->world->DestroyJoint(righBumper[1]);
+		righBumper[1] = nullptr;
 	}
 	if (leftBumper != nullptr) {
-		App->physics->world->DestroyJoint(leftBumper);
-		leftBumper = nullptr;
+		App->physics->world->DestroyJoint(leftBumper[0]);
+		leftBumper[0] = nullptr;
+		App->physics->world->DestroyJoint(leftBumper[1]);
+		leftBumper[1] = nullptr;
 	}
 
 	return true;
@@ -486,7 +497,17 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 			{
 				highestScore = score;
 			}
+			//score = 0;
+
 			score = 0;
+			FormatScoreText(prevScore, prev_score_text);
+			FormatScoreText(highestScore, highest_score_text);
+			FormatScoreText(score, score_text);
+
+
+			//TODO: RESET GAME HERE DO NOT SET TO SPAWN ONLY (maybe stay a few seconds as 0 lives)
+			SetBallOnSpawn(App->physics->world_body_list[positionOnList]);
+			current_ball_lives = max_ball_lives;
 		}
 		else
 		{

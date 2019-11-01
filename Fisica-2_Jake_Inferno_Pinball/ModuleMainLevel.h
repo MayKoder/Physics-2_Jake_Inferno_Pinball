@@ -78,8 +78,8 @@ public:
 
 	PhysBody* lower_Ball = nullptr;
 
-	b2RevoluteJoint* righBumper;
-	b2RevoluteJoint* leftBumper;
+	b2RevoluteJoint* righBumper[2];
+	b2RevoluteJoint* leftBumper[2];
 	Sprite* launchSpring;
 
 	unsigned int bumper_up_sound;
