@@ -84,6 +84,7 @@ public:
 
 	unsigned int bumper_up_sound;
 	unsigned int bumper_down_sound;
+	unsigned int spring_launch_sound;
 
 
 	bool springDown = false, springUp = false;

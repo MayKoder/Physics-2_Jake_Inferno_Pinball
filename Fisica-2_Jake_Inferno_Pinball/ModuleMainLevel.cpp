@@ -55,6 +55,7 @@ bool ModuleMainLevel::Start()
 	//Audio loading
 	bumper_down_sound = App->audio->LoadFx("Assets/Audio/fx/bumper_down.wav");
 	bumper_up_sound = App->audio->LoadFx("Assets/Audio/fx/bumper_up.wav");
+	spring_launch_sound = App->audio->LoadFx("Assets/Audio/fx/spring_launch.wav");
 
 	//height balls will be deleted
 	ball_height_limit = (SCREEN_HEIGHT * SCREEN_SIZE); //+20
@@ -324,6 +325,7 @@ update_status ModuleMainLevel::Update()
 		}
 		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_UP && ball_body_in_spawn)
 		{
+			App->audio->PlayFx(spring_launch_sound);
 			springDown = false;
 			springUp = true;
 		}
