@@ -79,9 +79,17 @@ bool ModuleMainLevel::Start()
 	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 9), { 902, 0, 322, 1000 }, 1.f, 0.f, 0, 0, 1);
 
 
-
+	//circulos dragon
 	App->physics->world_body_list.add(App->physics->Create_Circle(126, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
 	App->physics->world_body_list.add(App->physics->Create_Circle(203, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(247, 0 - (1009 - SCREEN_HEIGHT) + 671, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(65, 0 - (1009 - SCREEN_HEIGHT) + 671, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(203, 0 - (1009 - SCREEN_HEIGHT) + 617, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(126, 0 - (1009 - SCREEN_HEIGHT) + 617, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(213, 0 - (1009 - SCREEN_HEIGHT) + 333, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(242, 0 - (1009 - SCREEN_HEIGHT) + 262, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
+	App->physics->world_body_list.add(App->physics->Create_Circle(100, 0 - (1009 - SCREEN_HEIGHT) + 333, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
+
 	spawn_sensor = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({323, -15, 10, 3}, -45))->data; //735s
 	spawn_blocker = App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, 15, 10, 3}, b2BodyType::b2_staticBody, 0, 0, {140, 343, 24, 18}, SDL_FLIP_NONE, -45))->data; //735s
 	App->physics->converter_list.add(spawn_sensor);
