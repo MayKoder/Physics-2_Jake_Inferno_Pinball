@@ -347,8 +347,8 @@ update_status ModuleMainLevel::Update()
 
 
 	//Print UI
-	App->fonts->BlitText(345, 44, 0, score_text);
-	App->fonts->BlitText(485, 109, 0, lives_text);
+	App->fonts->BlitText(340, 55, 0, score_text, {0, 0, 0, 0}, 11, 0);
+	App->fonts->BlitText(483, 120, 0, lives_text, { 0, 0, 0, 0 }, 2, 0);
 
 
 	return UPDATE_CONTINUE;
