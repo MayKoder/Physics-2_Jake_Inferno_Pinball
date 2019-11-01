@@ -258,6 +258,10 @@ bool ModuleMainLevel::Start()
 
 	//Score Display
 	LoadSprite(0, SCREEN_WIDTH - 221 - 10, 0, { 0, 567, 221, 153 }, 0.f, 0.f, 0, 0, 1);
+	
+	//More score covers
+	LoadSprite(0, 387, -185, { 221, 567,152, 29 }, 0, 0, 0, 0, 1);
+	LoadSprite(0, 387, -240, { 221, 567,152, 29 }, 0, 0, 0, 0, 1);
 
 	SetBallOnSpawn(Create_Play_Ball(324, 60));
 	App->renderer->posY_Limit = (gameplay_sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 16 ) * SCREEN_SIZE);
@@ -421,7 +425,7 @@ update_status ModuleMainLevel::Update()
 	}
 
 	//Render UI elements
-	int lives_Sprite_Position = 483;
+	int lives_Sprite_Position = 480;
 	for (int i = 0; i < current_ball_lives; i++)
 	{
 		SDL_Rect sec = { 0, 360, 13, 13 };
@@ -431,6 +435,8 @@ update_status ModuleMainLevel::Update()
 
 
 	//Print UI
+	App->fonts->BlitText(410, 170, 2, "Last Score", { 0, 0, 8, 14 }, 14, 11);
+	App->fonts->BlitText(398, 225, 2, "Highest Score", { 0, 0, 8, 14 }, 13, 11);
 	App->fonts->BlitText(361, 59, 0, score_text, {0, 0, 13, 24}, 11, 4);
 	App->fonts->BlitText(498, 124, 0, lives_text, { 0, 0, 12, 23 }, 2, 8);
 
@@ -479,8 +485,11 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 		{
 			//End game
 			current_ball_lives = 0;
-
-
+			prevScore = score;
+			if (score > highestScore)
+			{
+				highestScore = score;
+			}
 		}
 		else
 		{
@@ -535,7 +544,7 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyB->scoreOnHit != 0) 
 		{
 			IncrementScore(bodyB->scoreOnHit);
-			LOG("%i", score);
+			LOG("%s", score_text);
 		}
 
 		if (bodyB == spawn_sensor)
@@ -551,40 +560,50 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	}
 }
 
+void ModuleMainLevel::FormatScoreText(int score, char score_txt[])
+{
+	p2SString* currenttext = new p2SString("%d", score);
+	//currenttext->create("%d", score);
+	const char* cur = currenttext->GetString();
+	int zeros = 9 - currenttext->Length();
+	int count = 0;
+	//Text update
+	for (int i = 0; i < 11; i++)
+	{
+
+		if (i == 3 || i == 7)
+		{
+			score_txt[i] = ',';
+		}
+		else
+		{
+			if (zeros > 0)
+			{
+				score_txt[i] = '0';
+				zeros--;
+			}
+			else
+			{
+				score_txt[i] = cur[count];
+				count++;
+			}
+		}
+
+	}
+	delete currenttext;
+}
+
 void ModuleMainLevel::IncrementScore(int increment) 
 {
 	if (score + increment <= 999999999)
 	{
 		score += increment;
 
-		p2SString* currenttext = new p2SString("%d", score);
-		//currenttext->create("%d", score);
-		const char* cur = currenttext->GetString();
-		int zeros = 9 - currenttext->Length();
-		int count = 0;
-		//Text update
-		for (int i = 0; i < 11; i++)
-		{
-
-			if (i == 3 || i == 7) 
-			{
-				score_text[i] = ',';
-			}
-			else
-			{
-				if (zeros > 0) 
-				{
-					score_text[i] = '0';
-					zeros--;
-				}
-				else
-				{
-					score_text[i] = cur[count];
-					count++;
-				}
-			}
-
-		}
-		delete currenttext;
+		FormatScoreText(score, score_text);
+	}
+	else
+	{
+		score = 999999999;
+		FormatScoreText(score, score_text);
 	}
 }

@@ -2,7 +2,7 @@
 #define __ModuleFonts_H__
 
 #include "Module.h"
-#define MAX_FONTS 1
+#define MAX_FONTS 3
 #define MAX_FONT_CHARS 256
 
 struct Font
@@ -30,8 +30,8 @@ public:
 	void BlitText(int x, int y, int bmp_font_id, const char* text, SDL_Rect section, int lenght, int spacing) const;
 
 public:
-
-	Font	 fonts[MAX_FONTS];
+	int loadedFonts = 0;
+	Font	fonts[MAX_FONTS];
 };
 
 

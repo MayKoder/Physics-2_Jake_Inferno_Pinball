@@ -49,6 +49,7 @@ public:
 	void SetBallOnSpawn(PhysBody*);
 
 	void IncrementScore(int);
+	void FormatScoreText(int score, char[]);
 
 	PhysBody* Create_Play_Ball(int x, int y);
 
@@ -61,8 +62,14 @@ public:
 public:
 
 	int ball_height_limit;
-	int score = 000000000;
+	int score = 0;
+	int prevScore = 0;
+	int highestScore = 0;
+
 	char score_text[11] = {'0', '0', '0', ',', '0', '0', '0', ',', '0', '0', '0'};
+	char prev_score_text[11] = {'0', '0', '0', ',', '0', '0', '0', ',', '0', '0', '0'};
+	char highest_score_text[11] = {'0', '0', '0', ',', '0', '0', '0', ',', '0', '0', '0'};
+
 	char lives_text[2] = { 'x', '0'};
 	int current_ball_lives;
 

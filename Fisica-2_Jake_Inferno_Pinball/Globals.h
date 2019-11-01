@@ -40,20 +40,6 @@ struct vector3
 	void Init_Zeros() {
 		x = 0; y = 0; z = 0;
 	}
-
-	void Increment(int increment) 
-	{
-		if (z + increment >= 999) 
-		{
-
-
-		}
-		else
-		{
-			z += increment;
-		}
-	}
-
 };
 
 // Configuration -----------

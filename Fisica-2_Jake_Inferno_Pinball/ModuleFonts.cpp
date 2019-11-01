@@ -22,6 +22,8 @@ bool ModuleFonts::Init()
 	//App->textures->Load("Assets/Fonts/font_normal.png");
 
 	Load("Assets/Fonts/font_normal.png", " !,.0123456789?ABCDEFGHIJKLMNOPQRSTUWYabcdefghiklmnopqrstuwxy'", 20, 31);
+	Load("Assets/Fonts/font_normal_black.png", " !,.0123456789?ABCDEFGHIJKLMNOPQRSTUWYabcdefghiklmnopqrstuwxy'", 20, 31);
+	Load("Assets/Fonts/font_normal_white.png", " !,.0123456789?ABCDEFGHIJKLMNOPQRSTUWYabcdefghiklmnopqrstuwxy'", 20, 31);
 
 
 	return ret;
@@ -43,7 +45,7 @@ bool ModuleFonts::CleanUp()
 // Load new texture from file path
 int ModuleFonts::Load(const char* texture_path, const char* characters, int w, int h)
 {
-	int id = 0;
+	int id = loadedFonts;
 
 	if (texture_path == nullptr || characters == nullptr)
 	{
@@ -79,6 +81,7 @@ int ModuleFonts::Load(const char* texture_path, const char* characters, int w, i
 	fonts[id].char_h = h;
 
 	LOG("Successfully loaded BMP font from %s", texture_path);
+	loadedFonts++;
 
 	return id;
 }
@@ -127,6 +130,9 @@ void ModuleFonts::BlitText(int x, int y, int font_id, const char* text, SDL_Rect
 				if (text[i] == ',') 
 				{
 					x -= 7;
+				}
+				if (text[i] == 'i') {
+					x -= spacing / 2;
 				}
 			}
 			//rect = rect_copy;
