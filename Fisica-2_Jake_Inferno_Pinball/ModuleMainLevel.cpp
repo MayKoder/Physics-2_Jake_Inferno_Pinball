@@ -105,12 +105,12 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->Create_Circle(99 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 524 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 2000));
 
 	//palos rojos
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 89 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 16, 32 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 213 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 16, 32 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 241 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 577 + MARGIN_Y, 16, 32 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 60 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 577 + MARGIN_Y, 16, 32 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 120 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 81 + MARGIN_Y, 16, 32 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 188 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 81 + MARGIN_Y, 16, 32 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 89 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 213 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 241 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 577 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 60 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 577 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 120 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 81 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 188 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 81 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
 
 	spawn_sensor = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({323, -15, 10, 3}, -45))->data; //735s
 	spawn_blocker = App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, 15, 10, 3}, b2BodyType::b2_staticBody, 0, 0, {140, 343, 24, 18}, SDL_FLIP_NONE, -45))->data; //735s
