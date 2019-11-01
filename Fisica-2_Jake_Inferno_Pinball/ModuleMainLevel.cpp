@@ -125,6 +125,12 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->Create_Circle(271 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 90 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
 	App->physics->world_body_list.add(App->physics->Create_Circle(282 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 119 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
 
+	//ciculos teleport
+	App->physics->world_body_list.add(App->physics->Create_Circle(146 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 561 + MARGIN_Y, 0.21f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(35 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 355 + MARGIN_Y, 0.21f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(255 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 355 + MARGIN_Y, 0.21f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }, 2000));
+	App->physics->world_body_list.add(App->physics->Create_Circle(152 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 102 + MARGIN_Y, 0.21f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }, 2000));
+
 	//palos rojos
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 89 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 213 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 30 }, SDL_FLIP_NONE, 0));
