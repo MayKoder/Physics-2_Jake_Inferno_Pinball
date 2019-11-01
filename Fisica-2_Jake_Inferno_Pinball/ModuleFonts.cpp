@@ -133,7 +133,7 @@ void ModuleFonts::BlitText(int x, int y, int font_id, const char* text) const
 					x += 7;
 				}
 
-				//App->renderer->DrawQuad({x, y, rect.w, rect.h}, 255, 255, 255, 50);
+				App->renderer->DrawQuad({x, y, rect.w, rect.h}, 255, 255, 255, 50);
 				App->renderer->Blit(fonts[font_id].graphic, x - (38 * i), y, &rect, false);
 				x += rect.w;
 				rect = rect_copy;

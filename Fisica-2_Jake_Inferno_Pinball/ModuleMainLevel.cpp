@@ -186,7 +186,7 @@ bool ModuleMainLevel::Start()
 	LoadSprite(0, 0, 0, { 0, 0, 580, 287 }, 0.f, 0.f, 0, 0, 1);
 
 	//Score Display
-	LoadSprite(0, SCREEN_WIDTH - 221 - 10, 0, { 1228, 0, 221, 153 }, 0.f, 0.f, 0, 0, 1);
+	LoadSprite(0, SCREEN_WIDTH - 221 - 10, 0, { 0, 567, 221, 153 }, 0.f, 0.f, 0, 0, 1);
 
 	SetBallOnSpawn(Create_Play_Ball(324, 60));
 	App->renderer->posY_Limit = (gameplay_sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 16 ) * SCREEN_SIZE);
@@ -347,7 +347,7 @@ update_status ModuleMainLevel::Update()
 
 
 	//Print UI
-	App->fonts->BlitText(345, 44, 0, "000,000,000");
+	App->fonts->BlitText(345, 44, 0, score_text);
 	App->fonts->BlitText(485, 109, 0, lives_text);
 
 
@@ -444,12 +444,12 @@ void ModuleMainLevel::SetBallOnSpawn(PhysBody* spawn_ball)
 void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 
-	if (bodyA) 
+	if (bodyA && bodyB) 
 	{
 
-		if (bodyA->scoreOnHit != 0) 
+		if (bodyB->scoreOnHit != 0) 
 		{
-			IncrementScore(bodyA->scoreOnHit);
+			IncrementScore(bodyB->scoreOnHit);
 			LOG("%i", score);
 		}
 
@@ -470,9 +470,11 @@ void ModuleMainLevel::IncrementScore(int increment)
 	{
 		score += increment;
 
-		p2SString currenttext = p2SString(score);
-
-
+		p2SString* currenttext = new p2SString("%d", score);
+		//currenttext->create("%d", score);
+		const char* cur = currenttext->GetString();
+		int zeros = 9 - currenttext->Length();
+		int count = 0;
 		//Text update
 		for (int i = 0; i < 11; i++)
 		{
@@ -483,15 +485,19 @@ void ModuleMainLevel::IncrementScore(int increment)
 			}
 			else
 			{
-
+				if (zeros > 0) 
+				{
+					score_text[i] = '0';
+					zeros--;
+				}
+				else
+				{
+					score_text[i] = cur[count];
+					count++;
+				}
 			}
 
-
-
 		}
-
-
-
-
+		delete currenttext;
 	}
 }
