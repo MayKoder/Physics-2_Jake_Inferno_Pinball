@@ -77,9 +77,9 @@ bool ModuleMainLevel::Start()
 
 	App->physics->world_body_list.add(App->physics->Create_Circle(126, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
 	App->physics->world_body_list.add(App->physics->Create_Circle(203, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
-	spawn_sensor = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({323, 15, 10, 3}, -45))->data; //735s
-
-
+	spawn_sensor = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({323, -15, 10, 3}, -45))->data; //735s
+	spawn_blocker = App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, 15, 10, 3}, b2BodyType::b2_staticBody, 0, 0, {140, 343, 24, 18}, SDL_FLIP_NONE, -45))->data; //735s
+	App->physics->converter_list.add(spawn_sensor);
 
 	//TODO: Render everything with coliders?
 #pragma region Chain Initials
@@ -369,7 +369,6 @@ bool ModuleMainLevel::CleanUp()
 	gameplay_sprite_list.clear();
 	cover_sprite_list.clear();
 
-
 	if (righBumper != nullptr) {
 		App->physics->world->DestroyJoint(righBumper);
 		righBumper = nullptr;
@@ -437,6 +436,8 @@ void ModuleMainLevel::SetBallOnSpawn(PhysBody* spawn_ball)
 	spawn_ball->body->SetAngularVelocity(0);
 	spawn_ball->body->SetTransform({ PIXELS_TO_METERS(324), PIXELS_TO_METERS(60) }, 0);
 	ball_body_in_spawn = spawn_ball;
+	App->physics->converter_list.add(spawn_sensor);
+	App->physics->converter_list.add(spawn_blocker);
 	ball_in_spawn = true;
 }
 
@@ -457,6 +458,8 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		{
 			LOG("Out of spawn");
 			//TODO: FIX Hitting the ball 2 times will cause a soflock
+			App->physics->converter_list.add(spawn_sensor);
+			App->physics->converter_list.add(spawn_blocker);
 			launch_Force = 0;
 			ball_in_spawn = false;
 			ball_body_in_spawn = nullptr;

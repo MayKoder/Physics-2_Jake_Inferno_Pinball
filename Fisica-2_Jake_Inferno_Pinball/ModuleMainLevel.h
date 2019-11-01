@@ -85,6 +85,7 @@ private: //Spawn settings//
 	bool ball_in_spawn = false;
 	PhysBody* ball_body_in_spawn;
 	PhysBody* spawn_sensor = nullptr;
+	PhysBody* spawn_blocker = nullptr;
 	float32 launch_Force = 0;
 
 };

@@ -49,6 +49,14 @@ bool ModulePhysics::Start()
 update_status ModulePhysics::PreUpdate()
 {
 	// TODO 3: Update the simulation ("step" the world)
+	for (int i = 0; i < converter_list.count(); i++)
+	{
+
+
+			converter_list[i]->body->SetActive(!converter_list[i]->body->IsActive());
+
+		converter_list.del(converter_list.At(i));
+	}
 	world->Step(timeStep, velocityIterations, positionIterations);
 
 	for (b2Contact* c = world->GetContactList(); c; c = c->GetNext())
@@ -206,6 +214,8 @@ bool ModulePhysics::CleanUp()
 	}
 	joint_body_list.clear();
 
+	converter_list.clear();
+
 	delete world;
 
 	return true;
@@ -291,11 +301,12 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 	return nullptr;
 
 }
-PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip)
+PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip, float angle)
 {
 	b2BodyDef body;
 	body.type = (b2BodyType)type;
 	body.position.Set(PIXELS_TO_METERS(size.x), PIXELS_TO_METERS(size.y));
+	body.angle = angle * DEGTORAD;
 	//body.active = false;
 
 	b2Body* b = world->CreateBody(&body);

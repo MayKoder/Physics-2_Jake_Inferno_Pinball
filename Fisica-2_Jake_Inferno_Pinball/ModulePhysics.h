@@ -5,6 +5,7 @@
 #include "Globals.h"
 #include"p2List_Extended.h"
 #include "Box2D/Box2D/Box2D.h"
+#include"ModuleAudio.h"
 
 class b2World;
 class b2Body;
@@ -32,6 +33,8 @@ public:
 
 	//Sound and score
 	int scoreOnHit = 0;
+	unsigned int hit_sound;
+
 
 	int spriteSheet;
 	SDL_Rect section;
@@ -55,7 +58,7 @@ public:
 public:
 	//Shape creation
 	PhysBody* Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, int hit_score = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
-	PhysBody* Create_Rectangle(SDL_Rect size, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE);
+	PhysBody* Create_Rectangle(SDL_Rect size, int type, float density, int sheet = -1, SDL_Rect sec = {0, 0, 0, 0}, SDL_RendererFlip flip = SDL_FLIP_NONE, float angle = 0);
 	PhysBody* Create_Chain(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	PhysBody* Create_Poly(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, b2BodyType type = b2BodyType::b2_dynamicBody, 
 		SDL_RendererFlip flip = SDL_FLIP_NONE, b2Vec2 offset = {0, 0}, float density = 1.0f);
@@ -73,6 +76,9 @@ public:
 public:
 	p2List_Extended<PhysBody*> world_body_list;
 	p2List_Extended<b2Body*> joint_body_list;
+
+
+	p2List_Extended<PhysBody*> converter_list;
 	void DestroyBody(b2Body*);
 	bool MoveObjectSmooth(b2Vec2* position, b2Vec2 target_point,float32 speed);
 	b2World* world;
