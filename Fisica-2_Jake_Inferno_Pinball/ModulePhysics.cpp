@@ -301,7 +301,7 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 	return nullptr;
 
 }
-PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip, float angle)
+PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip, float angle, int hit_score)
 {
 	b2BodyDef body;
 	body.type = (b2BodyType)type;
@@ -324,6 +324,7 @@ PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density
 	bdy->spriteSheet = sheet;
 	bdy->section = sec;
 	bdy->flip = flip;
+	bdy->scoreOnHit = hit_score;
 	b->SetUserData(bdy);
 
 	return bdy;
