@@ -187,6 +187,15 @@ bool ModuleMainLevel::Start()
 #pragma endregion
 
 
+	//Carlos put objects HERE
+
+		//Exemple, x, y, radius, type, 0.f, 0, sec de la seccion de la spritesheet, puntos que da en cada hit
+		//(App->physics->world_body_list.add(App->physics->Create_Circle(203, 0 - (1009 - SCREEN_HEIGHT) + 732, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000)); //735s
+
+
+
+	//END
+
 	//Screen Cover
 	LoadSprite(0, 0, 0, { 0, 0, 580, 287 }, 0.f, 0.f, 0, 0, 1);
 
