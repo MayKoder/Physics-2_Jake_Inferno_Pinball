@@ -56,6 +56,7 @@ bool ModuleMainLevel::Start()
 	bumper_down_sound = App->audio->LoadFx("Assets/Audio/fx/bumper_down.wav");
 	bumper_up_sound = App->audio->LoadFx("Assets/Audio/fx/bumper_up.wav");
 	spring_launch_sound = App->audio->LoadFx("Assets/Audio/fx/spring_launch.wav");
+	spawn_lock_sound = App->audio->LoadFx("Assets/Audio/fx/spawn_closing.wav");
 
 	//height balls will be deleted
 	ball_height_limit = (SCREEN_HEIGHT * SCREEN_SIZE); //+20
@@ -93,24 +94,24 @@ bool ModuleMainLevel::Start()
 	App->physics->world_body_list.add(App->physics->Create_Circle(69 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 333 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000));
 
 	//Green circles
-	App->physics->world_body_list.add(App->physics->Create_Circle(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 777 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 815 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 777 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 815 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(149 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 637 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(149 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 694 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(72 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 541 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(226 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 541 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(198 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 524 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(99 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 524 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 279 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 298 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 317 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 279 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 298 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
-	App->physics->world_body_list.add(App->physics->Create_Circle(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 317 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 777 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 815 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 777 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 815 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(149 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 637 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(149 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 694 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(72 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 541 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(226 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 541 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(198 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 524 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(99 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 524 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 279 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 298 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 317 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 279 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 298 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 317 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000));
 
 	//Red circles
 	App->physics->world_body_list.add(App->physics->Create_Circle(205 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 233 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000));
@@ -570,6 +571,7 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyB == spawn_sensor)
 		{
 			LOG("Out of spawn");
+			App->audio->PlayFx(spawn_lock_sound);
 			//TODO: FIX Hitting the ball 2 times will cause a soflock
 			App->physics->converter_list.add(spawn_sensor);
 			App->physics->converter_list.add(spawn_blocker);

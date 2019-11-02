@@ -420,7 +420,36 @@ PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotat
 
 	return bdy;
 }
+PhysBody* ModulePhysics::Create_Circle_Sensor(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, int hit_score, SDL_RendererFlip flip)
+{
+	b2BodyDef body;
+	body.type = type;
+	body.position.Set(PIXELS_TO_METERS(_x), PIXELS_TO_METERS(_y));
 
+	b2Body* b = world->CreateBody(&body);
+
+	b2CircleShape shape;
+	shape.m_radius = meter_radius;
+
+
+	b2FixtureDef fixture;
+	fixture.shape = &shape;
+	fixture.isSensor = true;
+
+	b->CreateFixture(&fixture);
+
+	PhysBody* bdy = new PhysBody();
+	bdy->body = b;
+	bdy->spriteSheet = sheet;
+	bdy->section = sec;
+	bdy->flip = flip;
+	bdy->scoreOnHit = hit_score;
+	bdy->listener = App->main_level;
+
+	b->SetUserData(bdy);
+
+	return bdy;
+}
 
 //Body class definition
 PhysBody::~PhysBody()

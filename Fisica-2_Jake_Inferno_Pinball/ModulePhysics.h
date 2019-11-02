@@ -62,6 +62,7 @@ public:
 	PhysBody* Create_Poly(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, b2BodyType type = b2BodyType::b2_dynamicBody, 
 		SDL_RendererFlip flip = SDL_FLIP_NONE, b2Vec2 offset = {0, 0}, float density = 1.0f);
 	PhysBody* Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation);
+	PhysBody* Create_Circle_Sensor(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int hit_score = 0, SDL_RendererFlip flip = SDL_FLIP_NONE);
 
 	//Joint creation
 	b2RevoluteJoint* Create_Revolute_Joint(b2Body*, float, int, int);
