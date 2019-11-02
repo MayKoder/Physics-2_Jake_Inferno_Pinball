@@ -86,11 +86,13 @@ public:
 	unsigned int bumper_down_sound;
 	unsigned int spring_launch_sound;
 	unsigned int spawn_lock_sound;
+	unsigned int round_start_sound;
 	unsigned int dragon_circle_sound;
 	unsigned int green_circle_sound;
 	unsigned int lateral_spring_sound;
 	unsigned int red_stick_sound;
 	unsigned int teleport_sound;
+	unsigned int big_triangle_sound;
 
 
 	bool springDown = false, springUp = false;
@@ -104,6 +106,11 @@ private: //Spawn settings//
 	PhysBody* ball_body_in_spawn;
 	PhysBody* spawn_sensor = nullptr;
 	PhysBody* spawn_blocker = nullptr;
+
+	//Teleports
+	PhysBody* teleport_enter;
+	PhysBody* teleport_exits[2];
+
 	float32 launch_Force = 0;
 
 };

@@ -51,11 +51,17 @@ update_status ModulePhysics::PreUpdate()
 	// TODO 3: Update the simulation ("step" the world)
 	for (int i = 0; i < converter_list.count(); i++)
 	{
-
-
+		if (converter_list[i]->body->GetType() == b2BodyType::b2_dynamicBody) 
+		{
+			converter_list[i]->body->SetTransform(converter_list[i + 1]->body->GetPosition(), 0);
+			converter_list.del(converter_list.At(i + 1));
+			converter_list.del(converter_list.At(i));
+		}
+		else
+		{
 			converter_list[i]->body->SetActive(!converter_list[i]->body->IsActive());
-
-		converter_list.del(converter_list.At(i));
+			converter_list.del(converter_list.At(i));
+		}
 	}
 	world->Step(timeStep, velocityIterations, positionIterations);
 
@@ -221,7 +227,7 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, int hit_score, SDL_RendererFlip flip)
+PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, int hit_score, SDL_RendererFlip flip, int sound)
 {
 	b2BodyDef body;
 	body.type = type;
@@ -245,6 +251,7 @@ PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Bod
 	bdy->body = b;
 	bdy->spriteSheet = sheet;
 	bdy->section = sec;
+	bdy->soundOnHit = sound;
 	bdy->flip = flip;
 	bdy->scoreOnHit = hit_score;
 	bdy->listener = App->main_level;
@@ -301,7 +308,7 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 	return nullptr;
 
 }
-PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip, float angle, int hit_score)
+PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip, float angle, int hit_score, int sound)
 {
 	b2BodyDef body;
 	body.type = (b2BodyType)type;
@@ -323,6 +330,7 @@ PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density
 	bdy->body = b;
 	bdy->spriteSheet = sheet;
 	bdy->section = sec;
+	bdy->soundOnHit = sound;
 	bdy->flip = flip;
 	bdy->scoreOnHit = hit_score;
 	b->SetUserData(bdy);
@@ -420,7 +428,7 @@ PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotat
 
 	return bdy;
 }
-PhysBody* ModulePhysics::Create_Circle_Sensor(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, int hit_score, SDL_RendererFlip flip)
+PhysBody* ModulePhysics::Create_Circle_Sensor(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, int hit_score, int sound)
 {
 	b2BodyDef body;
 	body.type = type;
@@ -442,7 +450,7 @@ PhysBody* ModulePhysics::Create_Circle_Sensor(int _x, int _y, float meter_radius
 	bdy->body = b;
 	bdy->spriteSheet = sheet;
 	bdy->section = sec;
-	bdy->flip = flip;
+	bdy->soundOnHit = sound;
 	bdy->scoreOnHit = hit_score;
 	bdy->listener = App->main_level;
 
