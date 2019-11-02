@@ -57,6 +57,11 @@ bool ModuleMainLevel::Start()
 	bumper_up_sound = App->audio->LoadFx("Assets/Audio/fx/bumper_up.wav");
 	spring_launch_sound = App->audio->LoadFx("Assets/Audio/fx/spring_launch.wav");
 	spawn_lock_sound = App->audio->LoadFx("Assets/Audio/fx/spawn_closing.wav");
+	dragon_circle_sound = App->audio->LoadFx("Assets/Audio/fx/dragon_circle_sound.wav");
+	green_circle_sound = App->audio->LoadFx("Assets/Audio/fx/green_circle_sound.mp3");
+	lateral_spring_sound = App->audio->LoadFx("Assets/Audio/fx/lateral_spring_sound.mp3");
+	red_stick_sound = App->audio->LoadFx("Assets/Audio/fx/red_stick_sound.mp3");
+	teleport_sound = App->audio->LoadFx("Assets/Audio/fx/teleport_sound.mp3");
 
 	//height balls will be deleted
 	ball_height_limit = (SCREEN_HEIGHT * SCREEN_SIZE); //+20
