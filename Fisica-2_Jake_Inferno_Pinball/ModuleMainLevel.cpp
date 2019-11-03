@@ -64,6 +64,7 @@ bool ModuleMainLevel::Start()
 	red_stick_sound = App->audio->LoadFx("Assets/Audio/fx/red_stick_sound.wav");
 	teleport_sound = App->audio->LoadFx("Assets/Audio/fx/teleport_sound.wav");
 	big_triangle_sound = App->audio->LoadFx("Assets/Audio/fx/big_triangle_hit.wav");
+	bonus_sound = App->audio->LoadFx("Assets/Audio/fx/bonus_sound.wav");
 
 	//height balls will be deleted
 	ball_height_limit = (SCREEN_HEIGHT * SCREEN_SIZE); //+20
@@ -347,6 +348,7 @@ update_status ModuleMainLevel::Update()
 			FormatScoreText(score, score_text);
 			current_ball_lives = max_ball_lives;
 			SetBallOnSpawn(App->physics->world_body_list[ballPos]);
+			lives_text[1] = App->IntToChar(current_ball_lives);
 
 			App->renderer->DrawQuad({ 0, 0, SCREEN_WIDTH* SCREEN_SIZE, SCREEN_HEIGHT* SCREEN_SIZE }, 0, 0, 0, fadeValue, true, false);
 			//Aqui resetear tot
@@ -545,6 +547,14 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			App->physics->converter_list.add(teleport_exits[teleportPos]);
 		}
 
+		if (bodyB == teleport_bonus) 
+		{
+			if (current_ball_lives < max_ball_lives)
+				current_ball_lives += 1;
+			App->audio->PlayFx(bonus_sound);
+			ball_freezed = 1;
+		}
+
 		if (bodyB == spawn_sensor)
 		{
 			LOG("Out of spawn");
@@ -662,7 +672,7 @@ void ModuleMainLevel::GlobalMapLoad()
 	teleport_enter = App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(146 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 561 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, { 199, 290, 21, 21 }, 100000))->data;
 	teleport_exits[0] = App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(35 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 355 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, { 199, 290, 21, 21 }))->data;
 	teleport_exits[1] = App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(255 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 355 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, { 199, 290, 21, 21 }))->data;
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(152 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 102 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, { 199, 290, 21, 21 }, 100000));
+	teleport_bonus = App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(152 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 102 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, { 199, 290, 21, 21 }, 100000))->data;
 
 	//Red sticks
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 89 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, { 194, 324, 12, 32 }, 0, 1000, red_stick_sound, &red_stick_anim));
@@ -678,7 +688,10 @@ void ModuleMainLevel::GlobalMapLoad()
 
 	//Lateral green sensors
 	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 42 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y , 10, 3 }, 0, { 359, 328, 13, 50 }));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 259 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y , 10, 3 }, 0, { 359, 328, 13, 50 }, SDL_FLIP_HORIZONTAL));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 259 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y , 10, 3 }, 0, { 359, 328, 13, 50 }, SDL_FLIP_HORIZONTAL));	
+
+	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 32 + MARGIN_X, -418, 10, 3 }, 0, { 359, 328, 13, 50 }));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 259 + MARGIN_X, -418, 10, 3 }, 0, { 359, 328, 13, 50 }, SDL_FLIP_HORIZONTAL));
 
 #pragma endregion
 
@@ -882,11 +895,12 @@ void ModuleMainLevel::GlobalSpriteLoad()
 	//Background Top
 	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 9), { 902, 0, 322, 1000 }, 1.f, 0.f, 0, 0, 1);
 
+	//Lateral green sensors
+	LoadSprite(0, 50, -57, { 359, 328, 13, 50 }, 1.f);
+	//LoadSprite(0, 259 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y,{ 359, 328, 13, 50 });
+
 	//Screen Cover
 	LoadSprite(0, 0, 0, { 0, 0, 580, 287 }, 0.f, 0.f, 0, 0, 1);
-
-	//
-	LoadSprite(0, 394, -3, { 376, 568, 122, 116 }, 0.f, 0.f, 0, 0, 1);
 
 	//Score Display
 	LoadSprite(0, SCREEN_WIDTH - 221 - 10, 0, { 0, 567, 221, 153 }, 0.f, 0.f, 0, 0, 1);

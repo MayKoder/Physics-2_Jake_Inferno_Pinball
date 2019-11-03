@@ -89,6 +89,8 @@ private:
 	b2Body* jointBody;
 	b2MouseJoint* mouse_joint;
 	b2Body* ground;
+	float time = 0;
+	float freezeTimeLimit = 150;
 };
 
 #endif

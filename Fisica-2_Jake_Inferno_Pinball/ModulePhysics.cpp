@@ -64,6 +64,27 @@ update_status ModulePhysics::PreUpdate()
 			converter_list.del(converter_list.At(i));
 		}
 	}
+
+	if (App->main_level->ball_freezed) 
+	{
+		if (time == 0) 
+		{
+			App->main_level->lower_Ball->body->SetAwake(false);
+			App->main_level->lower_Ball->body->SetTransform(App->main_level->teleport_bonus->body->GetWorldCenter(), 0);
+			time += 1;
+		}
+		if(time <= freezeTimeLimit)
+		{
+			time += 1;
+		}
+		else
+		{
+			App->main_level->ball_freezed = false;
+			App->main_level->lower_Ball->body->SetAwake(true);
+			time = 0;
+		}
+	}
+
 	world->Step(timeStep, velocityIterations, positionIterations);
 
 	for (b2Contact* c = world->GetContactList(); c; c = c->GetNext())

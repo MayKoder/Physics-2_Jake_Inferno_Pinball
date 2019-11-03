@@ -78,6 +78,7 @@ public:
 	//void Shoot_Ball_From_Spawn();
 
 	PhysBody* lower_Ball = nullptr;
+	PhysBody* teleport_bonus;
 
 	b2RevoluteJoint* righBumper[2];
 	b2RevoluteJoint* leftBumper[2];
@@ -95,6 +96,7 @@ public:
 	unsigned int red_stick_sound;
 	unsigned int teleport_sound;
 	unsigned int big_triangle_sound;
+	unsigned int bonus_sound;
 
 	//Animations
 	Animation big_triangle_anim;
@@ -105,11 +107,11 @@ public:
 	Animation lateral_spring_anim;
 
 	bool springDown = false, springUp = false;
-
+	bool ball_freezed = 0;
 
 
 private: //Spawn settings//
-	int max_ball_lives = 1;
+	int max_ball_lives = 5;
 	uint ballsOnScreen = 0;
 	bool ball_in_spawn = false;
 	//End level vars
