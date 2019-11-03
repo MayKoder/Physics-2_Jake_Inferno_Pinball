@@ -6,6 +6,7 @@
 #include"p2List_Extended.h"
 #include "Box2D/Box2D/Box2D.h"
 #include"ModuleAudio.h"
+#include"Animation.h"
 
 class b2World;
 class b2Body;
@@ -34,6 +35,8 @@ public:
 	//Sound and score
 	int scoreOnHit = 0;
 	int soundOnHit = -1;
+	Animation idle;
+	Animation hit;
 
 	int spriteSheet;
 	SDL_Rect section;

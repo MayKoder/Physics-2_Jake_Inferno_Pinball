@@ -7,7 +7,8 @@
 class Animation
 {
 public:
-	float speed = 1.0f;
+	float speed = 1.0f;	
+	bool render_on_top = false;
 	SDL_Rect frames[MAX_FRAMES];
 
 public:
