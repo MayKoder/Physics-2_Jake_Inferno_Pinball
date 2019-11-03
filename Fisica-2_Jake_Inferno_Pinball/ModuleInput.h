@@ -54,4 +54,6 @@ private:
 	int mouse_x;
 	int mouse_y;
 
+	SDL_Event closeEvent;
+
 };

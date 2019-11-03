@@ -13,7 +13,7 @@ https://github.com/carlosredolar
 https://github.com/MayKoder
 
 
-We are students of video game development in CITM Terrassa and this is our physics first project.  
+This game has been made by two second year students of the Design and Development of Videogames degree in CITM Terrassa (UPC) using C++ in Visual Studio and with Box2D for the physics.
 
 You can check our repository using this link: https://github.com/MayKoder/Fisica-2_Jake_Inferno_Pinball
 
@@ -27,6 +27,8 @@ DOWN - Ball kicker
 
 F1 - Draw colliders
 
+ESC - Exit the game
+
 
 ## Combos and bonus
 - If you hit the dragon's mouth, you will be teleported to the top level and 100,000 bonus score
@@ -36,8 +38,9 @@ F1 - Draw colliders
 ## Differences from the original game
 Things that the original game has that we have not implemented:
 - Jake fighting animations at right
-- Loop on top side
+- Loop on the top side
 - Bonus for complete all the red circles of the top level
+- Ending screen with buttons
 
 
 ## Sprites and backgrounds

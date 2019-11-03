@@ -23,7 +23,6 @@ public:
 
 	//Coll detection
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
-	p2Point<int> ray;
 	bool ray_on;
 
 	const char* assets_path = "Assets/Main_Level/";
@@ -78,6 +77,10 @@ public:
 	//void Shoot_Ball_From_Spawn();
 
 	PhysBody* lower_Ball = nullptr;
+
+	//Teleports
+	PhysBody* teleport_enter;
+	PhysBody* teleport_exits[2];
 	PhysBody* teleport_bonus;
 
 	b2RevoluteJoint* righBumper[2];
@@ -107,6 +110,7 @@ public:
 	Animation lateral_spring_anim;
 
 	bool springDown = false, springUp = false;
+	int teleportPos = 0;
 	bool ball_freezed = 0;
 
 
@@ -118,16 +122,11 @@ private: //Spawn settings//
 	int level_ended = -1;
 	int fadeValue = 0;
 	int ballPos = 0;
-	int teleportPos = 0;
 
 	PhysBody* ball_body_in_spawn;
 	PhysBody* spawn_sensor = nullptr;
 	PhysBody* spawn_blocker = nullptr;
 	PhysBody* big_triangle_array[8];
-
-	//Teleports
-	PhysBody* teleport_enter;
-	PhysBody* teleport_exits[2];
 
 	float32 launch_Force = 0;
 

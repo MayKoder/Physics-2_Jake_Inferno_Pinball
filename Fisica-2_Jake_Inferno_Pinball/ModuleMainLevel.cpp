@@ -82,33 +82,25 @@ bool ModuleMainLevel::Start()
 	//Loads all map OBJECTS
 	GlobalMapLoad();
 
-
+	//Set ball to spawn and set ball limit
 	SetBallOnSpawn(Create_Play_Ball(324, 60));
 	App->renderer->posY_Limit = (gameplay_sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 16 ) * SCREEN_SIZE);
 
 	return true;
 }
 
-// Update: draw background
+
 struct b2Vec2;
 update_status ModuleMainLevel::Update()
 {
 
-	//TODO: Delete this, just for map building
+	//---------------- Input ----------------//
+
 	if(App->input->debug)
 		LOG("X = %i, Y = %i", App->input->GetMouseX(), App->input->GetMouseY());
 
 	if(lower_Ball)
 		App->renderer->MoveCameraToPosition(lower_Ball->GetPositionPixels_Y());
-
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN) 
-	{
-		Create_Play_Ball(App->input->GetMouseX(), App->input->GetMouseY());
-	}
-	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
-	{
-		App->physics->world_body_list.add(App->physics->Create_Circle(App->input->GetMouseX(), App->input->GetMouseY(), PIXELS_TO_METERS(13/2), b2BodyType::b2_dynamicBody, 0.f, { 0, 360, 13, 13 }));
-	}
 
 	//Left Bumper Movement
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && leftBumper)
@@ -135,7 +127,6 @@ update_status ModuleMainLevel::Update()
 		righBumper[1]->GetBodyB()->ApplyForce({ 0, -30 }, { PIXELS_TO_METERS(181), PIXELS_TO_METERS(269) }, true);
 	}
 
-	//LOG("%i", launchSpring->position.x)
 	//Down key movement
 	if (ball_in_spawn) 
 	{
@@ -169,6 +160,8 @@ update_status ModuleMainLevel::Update()
 	}
 
 
+	//---------------- Rendering ----------------//
+
 	//Gameplay sprite renderer
 	for (int i = 0; i < (int)gameplay_sprite_list.count(); i++)
 	{
@@ -177,14 +170,13 @@ update_status ModuleMainLevel::Update()
 	}
 
 
-	//PHS Object renderer
+	//Bodys Object renderer
 	for (int i = 0; i < (int)App->physics->world_body_list.count(); i++)
 	{
 
 		//Follow lower ball
 		if(App->physics->world_body_list[i]->body->GetType() == b2BodyType::b2_dynamicBody && App->physics->world_body_list[i]->body->GetFixtureList()->GetType() == b2Shape::e_circle)
 		{
-			//LOG("%i", App->physics->world_body_list[i].GetPositionPixels_Y());
 			if(lower_Ball == nullptr)
 			{
 				lower_Ball = App->physics->world_body_list[i];
@@ -195,15 +187,15 @@ update_status ModuleMainLevel::Update()
 			}
 		}
 
-		//Is object out of map limits?
+		//If object is inside limits
 		if (App->physics->world_body_list[i]->GetPositionPixels_Y() >= ball_height_limit)
 		{
 			if (App->physics->world_body_list[i]->body->GetFixtureList()->GetType() == b2Shape::e_circle)
 				Lose_Ball(i);
-			//Destroy balls on fall or just reposition them?
 		}
 		else
 		{
+			//Render animations on top of normal objects if they are overlap animations
 			if (App->physics->world_body_list[i]->spriteSheet != -1)
 			{
 				PhysBody *temp = App->physics->world_body_list[i];
@@ -218,7 +210,6 @@ update_status ModuleMainLevel::Update()
 
 						if (temp->needs_Center)
 						{
-							//LOG("%i", temp.GetRotation())
 							App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
 								(temp->GetPositionPixels_X()) - (frame.w / 2),
 								(temp->GetPositionPixels_Y()) - (frame.h / 2),
@@ -296,10 +287,9 @@ update_status ModuleMainLevel::Update()
 				}
 			}
 		}
-		//LOG("%i", App->physics->world_body_list.count());
 	}
 
-	//COver post gameplay screen renderer
+	//Cover post gameplay screen renderer
 	for (int i = 0; i < (int)cover_sprite_list.count(); i++)
 	{
 		Sprite *forSprite = &cover_sprite_list[i];
@@ -317,7 +307,7 @@ update_status ModuleMainLevel::Update()
 
 
 	//Print UI
-	App->fonts->BlitText(410, 170, 2, "Last Score", { 0, 0, 8, 14 }, 14, 11);
+	App->fonts->BlitText(410, 170, 2, "Last Score", { 0, 0, 8, 14 }, 10, 11);
 	App->fonts->BlitText(398, 225, 2, "Highest Score", { 0, 0, 8, 14 }, 13, 11);
 	App->fonts->BlitText(349, 59, 0, score_text, {0, 0, 20, 24}, 11, 2);
 	App->fonts->BlitText(498, 124, 0, lives_text, { 0, 0, 12, 23 }, 2, 8);
@@ -325,6 +315,7 @@ update_status ModuleMainLevel::Update()
 	App->fonts->BlitText(387, 190, 0, prev_score_text, { 0, 0, 12, 20 }, 11, 7);
 	App->fonts->BlitText(387, 246, 0, highest_score_text, { 0, 0, 12, 20 }, 11, 7);
 
+	//End game state update
 	if (level_ended == 0)
 	{
 		if (fadeValue < 255)
@@ -351,7 +342,6 @@ update_status ModuleMainLevel::Update()
 			lives_text[1] = App->IntToChar(current_ball_lives);
 
 			App->renderer->DrawQuad({ 0, 0, SCREEN_WIDTH* SCREEN_SIZE, SCREEN_HEIGHT* SCREEN_SIZE }, 0, 0, 0, fadeValue, true, false);
-			//Aqui resetear tot
 		}
 	}
 	else if (level_ended == 2)
@@ -365,7 +355,6 @@ update_status ModuleMainLevel::Update()
 		{
 			level_ended = -1;
 			fadeValue = 0;
-			//Aqui resetear tot
 		}
 	}
 
@@ -497,11 +486,11 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			{
 				if (bodyB->GetPositionPixels_X() > 200) 
 				{
-					bodyA->body->ApplyLinearImpulse({ -0.3, -0.4 }, bodyA->body->GetWorldCenter(), true);
+					bodyA->body->ApplyLinearImpulse({ -0.3f, -0.4f }, bodyA->body->GetWorldCenter(), true);
 				}
 				else
 				{
-					bodyA->body->ApplyLinearImpulse({ 0.3, -0.4 }, bodyA->body->GetWorldCenter(), true);
+					bodyA->body->ApplyLinearImpulse({ 0.3f, -0.4f }, bodyA->body->GetWorldCenter(), true);
 				}
 			}
 
@@ -516,14 +505,14 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 					bodyB->current_animation = bodyB->hit;
 					big_triangle_array[i - 1]->current_animation = big_triangle_array[i - 1]->hit;
 					App->audio->PlayFx(big_triangle_array[i - 1]->soundOnHit);
-					bodyA->body->ApplyLinearImpulse({ 0.4, -0.3 }, bodyA->body->GetWorldCenter(), true);
+					bodyA->body->ApplyLinearImpulse({ 0.4f, -0.3f }, bodyA->body->GetWorldCenter(), true);
 				}
 				else if(bodyB == big_triangle_array[5] || bodyB == big_triangle_array[7])
 				{
 					bodyB->current_animation = bodyB->hit;
 					big_triangle_array[i - 1]->current_animation = big_triangle_array[i - 1]->hit;
 					App->audio->PlayFx(big_triangle_array[i - 1]->soundOnHit);
-					bodyA->body->ApplyLinearImpulse({ -0.4, -0.3 }, bodyA->body->GetWorldCenter(), true);
+					bodyA->body->ApplyLinearImpulse({ -0.4f, -0.3f }, bodyA->body->GetWorldCenter(), true);
 				}
 			}
 		}
@@ -540,11 +529,9 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 				teleportPos = 1;
 			}
 
+			ball_freezed = 1;
+			App->physics->freezeType = 1;
 			App->audio->PlayFx(teleport_sound);
-			bodyA->body->SetLinearVelocity({ 0, 0 });
-			bodyA->body->SetAngularVelocity(0);
-			App->physics->converter_list.add(bodyA);
-			App->physics->converter_list.add(teleport_exits[teleportPos]);
 		}
 
 		if (bodyB == teleport_bonus) 
@@ -630,7 +617,7 @@ void ModuleMainLevel::GlobalMapLoad()
 	App->physics->world_body_list.add(App->physics->Create_Circle(234 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 657 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
 	App->physics->world_body_list.add(App->physics->Create_Circle(195 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 603 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
 	App->physics->world_body_list.add(App->physics->Create_Circle(103 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 603 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
-	App->physics->world_body_list.add(App->physics->Create_Circle(212 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 333 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
+	App->physics->world_body_list.add(App->physics->Create_Circle(218 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 333 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
 	App->physics->world_body_list.add(App->physics->Create_Circle(142 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 262 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
 	App->physics->world_body_list.add(App->physics->Create_Circle(69 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 333 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
 
@@ -676,8 +663,8 @@ void ModuleMainLevel::GlobalMapLoad()
 	teleport_bonus = App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(152 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 102 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, { 199, 290, 21, 21 }, 100000))->data;
 
 	//Red sticks
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 89 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, { 194, 324, 12, 32 }, 0, 1000, red_stick_sound, &red_stick_anim));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 213 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, { 194, 324, 12, 32 }, 0, 1000, red_stick_sound, &red_stick_anim));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 115, -(1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, { 194, 324, 12, 32 }, 0, 1000, red_stick_sound, &red_stick_anim));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 200 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, { 194, 324, 12, 32 }, 0, 1000, red_stick_sound, &red_stick_anim));
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 241 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 577 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, { 194, 324, 12, 32 }, 0, 1000, red_stick_sound, &red_stick_anim));
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 60 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 577 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, { 194, 324, 12, 32 }, 0, 1000, red_stick_sound, &red_stick_anim));
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 120 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 81 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, { 194, 324, 12, 32 }, 0, 1000, red_stick_sound, &red_stick_anim));
@@ -944,8 +931,6 @@ void ModuleMainLevel::GlobalAnimationLoad()
 	lateral_spring_anim.PushBack({ 372, 340, 29, 11 });
 	lateral_spring_anim.PushBack({ 372, 328, 29, 11 });
 	lateral_spring_anim.speed = 0.12f;
-
-
 }
 
 

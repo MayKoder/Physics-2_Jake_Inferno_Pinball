@@ -7,7 +7,6 @@ Application::Application()
 	textures = new ModuleTextures(this);
 	input = new ModuleInput(this);
 	audio = new ModuleAudio(this, true);
-	player = new ModulePlayer(this);
 	main_level = new ModuleMainLevel(this);
 	physics = new ModulePhysics(this);
 
@@ -27,9 +26,6 @@ Application::Application()
 	// Scenes
 	AddModule(main_level);
 	AddModule(fonts);
-	
-	// Player
-	AddModule(player);
 }
 
 Application::~Application()

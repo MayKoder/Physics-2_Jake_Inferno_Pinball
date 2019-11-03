@@ -10,7 +10,6 @@
 #include "ModuleTextures.h"
 #include "ModuleInput.h"
 #include "ModuleAudio.h"
-#include "ModulePlayer.h"
 #include "ModulePhysics.h"
 #include"ModuleMainLevel.h"
 #include"ModuleFonts.h"
@@ -23,7 +22,6 @@ public:
 	ModuleTextures* textures;
 	ModuleInput* input;
 	ModuleAudio* audio;
-	ModulePlayer* player;
 	ModuleMainLevel* main_level;
 	ModulePhysics* physics;
 	ModuleFonts* fonts;

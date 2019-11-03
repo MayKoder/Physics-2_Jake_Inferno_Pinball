@@ -27,21 +27,6 @@ enum update_status
 	UPDATE_ERROR
 };
 
-struct vector2 {
-	float x;
-	float y;
-};
-struct vector3 
-{
-	int x;
-	int y;
-	int z;
-
-	void Init_Zeros() {
-		x = 0; y = 0; z = 0;
-	}
-};
-
 // Configuration -----------
 #define SCREEN_WIDTH 580
 #define SCREEN_HEIGHT 287
@@ -53,5 +38,5 @@ struct vector3
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC true
 #define TITLE "Jake_Inferno_Pinball - Box2D"
-#define MARGIN_X 18
+#define MARGIN_X 16
 #define MARGIN_Y 8

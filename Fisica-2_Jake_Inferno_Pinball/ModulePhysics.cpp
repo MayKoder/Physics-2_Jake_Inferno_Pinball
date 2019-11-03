@@ -9,11 +9,11 @@
 // TODO 1
 #include"Box2D/Box2D/Box2D.h"
 #ifdef _DEBUG
-	#pragma comment( lib, "Box2D/libx86/Box2D_Debug_lib/Box2D.lib" )
+	#pragma comment( lib, "Box2D/libx86/Box2D_Debug/Box2D.lib" )
 
 #else
 
-	#pragma comment( lib, "Box2D/libx86/Box2D_Release_lib/Box2D.lib" )
+	#pragma comment( lib, "Box2D/libx86/Box2D_Release/Box2D.lib" )
 
 #endif // _DEBUG
 
@@ -33,6 +33,7 @@ bool ModulePhysics::Start()
 {
 	LOG("Creating Physics 2D environment");
 
+	//Create world
 	if (!world)
 	{
 		world = new b2World(b2Vec2(0.0f, 10.0f));
@@ -49,7 +50,7 @@ bool ModulePhysics::Start()
 // 
 update_status ModulePhysics::PreUpdate()
 {
-	// TODO 3: Update the simulation ("step" the world)
+	//Update object status
 	for (int i = 0; i < (int)converter_list.count(); i++)
 	{
 		if (converter_list[i]->body->GetType() == b2BodyType::b2_dynamicBody) 
@@ -65,12 +66,20 @@ update_status ModulePhysics::PreUpdate()
 		}
 	}
 
+	//Ball status check
 	if (App->main_level->ball_freezed) 
 	{
 		if (time == 0) 
 		{
 			App->main_level->lower_Ball->body->SetAwake(false);
-			App->main_level->lower_Ball->body->SetTransform(App->main_level->teleport_bonus->body->GetWorldCenter(), 0);
+			if (freezeType == 0) 
+			{
+				App->main_level->lower_Ball->body->SetTransform(App->main_level->teleport_bonus->body->GetWorldCenter(), 0);
+			}
+			else
+			{
+				App->main_level->lower_Ball->body->SetTransform(App->main_level->teleport_enter->body->GetWorldCenter(), 0);
+			}
 			time += 1;
 		}
 		if(time <= freezeTimeLimit)
@@ -79,14 +88,22 @@ update_status ModulePhysics::PreUpdate()
 		}
 		else
 		{
+			if (freezeType == 1) 
+			{
+				App->main_level->lower_Ball->body->SetTransform(App->main_level->teleport_exits[App->main_level->teleportPos]->body->GetWorldCenter(), 0);
+			}
+
 			App->main_level->ball_freezed = false;
 			App->main_level->lower_Ball->body->SetAwake(true);
 			time = 0;
+			freezeType = 0;
 		}
 	}
 
+	//Step the world
 	world->Step(timeStep, velocityIterations, positionIterations);
 
+	//Get contact list
 	for (b2Contact* c = world->GetContactList(); c; c = c->GetNext())
 	{
 		if (/*c->GetFixtureA()->IsSensor() && */c->IsTouching())
@@ -104,11 +121,11 @@ update_status ModulePhysics::PreUpdate()
 // 
 update_status ModulePhysics::PostUpdate()
 {
+	//Change to debug mode
 	if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 		App->input->debug = !App->input->debug;
 
-	// Bonus code: this will iterate all objects in the world and draw the circles
-	// You need to provide your own macro to translate meters to pixels
+	//Draw all colliders
 	if (App->input->debug) 
 	{
 		for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
@@ -208,6 +225,7 @@ update_status ModulePhysics::PostUpdate()
 
 	}
 
+	//Destroy mouse joint
 	if (App->input->GetMouseButton(SDL_BUTTON_LEFT) == KEY_UP && mouse_joint != nullptr)
 	{
 		world->DestroyJoint(mouse_joint);
@@ -249,6 +267,7 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
+//Create circle body
 PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, SDL_Rect sec, int hit_score, int sound, Animation* hit_animation)
 {
 	b2BodyDef body;
@@ -290,6 +309,8 @@ PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Bod
 	return bdy;
 
 }
+
+//Create poly body
 PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], SDL_Rect sec, b2BodyType type, SDL_RendererFlip flip, b2Vec2 offset, float density, int hit_score, int sound, Animation* hit_animation)
 {
 	if (count / 2 > 8)
@@ -349,6 +370,8 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 	return nullptr;
 
 }
+
+//Create rectangle body
 PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, SDL_Rect sec, float angle, int hit_score, int sound, Animation* hit_animation)
 {
 	b2BodyDef body;
@@ -385,6 +408,8 @@ PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density
 
 	return bdy;
 }
+
+//Create chain body
 PhysBody* ModulePhysics::Create_Chain(float x, float y, int points[], int count, b2Vec2 half_Array[], SDL_Rect sec, SDL_RendererFlip flip)
 {
 
@@ -427,6 +452,8 @@ PhysBody* ModulePhysics::Create_Chain(float x, float y, int points[], int count,
 
 	return bdy;
 }
+
+//Create revolute joint
 b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Body* body, float angle, int x, int y)
 {
 
@@ -459,6 +486,7 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Body* body, float angle,
 
 }
 
+//Create rectangle sensor
 PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation, SDL_Rect sec, SDL_RendererFlip flip, Animation* hit_animation, int hit_score)
 {
 	b2BodyDef body;
@@ -498,6 +526,8 @@ PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotat
 
 	return bdy;
 }
+
+//Create circle sensor
 PhysBody* ModulePhysics::Create_Circle_Sensor(int _x, int _y, float meter_radius, b2BodyType type, float density,  SDL_Rect sec, int hit_score, int sound, Animation* hit_animation)
 {
 	b2BodyDef body;
@@ -565,7 +595,6 @@ bool ModulePhysics::MoveObjectSmooth(b2Vec2* position, b2Vec2 target_point, floa
 {
 
 	bool ret = false;
-
 
 	if (target_point.y >= position->y) 
 	{
