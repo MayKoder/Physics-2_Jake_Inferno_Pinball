@@ -517,10 +517,10 @@ void ModuleMainLevel::GlobalMapLoad()
 
 	//Dragon circles
 	App->physics->world_body_list.add(App->physics->Create_Circle(103 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 720 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
-	App->physics->world_body_list.add(App->physics->Create_Circle(182 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 720 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound,&dragon_circle_anim));
+	App->physics->world_body_list.add(App->physics->Create_Circle(195 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 720 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound,&dragon_circle_anim));
 	App->physics->world_body_list.add(App->physics->Create_Circle(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 657 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
 	App->physics->world_body_list.add(App->physics->Create_Circle(234 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 657 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
-	App->physics->world_body_list.add(App->physics->Create_Circle(182 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 603 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
+	App->physics->world_body_list.add(App->physics->Create_Circle(195 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 603 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
 	App->physics->world_body_list.add(App->physics->Create_Circle(103 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 603 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
 	App->physics->world_body_list.add(App->physics->Create_Circle(212 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 333 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
 	App->physics->world_body_list.add(App->physics->Create_Circle(142 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 262 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, { 79, 287, 29, 33 }, 2000, dragon_circle_sound, &dragon_circle_anim));
