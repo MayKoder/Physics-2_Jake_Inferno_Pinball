@@ -4,6 +4,7 @@
 #include "ModuleRender.h"
 #include "ModulePhysics.h"
 #include "math.h"
+#include"Animation.h"
 
 // TODO 1
 #include"Box2D/Box2D/Box2D.h"
@@ -250,9 +251,14 @@ PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Bod
 	PhysBody* bdy = new PhysBody();
 	bdy->body = b;
 	bdy->spriteSheet = sheet;
-	bdy->section = sec;
 	bdy->soundOnHit = sound;
 	bdy->flip = flip;
+
+	//Animation
+	bdy->idle.PushBack(sec);
+	bdy->current_animation = bdy->idle;
+	bdy->idle.speed = 0;
+
 	bdy->scoreOnHit = hit_score;
 	bdy->listener = App->main_level;
 
@@ -287,8 +293,13 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 		PhysBody* bdy = new PhysBody();
 		bdy->body = world->CreateBody(&body);
 		bdy->spriteSheet = sheet;
-		bdy->section = sec;
 		bdy->flip = flip;
+
+		//Animation
+		bdy->idle.PushBack(sec);
+		bdy->current_animation = bdy->idle;
+		bdy->idle.speed = 0;
+
 		bdy->offset = offset;
 		bdy->needs_Center = false;
 
@@ -329,9 +340,14 @@ PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density
 	PhysBody* bdy = new PhysBody();
 	bdy->body = b;
 	bdy->spriteSheet = sheet;
-	bdy->section = sec;
 	bdy->soundOnHit = sound;
 	bdy->flip = flip;
+
+	//Animation
+	bdy->idle.PushBack(sec);
+	bdy->current_animation = bdy->idle;
+	bdy->idle.speed = 0;
+
 	bdy->scoreOnHit = hit_score;
 	b->SetUserData(bdy);
 
@@ -364,7 +380,13 @@ PhysBody* ModulePhysics::Create_Chain(float x, float y, int points[], int count,
 	PhysBody* bdy = new PhysBody();
 	bdy->body = b;
 	bdy->spriteSheet = sheet;
-	bdy->section = sec;
+
+	//Animation
+	bdy->idle.PushBack(sec);
+	bdy->current_animation = bdy->idle;
+	bdy->idle.speed = 0;
+
+
 	bdy->flip = flip;
 	bdy->needs_Center = false;
 		
@@ -404,7 +426,7 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Body* body, float angle,
 
 }
 
-PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation)
+PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation, SDL_Rect sec)
 {
 	b2BodyDef body;
 	body.type = b2BodyType::b2_staticBody;
@@ -424,6 +446,13 @@ PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotat
 
 	PhysBody* bdy = new PhysBody();
 	bdy->body = b;
+	if (sec.h != 0) 
+	{
+		bdy->idle.PushBack(sec);
+		bdy->idle.speed = 0;
+	}
+
+
 	b->SetUserData(bdy);
 
 	return bdy;
@@ -449,8 +478,14 @@ PhysBody* ModulePhysics::Create_Circle_Sensor(int _x, int _y, float meter_radius
 	PhysBody* bdy = new PhysBody();
 	bdy->body = b;
 	bdy->spriteSheet = sheet;
-	bdy->section = sec;
 	bdy->soundOnHit = sound;
+
+	//Animation
+	bdy->idle.PushBack(sec);
+	bdy->current_animation = bdy->idle;
+	bdy->idle.speed = 0;
+
+
 	bdy->scoreOnHit = hit_score;
 	bdy->listener = App->main_level;
 

@@ -37,9 +37,9 @@ public:
 	int soundOnHit = -1;
 	Animation idle;
 	Animation hit;
+	Animation current_animation;
 
 	int spriteSheet;
-	SDL_Rect section;
 	b2Vec2 offset;
 	bool needs_Center = true;
 	int pivotX = 0, pivotY = 0;
@@ -64,7 +64,7 @@ public:
 	PhysBody* Create_Chain(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, SDL_RendererFlip flip = SDL_FLIP_NONE);
 	PhysBody* Create_Poly(float, float, int[], int, b2Vec2[], int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, b2BodyType type = b2BodyType::b2_dynamicBody, 
 		SDL_RendererFlip flip = SDL_FLIP_NONE, b2Vec2 offset = {0, 0}, float density = 1.0f);
-	PhysBody* Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation);
+	PhysBody* Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation, SDL_Rect sec = { 0, 0, 0, 0 });
 	PhysBody* Create_Circle_Sensor(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet = -1, SDL_Rect sec = { 0, 0, 0, 0 }, int hit_score = 0, int sound = -1);
 
 	//Joint creation
@@ -79,7 +79,6 @@ public:
 public:
 	p2List_Extended<PhysBody*> world_body_list;
 	p2List_Extended<b2Body*> joint_body_list;
-
 
 	p2List_Extended<PhysBody*> converter_list;
 	void DestroyBody(b2Body*);

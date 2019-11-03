@@ -4,8 +4,6 @@
 #include "ModuleRender.h"
 #include "ModuleFonts.h"
 
-#include<string.h>
-
 ModuleFonts::ModuleFonts(Application* app, bool start_enabled) : Module(app, start_enabled)
 {}
 

@@ -52,6 +52,6 @@ struct vector3
 #define WIN_BORDERLESS false
 #define WIN_FULLSCREEN_DESKTOP false
 #define VSYNC true
-#define TITLE "2D Physics Playground"
+#define TITLE "Jake_Inferno_Pinball - Box2D"
 #define MARGIN_X 18
 #define MARGIN_Y 8

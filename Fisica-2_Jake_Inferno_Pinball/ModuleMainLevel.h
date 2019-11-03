@@ -53,6 +53,10 @@ public:
 
 	PhysBody* Create_Play_Ball(int x, int y);
 
+	//Global loads
+	void GlobalMapLoad();
+	void GlobalSpriteLoad();
+	void GlobalAnimationLoad();
 
 	p2List_Extended<SDL_Texture*> sprite_sheet_list;
 	p2List_Extended<Sprite> gameplay_sprite_list;
@@ -82,6 +86,7 @@ public:
 	b2RevoluteJoint* leftBumper[2];
 	Sprite* launchSpring;
 
+	//SOUND
 	unsigned int bumper_up_sound;
 	unsigned int bumper_down_sound;
 	unsigned int spring_launch_sound;
@@ -94,6 +99,12 @@ public:
 	unsigned int teleport_sound;
 	unsigned int big_triangle_sound;
 
+	//Animations
+	Animation big_triangle_anim;
+	Animation green_circle_anim;
+	Animation red_circle_anim;
+	Animation dragon_circle_anim;
+	Animation red_stick_anim;
 
 	bool springDown = false, springUp = false;
 

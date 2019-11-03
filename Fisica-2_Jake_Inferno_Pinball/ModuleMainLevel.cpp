@@ -3,6 +3,7 @@
 #include"ModuleMainLevel.h"
 #include"Box2D/Box2D/Box2D.h"
 #include"p2SString.h"
+#include"Animation.h"
 
 ModuleMainLevel::ModuleMainLevel(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -71,216 +72,16 @@ bool ModuleMainLevel::Start()
 	lives_text[1] = App->IntToChar(current_ball_lives);
 
 	LoadSpriteSheet("Assets/Main_Level/main_level_static_background.png");
-
-	//Background
-	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 8), { 580, 0, 322, 1000 }, 1.f);
-
-	//Spring
-	LoadSprite(0, 327 - 7, (-SCREEN_HEIGHT) + 73 + 5, { 17, 287, 10, 73 }, 1.f);
-	//TODO: Millorar aquest sistema
-	launchSpring = &gameplay_sprite_list[gameplay_sprite_list.count() - 1];
-
-	//SpringCover
-	LoadSprite(0, 327 - 10, (-SCREEN_HEIGHT) + 73 + 5, { 0, 287, 17, 73 }, 1.f);
-
-
-	//Background Top
-	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 9), { 902, 0, 322, 1000 }, 1.f, 0.f, 0, 0, 1);
-
-#pragma region Map Construction
-
-	//Dragon circles
-	App->physics->world_body_list.add(App->physics->Create_Circle(103 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 720 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle(182 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 720 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 657 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle(234 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 657 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle(182 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 603 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle(103 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 603 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle(212 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 333 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle(142 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 262 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle(69 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 333 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
-
-	//Green circles
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 777 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 815 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 777 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 815 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(149 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 637 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(149 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 694 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(72 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 541 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(226 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 541 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(198 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 524 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(99 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 524 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 279 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 298 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 317 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 279 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 298 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 317 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
-
-	//Red circles
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(205 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 233 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(85 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 233 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(102 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 192 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(188 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 192 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(146 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 174 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(23 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 119 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(32 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 90 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(46 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 65 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(67 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 43 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(238 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 43 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(258 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 65 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(271 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 90 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(282 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 119 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
-
-	//Teleport 
-	teleport_enter = App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(146 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 561 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }, 100000))->data;
-	teleport_exits[0] = App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(35 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 355 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }))->data;
-	teleport_exits[1] = App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(255 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 355 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }))->data;
-	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(152 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 102 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }, 100000));
-
-	//Red sticks
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 89 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 213 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 241 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 577 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 60 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 577 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 120 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 81 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 188 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 81 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
-
-#pragma endregion
-
-	spawn_sensor = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({323, -15, 10, 3}, -45))->data; //735s
-	spawn_blocker = App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, 15, 10, 3}, b2BodyType::b2_staticBody, 0, 0, {140, 343, 24, 18}, SDL_FLIP_NONE, -45, 0))->data; //735s
-	App->physics->converter_list.add(spawn_sensor);
-
-#pragma region Chain Initials
-
-	// Map 0, 0
-	int points[216] = {
-			0, 0, 328, 0, 328, 1004, 323, 1004, 323, 650, 321, 639, 319, 628, 316, 619, 313, 609, 309, 600, 304, 590, 298, 581, 292, 573, 286, 566,
-			280, 559, 273, 552, 264, 544, 256, 539, 247, 533, 240, 529, 231, 525, 221, 521, 216, 520, 212, 518, 210, 514, 210, 505, 214, 501, 293, 469,
-			297, 464, 299, 460, 299, 362, 275, 338, 275, 277, 305, 233, 305, 142, 302, 124, 297, 108, 293, 98, 288, 88, 283, 79, 277, 70, 269, 61,
-			262, 54, 255, 47, 249, 42, 243, 38, 237, 34, 231, 30, 224, 26, 215, 22, 206, 19, 198, 17, 191, 15, 184, 14, 176, 13, 167, 12,
-			147, 12, 136, 14, 124, 17, 111, 21, 100, 26, 89, 32, 79, 39, 70, 45, 62, 52, 55, 60, 48, 68, 42, 77, 37, 85, 31, 96, 27, 106, 24, 116, 21, 125,
-			20, 134, 19, 147, 19, 235, 36, 277, 36, 339, 13, 362, 13, 460, 14, 463, 17, 467, 22, 471, 31, 474, 98, 501, 101, 505, 101, 514, 98, 517, 94, 520,
-			88, 523, 81, 527, 72, 534, 64, 541, 56, 549, 49, 556, 43, 564, 38, 573, 33, 582, 28, 593, 24, 606, 21, 617, 19, 631, 19, 741, 45, 774, 45, 835, 12, 864, 12, 1003, 0, 1003
-	};
-	b2Vec2 half_Array[(sizeof(points) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&points, (sizeof(points) / sizeof(int)), *&half_Array));
-
-	// CoverLowLeft 0, 0
-	int cover_left[14] = {
-		31, 1004, 105, 1004, 105, 1002, 41, 972,
-		37, 972, 34, 973, 31, 976
-	};
-	half_Array[(sizeof(cover_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_left, (sizeof(cover_left) / sizeof(int)), *&half_Array));	
 	
-	// CoverLowRight 0, 0
-	int cover_right[12] = {
-		205, 1004, 279, 1004, 279, 976,
-		277, 973, 272, 971, 238, 987
-	};
-	half_Array[(sizeof(cover_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_right, (sizeof(cover_right) / sizeof(int)), *&half_Array));
-	
+	//Load all ANIMATIONS
+	GlobalAnimationLoad();
 
-	// LauncherCover 0, 0
-	int launchCover[16] = {
-		300, 1003, 300, 860, 277, 837, 275, 834,
-		275, 774, 303, 744, 307, 744, 307, 1003
-	};
-	half_Array[(sizeof(launchCover) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&launchCover, (sizeof(launchCover) / sizeof(int)), *&half_Array));
+	//Loads all SPRITES
+	GlobalSpriteLoad();
 
+	//Loads all map OBJECTS
+	GlobalMapLoad();
 
-	// Slims Left 0, 0
-	int slim_stick_left[20] = {
-		31, 885, 31, 940, 35, 944, 93, 971, 96, 969,
-		95, 966, 41, 941, 36, 938, 36, 885, 34, 884
-	};
-	half_Array[(sizeof(slim_stick_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_left, (sizeof(slim_stick_left) / sizeof(int)), *&half_Array));
-	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_left, (sizeof(slim_stick_left) / sizeof(int)), *&half_Array));
-
-
-	// Slims right 0, 0
-	int slim_stick_right[18] = {
-		221, 971, 279, 944, 283, 940, 283, 886,
-		280, 883, 277, 884, 277, 939, 219, 966, 218, 969
-	};
-	half_Array[(sizeof(slim_stick_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
-	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
-
-	//Big triangles
-	int big_triangle_1[10] = {
-		12, 4, 46, 61, 40, 68,
-		4, 51, 4, 7
-	};
-	half_Array[(sizeof(big_triangle_1) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(58, 153, *&big_triangle_1, 
-		(sizeof(big_triangle_1) / sizeof(int)), *&half_Array, 0, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_NONE, {-5, 0}));
-
-	//Big triangles
-	int big_triangle_2[10] = {
-		40, 5,
-		7, 62,
-		14, 67,
-		49, 51,
-		49, 7
-	};
-
-	App->physics->world_body_list.add(App->physics->Create_Poly(219, 153, *&big_triangle_2,
-		(sizeof(big_triangle_2) / sizeof(int)), *&half_Array, 0, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_HORIZONTAL, { -5, 0 }));
-
-
-
-	//BUMPERS	
-	int bumper_left[14] = {
-		4, 14, 0, 10, 1, 4,
-		5, 0, 11, 0, 51, 25, 49, 29
-	};
-	half_Array[(sizeof(bumper_left) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left, 
-		(sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody));
-	leftBumper[0] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, -45, 102 + 10, SCREEN_HEIGHT - 43 + 7);
-
-	App->physics->world_body_list.add(App->physics->Create_Poly(105, -254, *&bumper_left,
-		(sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody));
-	leftBumper[1] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, -45, 102 + 10, -254 + 7);
-	
-
-	int bumper_right[14] = {
-		39, 0, 0, 24, 0, 27, 4, 27,
-		48, 10, 49, 4, 46, 0
-	};
-	half_Array[(sizeof(bumper_right) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(178, SCREEN_HEIGHT - 43, *&bumper_right, 
-		(sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody, SDL_FLIP_HORIZONTAL));
-	righBumper[0] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, 45, 220, SCREEN_HEIGHT - 43 + 7);
-
-	App->physics->world_body_list.add(App->physics->Create_Poly(178, -254, *&bumper_right,
-		(sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody, SDL_FLIP_HORIZONTAL));
-	righBumper[1] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, 45, 220, -254 + 7);
-
-
-	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35}, b2BodyType::b2_staticBody, 0.f));
-
-#pragma endregion
-
-
-	//Screen Cover
-	LoadSprite(0, 0, 0, { 0, 0, 580, 287 }, 0.f, 0.f, 0, 0, 1);
-
-	//Score Display
-	LoadSprite(0, SCREEN_WIDTH - 221 - 10, 0, { 0, 567, 221, 153 }, 0.f, 0.f, 0, 0, 1);
-	
-	//More score covers
-	LoadSprite(0, 387, -185, { 221, 567,152, 29 }, 0, 0, 0, 0, 1);
-	LoadSprite(0, 387, -240, { 221, 567,152, 29 }, 0, 0, 0, 0, 1);
 
 	SetBallOnSpawn(Create_Play_Ball(324, 60));
 	App->renderer->posY_Limit = (gameplay_sprite_list[0].section.h * SCREEN_SIZE) - ((SCREEN_HEIGHT - 16 ) * SCREEN_SIZE);
@@ -409,24 +210,50 @@ update_status ModuleMainLevel::Update()
 
 				if (temp->body->IsActive()) 
 				{
+					SDL_Rect frame = temp->current_animation.GetCurrentFrame();
 					if (temp->needs_Center)
 					{
-						//LOG("%i", temp.GetRotation())
-						App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
-							(temp->GetPositionPixels_X()) - (temp->section.w / 2),
-							(temp->GetPositionPixels_Y()) - (temp->section.h / 2),
-							&temp->section,
-							1.f,
-							temp->GetRotation(),
-							INT_MAX, INT_MAX,
-							temp->flip);
+
+						if (temp->current_animation.render_on_top)
+						{
+
+							//LOG("%i", temp.GetRotation())
+							App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
+								(temp->GetPositionPixels_X()) - (frame.w / 2),
+								(temp->GetPositionPixels_Y()) - (frame.h / 2),
+								&temp->idle.GetCurrentFrameWithoutAnim(),
+								1.f,
+								temp->GetRotation(),
+								INT_MAX, INT_MAX,
+								temp->flip);
+
+							App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
+								(temp->GetPositionPixels_X()) - (frame.w / 2),
+								(temp->GetPositionPixels_Y()) - (frame.h / 2),
+								&frame,
+								1.f,
+								temp->GetRotation(),
+								INT_MAX, INT_MAX,
+								temp->flip);
+						}
+						else
+						{
+							App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
+								(temp->GetPositionPixels_X()) - (frame.w / 2),
+								(temp->GetPositionPixels_Y()) - (frame.h / 2),
+								&frame,
+								1.f,
+								temp->GetRotation(),
+								INT_MAX, INT_MAX,
+								temp->flip);
+						}
 					}
 					else
 					{
 						App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
 							temp->GetPositionPixels_X() - temp->offset.x,
 							temp->GetPositionPixels_Y() - temp->offset.x,
-							&temp->section,
+							&frame,
 							1.f,
 							temp->GetRotation(),
 							temp->pivotX,
@@ -590,8 +417,17 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			{
 				App->audio->PlayFx(bodyB->soundOnHit);
 			}
+
+			if (bodyB->hit.last_frame > 0) 
+			{
+				//bodyB->current_animation = bodyB->hit;
+				bodyB->current_animation = bodyB->hit;
+				LOG("Anim");
+			}
+
 			//LOG("%s", score_text);
 		}
+		//bodyB->current_animation = red_stick_anim;
 
 		if (bodyB == teleport_enter) 
 		{
@@ -668,4 +504,245 @@ void ModuleMainLevel::IncrementScore(int increment)
 		score = 999999999;
 		FormatScoreText(score, score_text);
 	}
+}
+
+
+void ModuleMainLevel::GlobalMapLoad() 
+{
+
+#pragma region Map Construction
+
+	//Dragon circles
+	App->physics->world_body_list.add(App->physics->Create_Circle(103 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 720 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle(182 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 720 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 657 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle(234 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 657 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle(182 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 603 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle(103 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 603 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle(212 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 333 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle(142 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 262 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle(69 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 333 + MARGIN_Y, 0.28f, b2BodyType::b2_staticBody, 0.f, 0, { 79, 287, 29, 33 }, 2000, SDL_FLIP_NONE, dragon_circle_sound));
+
+	//Green circles
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 777 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(250 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 815 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 777 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(52 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 815 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(149 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 637 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(149 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 694 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(72 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 541 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(226 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 541 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(198 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 524 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(99 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 524 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 279 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 298 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(249 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 317 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 279 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 298 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(43 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 317 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 138, 326, 16, 16 }, 1000, green_circle_sound));
+
+	//Red circles
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(205 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 233 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(85 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 233 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(102 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 192 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(188 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 192 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(146 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 174 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(23 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 119 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(32 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 90 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(46 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 65 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(67 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 43 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(238 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 43 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(258 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 65 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(271 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 90 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(282 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 119 + MARGIN_Y, 0.16f, b2BodyType::b2_staticBody, 0.f, 0, { 154, 326, 16, 16 }, 2000, green_circle_sound));
+
+	//Teleport 
+	teleport_enter = App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(146 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 561 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }, 100000))->data;
+	teleport_exits[0] = App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(35 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 355 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }))->data;
+	teleport_exits[1] = App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(255 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 355 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }))->data;
+	App->physics->world_body_list.add(App->physics->Create_Circle_Sensor(152 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 102 + MARGIN_Y, 0.09f, b2BodyType::b2_staticBody, 0.f, 0, { 199, 290, 21, 21 }, 100000));
+
+	//Red sticks
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 89 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 213 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 554 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 241 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 577 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 60 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 577 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 120 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 81 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 188 + MARGIN_X, 0 - (1009 - SCREEN_HEIGHT) + 81 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, 0, { 194, 324, 12, 32 }, SDL_FLIP_NONE, 0, 1000, red_stick_sound));
+
+#pragma endregion
+
+	spawn_sensor = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 323, -15, 10, 3 }, -45))->data; //735s
+	spawn_blocker = App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, 15, 10, 3 }, b2BodyType::b2_staticBody, 0, 0, { 140, 343, 24, 18 }, SDL_FLIP_NONE, -45, 0))->data; //735s
+	App->physics->converter_list.add(spawn_sensor);
+
+#pragma region Chain Initials
+
+	// Map 0, 0
+	int points[216] = {
+			0, 0, 328, 0, 328, 1004, 323, 1004, 323, 650, 321, 639, 319, 628, 316, 619, 313, 609, 309, 600, 304, 590, 298, 581, 292, 573, 286, 566,
+			280, 559, 273, 552, 264, 544, 256, 539, 247, 533, 240, 529, 231, 525, 221, 521, 216, 520, 212, 518, 210, 514, 210, 505, 214, 501, 293, 469,
+			297, 464, 299, 460, 299, 362, 275, 338, 275, 277, 305, 233, 305, 142, 302, 124, 297, 108, 293, 98, 288, 88, 283, 79, 277, 70, 269, 61,
+			262, 54, 255, 47, 249, 42, 243, 38, 237, 34, 231, 30, 224, 26, 215, 22, 206, 19, 198, 17, 191, 15, 184, 14, 176, 13, 167, 12,
+			147, 12, 136, 14, 124, 17, 111, 21, 100, 26, 89, 32, 79, 39, 70, 45, 62, 52, 55, 60, 48, 68, 42, 77, 37, 85, 31, 96, 27, 106, 24, 116, 21, 125,
+			20, 134, 19, 147, 19, 235, 36, 277, 36, 339, 13, 362, 13, 460, 14, 463, 17, 467, 22, 471, 31, 474, 98, 501, 101, 505, 101, 514, 98, 517, 94, 520,
+			88, 523, 81, 527, 72, 534, 64, 541, 56, 549, 49, 556, 43, 564, 38, 573, 33, 582, 28, 593, 24, 606, 21, 617, 19, 631, 19, 741, 45, 774, 45, 835, 12, 864, 12, 1003, 0, 1003
+	};
+	b2Vec2 half_Array[(sizeof(points) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&points, (sizeof(points) / sizeof(int)), *&half_Array));
+
+	//Top Loop TODO
+	//// Pivot 0, 0
+	//int top_loop[40] = {
+	//	54, 185,47, 169,43, 146,42, 128,45, 104,56, 76,68, 58,90, 38,114, 24,137, 
+	//	17,174, 16,207, 24,230, 37,254, 62,268, 85,276, 107,278, 125,278, 145,275, 161,267, 185
+	//};
+	//half_Array[(sizeof(top_loop) / sizeof(int)) / 2];
+	//App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&top_loop, (sizeof(top_loop) / sizeof(int)), *&half_Array));
+
+
+
+	// CoverLowLeft 0, 0
+	int cover_left[14] = {
+		31, 1004, 105, 1004, 105, 1002, 41, 972,
+		37, 972, 34, 973, 31, 976
+	};
+	half_Array[(sizeof(cover_left) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_left, (sizeof(cover_left) / sizeof(int)), *&half_Array));
+
+	// CoverLowRight 0, 0
+	int cover_right[12] = {
+		205, 1004, 279, 1004, 279, 976,
+		277, 973, 272, 971, 238, 987
+	};
+	half_Array[(sizeof(cover_right) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&cover_right, (sizeof(cover_right) / sizeof(int)), *&half_Array));
+
+
+	// LauncherCover 0, 0
+	int launchCover[16] = {
+		300, 1003, 300, 860, 277, 837, 275, 834,
+		275, 774, 303, 744, 307, 744, 307, 1003
+	};
+	half_Array[(sizeof(launchCover) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&launchCover, (sizeof(launchCover) / sizeof(int)), *&half_Array));
+
+
+	// Slims Left 0, 0
+	int slim_stick_left[20] = {
+		31, 885, 31, 940, 35, 944, 93, 971, 96, 969,
+		95, 966, 41, 941, 36, 938, 36, 885, 34, 884
+	};
+	half_Array[(sizeof(slim_stick_left) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_left, (sizeof(slim_stick_left) / sizeof(int)), *&half_Array));
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_left, (sizeof(slim_stick_left) / sizeof(int)), *&half_Array));
+
+
+	// Slims right 0, 0
+	int slim_stick_right[18] = {
+		221, 971, 279, 944, 283, 940, 283, 886,
+		280, 883, 277, 884, 277, 939, 219, 966, 218, 969
+	};
+	half_Array[(sizeof(slim_stick_right) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1510 - SCREEN_HEIGHT), *&slim_stick_right, (sizeof(slim_stick_right) / sizeof(int)), *&half_Array));
+
+	//Big triangles
+	int big_triangle_1[10] = {
+		12, 4, 46, 61, 40, 68,
+		4, 51, 4, 7
+	};
+	half_Array[(sizeof(big_triangle_1) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Poly(58, 153, *&big_triangle_1,
+		(sizeof(big_triangle_1) / sizeof(int)), *&half_Array, 0, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_NONE, { -5, 0 }));
+
+	//Big triangles
+	int big_triangle_2[10] = {
+		40, 5,
+		7, 62,
+		14, 67,
+		49, 51,
+		49, 7
+	};
+
+	App->physics->world_body_list.add(App->physics->Create_Poly(219, 153, *&big_triangle_2,
+		(sizeof(big_triangle_2) / sizeof(int)), *&half_Array, 0, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_HORIZONTAL, { -5, 0 }));
+
+
+
+	//BUMPERS	
+	int bumper_left[14] = {
+		4, 14, 0, 10, 1, 4,
+		5, 0, 11, 0, 51, 25, 49, 29
+	};
+	half_Array[(sizeof(bumper_left) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Poly(105, SCREEN_HEIGHT - 43, *&bumper_left,
+		(sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody));
+	leftBumper[0] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, -45, 102 + 10, SCREEN_HEIGHT - 43 + 7);
+
+	App->physics->world_body_list.add(App->physics->Create_Poly(105, -254, *&bumper_left,
+		(sizeof(bumper_left) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody));
+	leftBumper[1] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, -45, 102 + 10, -254 + 7);
+
+
+	int bumper_right[14] = {
+		39, 0, 0, 24, 0, 27, 4, 27,
+		48, 10, 49, 4, 46, 0
+	};
+	half_Array[(sizeof(bumper_right) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Poly(178, SCREEN_HEIGHT - 43, *&bumper_right,
+		(sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody, SDL_FLIP_HORIZONTAL));
+	righBumper[0] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, 45, 220, SCREEN_HEIGHT - 43 + 7);
+
+	App->physics->world_body_list.add(App->physics->Create_Poly(178, -254, *&bumper_right,
+		(sizeof(bumper_right) / sizeof(int)), *&half_Array, 0, { 27, 287, 50, 28 }, b2BodyType::b2_dynamicBody, SDL_FLIP_HORIZONTAL));
+	righBumper[1] = App->physics->Create_Revolute_Joint(App->physics->world_body_list[App->physics->world_body_list.count() - 1]->body, 45, 220, -254 + 7);
+
+
+	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35 }, b2BodyType::b2_staticBody, 0.f));
+
+#pragma endregion
+}
+
+void ModuleMainLevel::GlobalSpriteLoad() 
+{
+	//Background
+	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 8), { 580, 0, 322, 1000 }, 1.f);
+
+	//Spring
+	LoadSprite(0, 327 - 7, (-SCREEN_HEIGHT) + 73 + 5, { 17, 287, 10, 73 }, 1.f);
+	//TODO: Millorar aquest sistema
+	launchSpring = &gameplay_sprite_list[gameplay_sprite_list.count() - 1];
+
+	//SpringCover
+	LoadSprite(0, 327 - 10, (-SCREEN_HEIGHT) + 73 + 5, { 0, 287, 17, 73 }, 1.f);
+
+
+	//Background Top
+	LoadSprite(0, 11, 1000 - (SCREEN_HEIGHT - 9), { 902, 0, 322, 1000 }, 1.f, 0.f, 0, 0, 1);
+
+	//Screen Cover
+	LoadSprite(0, 0, 0, { 0, 0, 580, 287 }, 0.f, 0.f, 0, 0, 1);
+
+	//Score Display
+	LoadSprite(0, SCREEN_WIDTH - 221 - 10, 0, { 0, 567, 221, 153 }, 0.f, 0.f, 0, 0, 1);
+
+	//More score covers
+	LoadSprite(0, 387, -185, { 221, 567,152, 29 }, 0, 0, 0, 0, 1);
+	LoadSprite(0, 387, -240, { 221, 567,152, 29 }, 0, 0, 0, 0, 1);
+}
+
+void ModuleMainLevel::GlobalAnimationLoad() 
+{
+	//Animation big_triangle_anim;
+	//Animation green_circle_anim;
+	//Animation red_circle_anim;
+	//Animation dragon_circle_anim;
+
+
+	red_stick_anim.PushBack({207, 324, 12, 32});
+	red_stick_anim.render_on_top = true;
+	red_stick_anim.speed = 0;
 }
