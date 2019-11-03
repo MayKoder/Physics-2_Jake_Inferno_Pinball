@@ -269,7 +269,7 @@ PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Bod
 	return bdy;
 
 }
-PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], SDL_Rect sec, b2BodyType type, SDL_RendererFlip flip, b2Vec2 offset, float density)
+PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], SDL_Rect sec, b2BodyType type, SDL_RendererFlip flip, b2Vec2 offset, float density, int hit_score, int sound, Animation* hit_animation)
 {
 	if (count / 2 > 8)
 	{
@@ -292,8 +292,10 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 		body.type = type;
 		body.position.Set(PIXELS_TO_METERS(x), PIXELS_TO_METERS(y));
 
+		b2Body* b = world->CreateBody(&body);
+
 		PhysBody* bdy = new PhysBody();
-		bdy->body = world->CreateBody(&body);
+		bdy->body = b;
 		if (sec.h != 0)
 			bdy->spriteSheet = 0;
 		bdy->flip = flip;
@@ -302,8 +304,11 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 		bdy->idle.PushBack(sec);
 		bdy->current_animation = bdy->idle;
 		bdy->idle.speed = 0;
-
+		bdy->scoreOnHit = hit_score;
+		if (hit_animation)
+			bdy->hit = *hit_animation;
 		bdy->offset = offset;
+		bdy->soundOnHit = sound;
 		bdy->needs_Center = false;
 
 		b2PolygonShape shape;
@@ -315,6 +320,7 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 		fixture.shape = &shape;
 
 		bdy->body->CreateFixture(&fixture);
+		b->SetUserData(bdy);
 
 		return bdy;
 	}
@@ -432,7 +438,7 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Body* body, float angle,
 
 }
 
-PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation, SDL_Rect sec)
+PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation, SDL_Rect sec, Animation* hit_animation)
 {
 	b2BodyDef body;
 	body.type = b2BodyType::b2_staticBody;
@@ -456,6 +462,8 @@ PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotat
 	{
 		bdy->spriteSheet = 0;
 		bdy->idle.PushBack(sec);
+		if (hit_animation)
+			bdy->hit = *hit_animation;
 		bdy->current_animation = bdy->idle;
 		bdy->idle.speed = 0;
 	}
