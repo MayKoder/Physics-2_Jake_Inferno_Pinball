@@ -260,6 +260,10 @@ update_status ModuleMainLevel::Update()
 							temp->pivotY,
 							temp->flip);
 					}
+					if (temp->current_animation.finished) 
+					{
+						temp->current_animation = temp->idle;
+					}
 				}
 			}
 		}
@@ -746,6 +750,8 @@ void ModuleMainLevel::GlobalAnimationLoad()
 
 
 	red_stick_anim.PushBack({207, 324, 12, 32});
+	red_stick_anim.PushBack({ 194, 324, 12, 32 });
+	red_stick_anim.PushBack({ 207, 324, 12, 32 });
 	red_stick_anim.render_on_top = true;
-	red_stick_anim.speed = 0;
+	red_stick_anim.speed = 0.1f;
 }
