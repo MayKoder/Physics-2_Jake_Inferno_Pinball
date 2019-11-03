@@ -34,9 +34,15 @@ F1 - Draw colliders
 
 ## Credits
 
-# Sprites and backgrounds
-All the art used was made by various artists contributing to Game Art 2D. We sincerely thank the fact of being able to use their art to make our project.
-You can check their official page here: https://www.gameart2d.com/cat-and-dog-free-sprites.html
+## Sprites and backgrounds
+The whole graphic section has been taken out by hand.
+
+
+## Differences from the original game
+Things that the original game has that we have not implemented:
+- Jake fighting animations at right
+- Loop on top side
+- Bonus for complete all the red circles of the top level
 
 
 ## License 
@@ -49,4 +55,4 @@ GNU GENERAL PUBLIC LICENSE
  of this license document, but changing it is not allowed.
 
 
-## Differences between both games
+
