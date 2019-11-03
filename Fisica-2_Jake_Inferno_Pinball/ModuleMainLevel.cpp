@@ -490,30 +490,59 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 				}
 			}
 			//LOG("%s", score_text);
+
+			if (bodyB->soundOnHit == lateral_spring_sound) 
+			{
+				if (bodyB->GetPositionPixels_X() > 200) 
+				{
+					bodyA->body->ApplyLinearImpulse({ -0.3, -0.4 }, bodyA->body->GetWorldCenter(), true);
+				}
+				else
+				{
+					bodyA->body->ApplyLinearImpulse({ 0.3, -0.4 }, bodyA->body->GetWorldCenter(), true);
+				}
+			}
+
 		}
 
 		for (int i = 0; i < 8; i++)
 		{
 			if (bodyB == big_triangle_array[i])
 			{
-				if (bodyB == big_triangle_array[1])
+				if (bodyB == big_triangle_array[1] || bodyB == big_triangle_array[3])
 				{
 					bodyB->current_animation = bodyB->hit;
 					big_triangle_array[i - 1]->current_animation = big_triangle_array[i - 1]->hit;
 					App->audio->PlayFx(big_triangle_array[i - 1]->soundOnHit);
 					bodyA->body->ApplyLinearImpulse({ 0.4, -0.3 }, bodyA->body->GetWorldCenter(), true);
-
+				}
+				else if(bodyB == big_triangle_array[5] || bodyB == big_triangle_array[7])
+				{
+					bodyB->current_animation = bodyB->hit;
+					big_triangle_array[i - 1]->current_animation = big_triangle_array[i - 1]->hit;
+					App->audio->PlayFx(big_triangle_array[i - 1]->soundOnHit);
+					bodyA->body->ApplyLinearImpulse({ -0.4, -0.3 }, bodyA->body->GetWorldCenter(), true);
 				}
 			}
 		}
 
 		if (bodyB == teleport_enter)
 		{
+
+			if (teleportPos == 1) 
+			{
+				teleportPos = 0;
+			}
+			else
+			{
+				teleportPos = 1;
+			}
+
 			App->audio->PlayFx(teleport_sound);
 			bodyA->body->SetLinearVelocity({ 0, 0 });
 			bodyA->body->SetAngularVelocity(0);
 			App->physics->converter_list.add(bodyA);
-			App->physics->converter_list.add(teleport_exits[0]);
+			App->physics->converter_list.add(teleport_exits[teleportPos]);
 		}
 
 		if (bodyB == spawn_sensor)
@@ -644,8 +673,8 @@ void ModuleMainLevel::GlobalMapLoad()
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 188 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 81 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, { 194, 324, 12, 32 }, 0, 1000, red_stick_sound, &red_stick_anim));
 
 	//Lateral springs
-	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 277 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 743 + MARGIN_Y , 10, 3 }, -45, {372, 328, 29, 11}));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 25 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 743 + MARGIN_Y , 10, 3 }, 50, { 372, 328, 29, 11 }));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 277 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 743 + MARGIN_Y , 10, 3 }, -45, {372, 328, 29, 11}, SDL_FLIP_NONE, &lateral_spring_anim, 2400));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 25 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 743 + MARGIN_Y , 10, 3 }, 50, { 372, 328, 29, 11 }, SDL_FLIP_NONE, &lateral_spring_anim, 2400));
 
 	//Lateral green sensors
 	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 42 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y , 10, 3 }, 0, { 359, 328, 13, 50 }));
@@ -735,12 +764,13 @@ void ModuleMainLevel::GlobalMapLoad()
 	};
 	big_triangle_array[0] = App->physics->world_body_list.add(App->physics->Create_Poly(58, 153, *&big_triangle_1,
 		(sizeof(big_triangle_1) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_NONE, { -5, 0 }, 1.f, 2700, big_triangle_sound, &big_triangle_anim))->data;
-	big_triangle_array[1] = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 86, 186, 30, 3 }, 58))->data;
+	big_triangle_array[1] = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 88, 186, 30, 3 }, 58))->data;
 
 	//Triangle sensor here
 
 	big_triangle_array[2] = App->physics->world_body_list.add(App->physics->Create_Poly(58, -345, *&big_triangle_1,
 		(sizeof(big_triangle_1) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_NONE, { -5, 0 }, 1.f, 2700, big_triangle_sound, &big_triangle_anim))->data;
+	big_triangle_array[3] = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 88, -312, 30, 3 }, 58))->data;
 
 	//Big triangles
 	int big_triangle_2[10] = {
@@ -753,11 +783,11 @@ void ModuleMainLevel::GlobalMapLoad()
 
 	big_triangle_array[4] = App->physics->world_body_list.add(App->physics->Create_Poly(219, 153, *&big_triangle_2,
 		(sizeof(big_triangle_2) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_HORIZONTAL, { -5, 0 }, 1.f, 2700, big_triangle_sound, &big_triangle_anim))->data;
-
+	big_triangle_array[5] = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 243, 186, 30, 3 }, -58))->data;
 
 	big_triangle_array[6] = App->physics->world_body_list.add(App->physics->Create_Poly(219, -345, *&big_triangle_2,
 		(sizeof(big_triangle_2) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_HORIZONTAL, { -5, 0 }, 1.f, 2700, big_triangle_sound, &big_triangle_anim))->data;
-
+	big_triangle_array[7] = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 243, -312, 30, 3 }, -58))->data;
 
 	//BUMPERS	
 	int bumper_left[14] = {
@@ -859,4 +889,14 @@ void ModuleMainLevel::GlobalAnimationLoad()
 	red_stick_anim.PushBack({ 207, 324, 12, 32 });
 	red_stick_anim.render_on_top = true;
 	red_stick_anim.speed = 0.1f;
+
+
+	lateral_spring_anim.PushBack({ 372, 328, 29, 11 });
+	lateral_spring_anim.PushBack({ 372, 340, 29, 11 });
+	lateral_spring_anim.PushBack({ 372, 328, 29, 11 });
+	lateral_spring_anim.speed = 0.12f;
+
+
 }
+
+

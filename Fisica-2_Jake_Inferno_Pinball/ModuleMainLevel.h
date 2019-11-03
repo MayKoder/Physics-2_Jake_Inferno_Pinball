@@ -102,6 +102,7 @@ public:
 	Animation red_circle_anim;
 	Animation dragon_circle_anim;
 	Animation red_stick_anim;
+	Animation lateral_spring_anim;
 
 	bool springDown = false, springUp = false;
 
@@ -115,6 +116,7 @@ private: //Spawn settings//
 	int level_ended = -1;
 	int fadeValue = 0;
 	int ballPos = 0;
+	int teleportPos = 0;
 
 	PhysBody* ball_body_in_spawn;
 	PhysBody* spawn_sensor = nullptr;

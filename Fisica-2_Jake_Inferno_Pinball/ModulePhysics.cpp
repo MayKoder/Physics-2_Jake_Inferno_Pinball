@@ -438,7 +438,7 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Body* body, float angle,
 
 }
 
-PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation, SDL_Rect sec, SDL_RendererFlip flip, Animation* hit_animation)
+PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation, SDL_Rect sec, SDL_RendererFlip flip, Animation* hit_animation, int hit_score)
 {
 	b2BodyDef body;
 	body.type = b2BodyType::b2_staticBody;
@@ -460,6 +460,7 @@ PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotat
 	bdy->body = b;
 	if (sec.h != 0) 
 	{
+		bdy->scoreOnHit = hit_score;
 		bdy->spriteSheet = 0;
 		bdy->idle.PushBack(sec);
 		if (hit_animation)
@@ -467,6 +468,7 @@ PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotat
 		bdy->current_animation = bdy->idle;
 		bdy->idle.speed = 0;
 	}
+	bdy->soundOnHit = App->main_level->lateral_spring_sound;
 
 
 	b->SetUserData(bdy);
