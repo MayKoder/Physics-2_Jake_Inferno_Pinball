@@ -7,10 +7,10 @@ https://es.y8.com/games/jakes_inferno_pinball
 ## Authors
 
 ### Carlos Redolar Torres
-https://github.com/carlosredolar
+- https://github.com/carlosredolar
 
 ### Miquel Suau Gonzàlez
-https://github.com/MayKoder
+- https://github.com/MayKoder
 
 
 This game has been made by two second year students of the Design and Development of Videogames degree in CITM Terrassa (UPC) using C++ in Visual Studio and with Box2D for the physics.
