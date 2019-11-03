@@ -660,6 +660,8 @@ void ModuleMainLevel::GlobalMapLoad()
 	half_Array[(sizeof(big_triangle_1) / sizeof(int)) / 2];
 	App->physics->world_body_list.add(App->physics->Create_Poly(58, 153, *&big_triangle_1,
 		(sizeof(big_triangle_1) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_NONE, { -5, 0 }));
+	App->physics->world_body_list.add(App->physics->Create_Poly(58, -345, *&big_triangle_1,
+		(sizeof(big_triangle_1) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_NONE, { -5, 0 }));
 
 	//Big triangles
 	int big_triangle_2[10] = {
@@ -672,7 +674,8 @@ void ModuleMainLevel::GlobalMapLoad()
 
 	App->physics->world_body_list.add(App->physics->Create_Poly(219, 153, *&big_triangle_2,
 		(sizeof(big_triangle_2) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_HORIZONTAL, { -5, 0 }));
-
+	App->physics->world_body_list.add(App->physics->Create_Poly(219, -345, *&big_triangle_2,
+		(sizeof(big_triangle_2) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_HORIZONTAL, { -5, 0 }));
 
 
 	//BUMPERS	
