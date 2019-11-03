@@ -23,8 +23,6 @@ public:
 
 	//Coll detection
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
-	PhysBody* sensor;
-	bool sensed;
 	p2Point<int> ray;
 	bool ray_on;
 
@@ -116,6 +114,7 @@ private: //Spawn settings//
 	PhysBody* ball_body_in_spawn;
 	PhysBody* spawn_sensor = nullptr;
 	PhysBody* spawn_blocker = nullptr;
+	PhysBody* big_triangle_array[8];
 
 	//Teleports
 	PhysBody* teleport_enter;

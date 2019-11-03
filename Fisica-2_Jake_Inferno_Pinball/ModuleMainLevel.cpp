@@ -8,7 +8,6 @@
 ModuleMainLevel::ModuleMainLevel(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	ray_on = false;
-	sensed = false;
 }
 
 ModuleMainLevel::~ModuleMainLevel()
@@ -198,7 +197,7 @@ update_status ModuleMainLevel::Update()
 		//Is object out of map limits?
 		if (App->physics->world_body_list[i]->GetPositionPixels_Y() >= ball_height_limit)
 		{
-			if(App->physics->world_body_list[i]->body->GetFixtureList()->GetType() == b2Shape::e_circle)
+			if (App->physics->world_body_list[i]->body->GetFixtureList()->GetType() == b2Shape::e_circle)
 				Lose_Ball(i);
 			//Destroy balls on fall or just reposition them?
 		}
@@ -208,14 +207,16 @@ update_status ModuleMainLevel::Update()
 			{
 				PhysBody *temp = App->physics->world_body_list[i];
 
-				if (temp->body->IsActive()) 
+				if (temp->body->IsActive())
 				{
 					SDL_Rect frame = temp->current_animation.GetCurrentFrame();
-					if (temp->needs_Center)
-					{
-						if (temp->current_animation.render_on_top)
-						{
 
+
+					if (temp->current_animation.render_on_top)
+					{
+
+						if (temp->needs_Center)
+						{
 							//LOG("%i", temp.GetRotation())
 							App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
 								(temp->GetPositionPixels_X()) - (frame.w / 2),
@@ -238,6 +239,33 @@ update_status ModuleMainLevel::Update()
 						else
 						{
 							App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
+								temp->GetPositionPixels_X() - (int)temp->offset.x,
+								temp->GetPositionPixels_Y() - (int)temp->offset.x,
+								&temp->idle.GetCurrentFrameWithoutAnim(),
+								1.f,
+								temp->GetRotation(),
+								temp->pivotX,
+								temp->pivotY,
+								temp->flip);
+
+							App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
+								temp->GetPositionPixels_X() - (int)temp->offset.x,
+								temp->GetPositionPixels_Y() - (int)temp->offset.x,
+								&frame,
+								1.f,
+								temp->GetRotation(),
+								temp->pivotX,
+								temp->pivotY,
+								temp->flip);
+						}
+
+					}
+					else
+					{
+
+						if (temp->needs_Center)
+						{
+							App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
 								(temp->GetPositionPixels_X()) - (frame.w / 2),
 								(temp->GetPositionPixels_Y()) - (frame.h / 2),
 								&frame,
@@ -246,19 +274,20 @@ update_status ModuleMainLevel::Update()
 								INT_MAX, INT_MAX,
 								temp->flip);
 						}
+						else
+						{
+							App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
+								temp->GetPositionPixels_X() - (int)temp->offset.x,
+								temp->GetPositionPixels_Y() - (int)temp->offset.x,
+								&frame,
+								1.f,
+								temp->GetRotation(),
+								temp->pivotX,
+								temp->pivotY,
+								temp->flip);
+						}
 					}
-					else
-					{
-						App->renderer->Blit(sprite_sheet_list[temp->spriteSheet],
-							temp->GetPositionPixels_X() - (int)temp->offset.x,
-							temp->GetPositionPixels_Y() - (int)temp->offset.x,
-							&frame,
-							1.f,
-							temp->GetRotation(),
-							temp->pivotX,
-							temp->pivotY,
-							temp->flip);
-					}
+
 					if (temp->current_animation.finished)
 					{
 						temp->current_animation = temp->idle;
@@ -410,29 +439,39 @@ void ModuleMainLevel::SetBallOnSpawn(PhysBody* spawn_ball)
 void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 
-	if (bodyA && bodyB) 
+	if (bodyA && bodyB)
 	{
-
-		if (bodyB->scoreOnHit != 0) 
+		if (bodyB->scoreOnHit != 0)
 		{
 			IncrementScore(bodyB->scoreOnHit);
-			if (bodyB->soundOnHit != -1) 
+			if (bodyB->soundOnHit != -1)
 			{
 				App->audio->PlayFx(bodyB->soundOnHit);
 			}
 
-			if (bodyB->hit.last_frame > 0) 
+			if (bodyB->hit.last_frame > 0)
 			{
 				//bodyB->current_animation = bodyB->hit;
 				bodyB->current_animation = bodyB->hit;
-				LOG("Anim");
+				//LOG("Anim");
 			}
 
 			//LOG("%s", score_text);
 		}
-		//bodyB->current_animation = red_stick_anim;
 
-		if (bodyB == teleport_enter) 
+		for (int i = 0; i < 8; i++)
+		{
+			if (bodyB == big_triangle_array[i])
+			{
+				if (bodyB == big_triangle_array[1])
+				{
+					bodyB->current_animation = bodyB->hit;
+
+				}
+			}
+		}
+
+		if (bodyB == teleport_enter)
 		{
 			App->audio->PlayFx(teleport_sound);
 			bodyA->body->SetLinearVelocity({ 0, 0 });
@@ -441,17 +480,10 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			App->physics->converter_list.add(teleport_exits[0]);
 		}
 
-		//TODO: This can only happen if the hit is in the correcto wall
-		//if (bodyB->body->GetType() == b2BodyType::b2_staticBody && bodyB->body->GetFixtureList()->GetShape()->GetType() == b2Shape::e_polygon) 
-		//{
-		//	App->audio->PlayFx(big_triangle_sound);
-		//}
-
 		if (bodyB == spawn_sensor)
 		{
 			LOG("Out of spawn");
 			App->audio->PlayFx(spawn_lock_sound);
-			//TODO: FIX Hitting the ball 2 times will cause a soflock
 			App->physics->converter_list.add(spawn_sensor);
 			App->physics->converter_list.add(spawn_blocker);
 			launch_Force = 0;
@@ -585,7 +617,7 @@ void ModuleMainLevel::GlobalMapLoad()
 
 #pragma endregion
 
-	spawn_sensor = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 323, -15, 10, 3 }, -45))->data; //735s
+	spawn_sensor = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 323, -5, 10, 3 }, -45))->data; //735s
 	spawn_blocker = App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, 15, 10, 3 }, b2BodyType::b2_staticBody, 0, { 140, 343, 24, 18 }, -45, 0))->data; //735s
 	App->physics->converter_list.add(spawn_sensor);
 
@@ -665,11 +697,14 @@ void ModuleMainLevel::GlobalMapLoad()
 		12, 4, 46, 61, 40, 68,
 		4, 51, 4, 7
 	};
-	half_Array[(sizeof(big_triangle_1) / sizeof(int)) / 2];
-	App->physics->world_body_list.add(App->physics->Create_Poly(58, 153, *&big_triangle_1,
-		(sizeof(big_triangle_1) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_NONE, { -5, 0 }));
-	App->physics->world_body_list.add(App->physics->Create_Poly(58, -345, *&big_triangle_1,
-		(sizeof(big_triangle_1) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_NONE, { -5, 0 }));
+	big_triangle_array[0] = App->physics->world_body_list.add(App->physics->Create_Poly(58, 153, *&big_triangle_1,
+		(sizeof(big_triangle_1) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_NONE, { -5, 0 }, 1.f, 2700, big_triangle_sound, &big_triangle_anim))->data;
+	big_triangle_array[1] = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 86, 186, 30, 3 }, 58))->data;
+
+	//Triangle sensor here
+
+	big_triangle_array[2] = App->physics->world_body_list.add(App->physics->Create_Poly(58, -345, *&big_triangle_1,
+		(sizeof(big_triangle_1) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_NONE, { -5, 0 }, 1.f, 2700, big_triangle_sound, &big_triangle_anim))->data;
 
 	//Big triangles
 	int big_triangle_2[10] = {
@@ -680,10 +715,12 @@ void ModuleMainLevel::GlobalMapLoad()
 		49, 7
 	};
 
-	App->physics->world_body_list.add(App->physics->Create_Poly(219, 153, *&big_triangle_2,
-		(sizeof(big_triangle_2) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_HORIZONTAL, { -5, 0 }));
-	App->physics->world_body_list.add(App->physics->Create_Poly(219, -345, *&big_triangle_2,
-		(sizeof(big_triangle_2) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_HORIZONTAL, { -5, 0 }));
+	big_triangle_array[4] = App->physics->world_body_list.add(App->physics->Create_Poly(219, 153, *&big_triangle_2,
+		(sizeof(big_triangle_2) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_HORIZONTAL, { -5, 0 }, 1.f, 2700, big_triangle_sound, &big_triangle_anim))->data;
+
+
+	big_triangle_array[6] = App->physics->world_body_list.add(App->physics->Create_Poly(219, -345, *&big_triangle_2,
+		(sizeof(big_triangle_2) / sizeof(int)), *&half_Array, { 31, 324, 45, 72 }, b2BodyType::b2_staticBody, SDL_FLIP_HORIZONTAL, { -5, 0 }, 1.f, 2700, big_triangle_sound, &big_triangle_anim))->data;
 
 
 	//BUMPERS	
@@ -753,7 +790,10 @@ void ModuleMainLevel::GlobalSpriteLoad()
 
 void ModuleMainLevel::GlobalAnimationLoad() 
 {
-	//Animation big_triangle_anim;
+	big_triangle_anim.PushBack({ 222, 324, 45, 72 });
+	big_triangle_anim.render_on_top = true;
+	big_triangle_anim.speed = 0.15f;
+
 	red_circle_anim.PushBack({ 154, 361, 16, 16 });
 	red_circle_anim.render_on_top = true;
 	red_circle_anim.speed = 0.01f;
