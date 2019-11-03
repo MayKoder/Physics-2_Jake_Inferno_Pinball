@@ -321,7 +321,7 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 	return nullptr;
 
 }
-PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, SDL_Rect sec, SDL_RendererFlip flip, float angle, int hit_score, int sound)
+PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, SDL_Rect sec, float angle, int hit_score, int sound, Animation* hit_animation)
 {
 	b2BodyDef body;
 	body.type = (b2BodyType)type;
@@ -344,11 +344,12 @@ PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density
 	if (sec.h != 0)
 		bdy->spriteSheet = 0;
 	bdy->soundOnHit = sound;
-	bdy->flip = flip;
 
 	//Animation
 	bdy->idle.PushBack(sec);
 	bdy->current_animation = bdy->idle;
+	if(hit_animation)
+		bdy->hit = *hit_animation;
 	bdy->idle.speed = 0;
 
 	bdy->scoreOnHit = hit_score;
