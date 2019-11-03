@@ -324,6 +324,48 @@ update_status ModuleMainLevel::Update()
 	App->fonts->BlitText(387, 190, 0, prev_score_text, { 0, 0, 12, 20 }, 11, 7);
 	App->fonts->BlitText(387, 246, 0, highest_score_text, { 0, 0, 12, 20 }, 11, 7);
 
+	if (level_ended == 0)
+	{
+		if (fadeValue < 255)
+		{
+			App->renderer->DrawQuad({ 0, 0, SCREEN_WIDTH* SCREEN_SIZE, SCREEN_HEIGHT* SCREEN_SIZE }, 0, 0, 0, fadeValue, true, false);
+			fadeValue += 5;
+		}
+		else
+		{
+			level_ended = 2;
+
+			current_ball_lives = 0;
+			prevScore = score;
+			if (score > highestScore)
+			{
+				highestScore = score;
+			}
+			score = 0;
+			FormatScoreText(prevScore, prev_score_text);
+			FormatScoreText(highestScore, highest_score_text);
+			FormatScoreText(score, score_text);
+			current_ball_lives = max_ball_lives;
+			SetBallOnSpawn(App->physics->world_body_list[ballPos]);
+
+			App->renderer->DrawQuad({ 0, 0, SCREEN_WIDTH* SCREEN_SIZE, SCREEN_HEIGHT* SCREEN_SIZE }, 0, 0, 0, fadeValue, true, false);
+			//Aqui resetear tot
+		}
+	}
+	else if (level_ended == 2)
+	{
+		if (fadeValue > 0)
+		{
+			App->renderer->DrawQuad({ 0, 0, SCREEN_WIDTH * SCREEN_SIZE, SCREEN_HEIGHT* SCREEN_SIZE }, 0, 0, 0, fadeValue, true, false);
+			fadeValue -= 2;
+		}
+		else
+		{
+			level_ended = -1;
+			fadeValue = 0;
+			//Aqui resetear tot
+		}
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -366,30 +408,11 @@ void ModuleMainLevel::Lose_Ball(int positionOnList)
 	//is ball the only ball on the screen?
 	if (ballsOnScreen == 1) 
 	{
-		//is current_ball_lives - 1 less or equal than 0?
-			//if it is, end game 
-		//if its not, subtract a live current_ball_lives - 1 and spawn a new ball
-			//reset ball launcher stoppers
-		if (current_ball_lives - 1 <= 0) 
+		if (current_ball_lives - 1 <= 0)
 		{
 			//End game
-			current_ball_lives = 0;
-			prevScore = score;
-			if (score > highestScore)
-			{
-				highestScore = score;
-			}
-			//score = 0;
-
-			score = 0;
-			FormatScoreText(prevScore, prev_score_text);
-			FormatScoreText(highestScore, highest_score_text);
-			FormatScoreText(score, score_text);
-
-
-			//TODO: RESET GAME HERE DO NOT SET TO SPAWN ONLY (maybe stay a few seconds as 0 lives)
-			SetBallOnSpawn(App->physics->world_body_list[positionOnList]);
-			current_ball_lives = max_ball_lives;
+			level_ended = 0;
+			ballPos = positionOnList;
 		}
 		else
 		{
@@ -443,19 +466,29 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	{
 		if (bodyB->scoreOnHit != 0)
 		{
-			IncrementScore(bodyB->scoreOnHit);
-			if (bodyB->soundOnHit != -1)
+			bool prog = true;
+			for (int i = 0; i < 8; i++)
 			{
-				App->audio->PlayFx(bodyB->soundOnHit);
+				if (bodyB == big_triangle_array[i])
+				{
+					prog = false;
+				}
 			}
-
-			if (bodyB->hit.last_frame > 0)
+			if (prog) 
 			{
-				//bodyB->current_animation = bodyB->hit;
-				bodyB->current_animation = bodyB->hit;
-				//LOG("Anim");
-			}
+				IncrementScore(bodyB->scoreOnHit);
+				if (bodyB->soundOnHit != -1)
+				{
+					App->audio->PlayFx(bodyB->soundOnHit);
+				}
 
+				if (bodyB->hit.last_frame > 0)
+				{
+					//bodyB->current_animation = bodyB->hit;
+					bodyB->current_animation = bodyB->hit;
+					//LOG("Anim");
+				}
+			}
 			//LOG("%s", score_text);
 		}
 
@@ -466,6 +499,9 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 				if (bodyB == big_triangle_array[1])
 				{
 					bodyB->current_animation = bodyB->hit;
+					big_triangle_array[i - 1]->current_animation = big_triangle_array[i - 1]->hit;
+					App->audio->PlayFx(big_triangle_array[i - 1]->soundOnHit);
+					bodyA->body->ApplyLinearImpulse({ 0.4, -0.3 }, bodyA->body->GetWorldCenter(), true);
 
 				}
 			}

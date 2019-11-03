@@ -108,9 +108,14 @@ public:
 
 
 private: //Spawn settings//
-	int max_ball_lives = 5;
+	int max_ball_lives = 1;
 	uint ballsOnScreen = 0;
 	bool ball_in_spawn = false;
+	//End level vars
+	int level_ended = -1;
+	int fadeValue = 0;
+	int ballPos = 0;
+
 	PhysBody* ball_body_in_spawn;
 	PhysBody* spawn_sensor = nullptr;
 	PhysBody* spawn_blocker = nullptr;
