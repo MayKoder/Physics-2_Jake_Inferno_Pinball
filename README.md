@@ -19,23 +19,18 @@ You can check our repository using this link: https://github.com/MayKoder/Fisica
 
 
 ## Controls 
-
 LEFT - Left flipper
 
 RIGHT - Right flipper
 
 DOWN - Ball kicker
 
-
-### Debug
-
 F1 - Draw colliders
 
 
-## Credits
-
-## Sprites and backgrounds
-The whole graphic section has been taken out by hand.
+## Combos and bonus
+- If you hit the dragon's mouth, you will be teleported to the top level and 100,000 bonus score
+- If you hit the same button at the top level, you will receive 1 extra ball and 100,000 bonus score
 
 
 ## Differences from the original game
@@ -43,6 +38,10 @@ Things that the original game has that we have not implemented:
 - Jake fighting animations at right
 - Loop on top side
 - Bonus for complete all the red circles of the top level
+
+
+## Sprites and backgrounds
+The whole graphic section has been taken out by hand.
 
 
 ## License 
