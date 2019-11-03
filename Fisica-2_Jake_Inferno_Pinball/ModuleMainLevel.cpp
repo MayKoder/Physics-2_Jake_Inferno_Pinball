@@ -790,6 +790,14 @@ void ModuleMainLevel::GlobalMapLoad()
 
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35 }, b2BodyType::b2_staticBody, 0.f));
 
+	//big top poligons
+	int top_poligons[32] = {
+		945, 163, 938, 160, 940, 126, 949, 98,
+		963, 75, 981, 55, 1001, 41, 1010, 35,
+		1016, 38, 1006, 52, 998, 64, 992, 83,
+		990, 91, 990, 130, 987, 134, 963, 151
+	};
+
 #pragma endregion
 }
 
