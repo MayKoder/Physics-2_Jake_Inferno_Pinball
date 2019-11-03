@@ -821,12 +821,46 @@ void ModuleMainLevel::GlobalMapLoad()
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35 }, b2BodyType::b2_staticBody, 0.f));
 
 	//big top poligons
-	int top_poligons[32] = {
-		945, 163, 938, 160, 940, 126, 949, 98,
-		963, 75, 981, 55, 1001, 41, 1010, 35,
-		1016, 38, 1006, 52, 998, 64, 992, 83,
-		990, 91, 990, 130, 987, 134, 963, 151
+	int top_poligons[30] = {
+			37, 163,
+			43, 166,
+			89, 134,
+			90, 105,
+			92, 83,
+			100, 63,
+			111, 47,
+			116, 43,
+			115, 38,
+			106, 40,
+			97, 46,
+			81, 59,
+			62, 80,
+			42, 119,
+			37, 150
+		};
+	half_Array[(sizeof(top_poligons) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&top_poligons, (sizeof(top_poligons) / sizeof(int)), *&half_Array));
+
+	// Pivot 0, 0
+	int top_poligons_2[30] = {
+		230, 133,
+		276, 166,
+		281, 164,
+		282, 156,
+		281, 136,
+		272, 108,
+		252, 73,
+		231, 49,
+		214, 38,
+		206, 38,
+		205, 42,
+		215, 55,
+		226, 78,
+		230, 97,
+		230, 121
 	};
+	half_Array[(sizeof(top_poligons_2) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&top_poligons_2, (sizeof(top_poligons_2) / sizeof(int)), *&half_Array));
 
 #pragma endregion
 }
