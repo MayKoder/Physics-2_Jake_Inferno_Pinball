@@ -448,7 +448,9 @@ PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotat
 	bdy->body = b;
 	if (sec.h != 0) 
 	{
+		bdy->spriteSheet = 0;
 		bdy->idle.PushBack(sec);
+		bdy->current_animation = bdy->idle;
 		bdy->idle.speed = 0;
 	}
 
