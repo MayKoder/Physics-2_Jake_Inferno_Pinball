@@ -579,6 +579,10 @@ void ModuleMainLevel::GlobalMapLoad()
 	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 277 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 743 + MARGIN_Y , 10, 3 }, -45, {372, 328, 29, 11}));
 	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 25 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 743 + MARGIN_Y , 10, 3 }, 50, { 372, 328, 29, 11 }));
 
+	//Lateral green sensors
+	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 42 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y , 10, 3 }, 0, { 359, 328, 13, 50 }));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 259 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y , 10, 3 }, 0, { 359, 328, 13, 50 }, SDL_FLIP_HORIZONTAL));
+
 #pragma endregion
 
 	spawn_sensor = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 323, -15, 10, 3 }, -45))->data; //735s

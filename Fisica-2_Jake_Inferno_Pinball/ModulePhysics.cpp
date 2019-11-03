@@ -432,7 +432,7 @@ b2RevoluteJoint* ModulePhysics::Create_Revolute_Joint(b2Body* body, float angle,
 
 }
 
-PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation, SDL_Rect sec)
+PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotation, SDL_Rect sec, SDL_RendererFlip flip)
 {
 	b2BodyDef body;
 	body.type = b2BodyType::b2_staticBody;
@@ -462,6 +462,8 @@ PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotat
 
 
 	b->SetUserData(bdy);
+
+	bdy->flip = flip;
 
 	return bdy;
 }
