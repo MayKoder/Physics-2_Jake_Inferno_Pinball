@@ -644,12 +644,12 @@ void ModuleMainLevel::GlobalMapLoad()
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 188 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 81 + MARGIN_Y, 6, 14 }, b2BodyType::b2_staticBody, 0, { 194, 324, 12, 32 }, 0, 1000, red_stick_sound, &red_stick_anim));
 
 	//Lateral springs
-	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 277 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 743 + MARGIN_Y , 10, 3 }, -45, {372, 328, 29, 11}));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 25 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 743 + MARGIN_Y , 10, 3 }, 50, { 372, 328, 29, 11 }));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 277 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 743 + MARGIN_Y , 15, 3 }, -45, {372, 328, 29, 11}));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 25 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 743 + MARGIN_Y , 15, 3 }, 50, { 372, 328, 29, 11 }));
 
 	//Lateral green sensors
-	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 42 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y , 10, 3 }, 0, { 359, 328, 13, 50 }));
-	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 259 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y , 10, 3 }, 0, { 359, 328, 13, 50 }, SDL_FLIP_HORIZONTAL));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 42 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y , 3, 25 }, 0, { 359, 328, 13, 50 }));
+	App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 259 + MARGIN_X, -(1009 - SCREEN_HEIGHT) + 796 + MARGIN_Y , 3, 25 }, 0, { 359, 328, 13, 50 }, SDL_FLIP_HORIZONTAL));
 
 #pragma endregion
 
@@ -791,12 +791,14 @@ void ModuleMainLevel::GlobalMapLoad()
 	App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, SCREEN_HEIGHT - 42, 7, 35 }, b2BodyType::b2_staticBody, 0.f));
 
 	//big top poligons
-	int top_poligons[32] = {
+	int top_poligon_left[32] = {
 		945, 163, 938, 160, 940, 126, 949, 98,
 		963, 75, 981, 55, 1001, 41, 1010, 35,
 		1016, 38, 1006, 52, 998, 64, 992, 83,
 		990, 91, 990, 130, 987, 134, 963, 151
 	};
+	half_Array[(sizeof(top_poligon_left) / sizeof(int)) / 2];
+	App->physics->world_body_list.add(App->physics->Create_Chain(8, -(1000 - (SCREEN_HEIGHT - 12)), *&top_poligon_left, (sizeof(top_poligon_left) / sizeof(int)), *&half_Array));
 
 #pragma endregion
 }
