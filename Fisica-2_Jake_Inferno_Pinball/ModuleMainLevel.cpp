@@ -553,6 +553,7 @@ void ModuleMainLevel::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 				current_ball_lives += 1;
 			App->audio->PlayFx(bonus_sound);
 			ball_freezed = 1;
+			lives_text[1] = App->IntToChar(current_ball_lives);
 		}
 
 		if (bodyB == spawn_sensor)
@@ -696,7 +697,7 @@ void ModuleMainLevel::GlobalMapLoad()
 #pragma endregion
 
 	spawn_sensor = App->physics->world_body_list.add(App->physics->Create_Rectangle_Sensor({ 323, -5, 10, 3 }, -45))->data; //735s
-	spawn_blocker = App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, 15, 10, 3 }, b2BodyType::b2_staticBody, 0, { 140, 343, 24, 18 }, -45, 0))->data; //735s
+	spawn_blocker = App->physics->world_body_list.add(App->physics->Create_Rectangle({ 323, 12, 10, 3 }, b2BodyType::b2_staticBody, 0, { 140, 343, 24, 18 }, -45, 0))->data; //735s
 	App->physics->converter_list.add(spawn_sensor);
 
 #pragma region Chain Initials
