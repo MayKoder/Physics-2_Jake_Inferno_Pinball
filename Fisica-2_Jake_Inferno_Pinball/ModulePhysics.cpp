@@ -50,7 +50,7 @@ bool ModulePhysics::Start()
 update_status ModulePhysics::PreUpdate()
 {
 	// TODO 3: Update the simulation ("step" the world)
-	for (int i = 0; i < converter_list.count(); i++)
+	for (int i = 0; i < (int)converter_list.count(); i++)
 	{
 		if (converter_list[i]->body->GetType() == b2BodyType::b2_dynamicBody) 
 		{
@@ -206,7 +206,7 @@ bool ModulePhysics::CleanUp()
 {
 	LOG("Destroying physics world");
 	//Clear world body list
-	for (int i = 0;  i < world_body_list.count();  i++)
+	for (int i = 0;  i < (int)world_body_list.count();  i++)
 	{
 		DestroyBody(world_body_list[i]->body);
 		delete world_body_list[i];
@@ -215,7 +215,7 @@ bool ModulePhysics::CleanUp()
 	// Delete the whole physics world!
 	world_body_list.clear();
 
-	for (int i = 0; i < joint_body_list.count(); i++)
+	for (int i = 0; i < (int)joint_body_list.count(); i++)
 	{
 		world->DestroyBody(joint_body_list[i]);
 	}
@@ -228,7 +228,7 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, int hit_score, SDL_RendererFlip flip, int sound)
+PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2BodyType type, float density, SDL_Rect sec, int hit_score, SDL_RendererFlip flip, int sound)
 {
 	b2BodyDef body;
 	body.type = type;
@@ -250,7 +250,8 @@ PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Bod
 
 	PhysBody* bdy = new PhysBody();
 	bdy->body = b;
-	bdy->spriteSheet = sheet;
+	if(sec.h != 0)
+		bdy->spriteSheet = 0;
 	bdy->soundOnHit = sound;
 	bdy->flip = flip;
 
@@ -267,7 +268,7 @@ PhysBody* ModulePhysics::Create_Circle(int _x, int _y, float meter_radius, b2Bod
 	return bdy;
 
 }
-PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, b2BodyType type, SDL_RendererFlip flip, b2Vec2 offset, float density)
+PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, b2Vec2 half_Array[], SDL_Rect sec, b2BodyType type, SDL_RendererFlip flip, b2Vec2 offset, float density)
 {
 	if (count / 2 > 8)
 	{
@@ -292,7 +293,8 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 
 		PhysBody* bdy = new PhysBody();
 		bdy->body = world->CreateBody(&body);
-		bdy->spriteSheet = sheet;
+		if (sec.h != 0)
+			bdy->spriteSheet = 0;
 		bdy->flip = flip;
 
 		//Animation
@@ -319,7 +321,7 @@ PhysBody* ModulePhysics::Create_Poly(float x, float y, int points[], int count, 
 	return nullptr;
 
 }
-PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, int sheet, SDL_Rect sec, SDL_RendererFlip flip, float angle, int hit_score, int sound)
+PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density, SDL_Rect sec, SDL_RendererFlip flip, float angle, int hit_score, int sound)
 {
 	b2BodyDef body;
 	body.type = (b2BodyType)type;
@@ -339,7 +341,8 @@ PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density
 
 	PhysBody* bdy = new PhysBody();
 	bdy->body = b;
-	bdy->spriteSheet = sheet;
+	if (sec.h != 0)
+		bdy->spriteSheet = 0;
 	bdy->soundOnHit = sound;
 	bdy->flip = flip;
 
@@ -353,7 +356,7 @@ PhysBody* ModulePhysics::Create_Rectangle(SDL_Rect size, int type, float density
 
 	return bdy;
 }
-PhysBody* ModulePhysics::Create_Chain(float x, float y, int points[], int count, b2Vec2 half_Array[], int sheet, SDL_Rect sec, SDL_RendererFlip flip)
+PhysBody* ModulePhysics::Create_Chain(float x, float y, int points[], int count, b2Vec2 half_Array[], SDL_Rect sec, SDL_RendererFlip flip)
 {
 
 	int posOnH = 0;
@@ -379,7 +382,8 @@ PhysBody* ModulePhysics::Create_Chain(float x, float y, int points[], int count,
 
 	PhysBody* bdy = new PhysBody();
 	bdy->body = b;
-	bdy->spriteSheet = sheet;
+	if (sec.h != 0)
+		bdy->spriteSheet = 0;
 
 	//Animation
 	bdy->idle.PushBack(sec);
@@ -459,7 +463,7 @@ PhysBody* ModulePhysics::Create_Rectangle_Sensor(SDL_Rect rectangle, float rotat
 
 	return bdy;
 }
-PhysBody* ModulePhysics::Create_Circle_Sensor(int _x, int _y, float meter_radius, b2BodyType type, float density, int sheet, SDL_Rect sec, int hit_score, int sound)
+PhysBody* ModulePhysics::Create_Circle_Sensor(int _x, int _y, float meter_radius, b2BodyType type, float density,  SDL_Rect sec, int hit_score, int sound)
 {
 	b2BodyDef body;
 	body.type = type;
@@ -479,7 +483,8 @@ PhysBody* ModulePhysics::Create_Circle_Sensor(int _x, int _y, float meter_radius
 
 	PhysBody* bdy = new PhysBody();
 	bdy->body = b;
-	bdy->spriteSheet = sheet;
+	if (sec.h != 0)
+		bdy->spriteSheet = 0;
 	bdy->soundOnHit = sound;
 
 	//Animation

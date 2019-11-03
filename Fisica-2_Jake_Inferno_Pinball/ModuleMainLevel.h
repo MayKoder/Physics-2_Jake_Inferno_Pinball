@@ -6,7 +6,6 @@
 #include"Application.h"
 #include"ModulePhysics.h"
 #include"p2SString.h"
-#include<string>
 
 struct Sprite;
 class PhysBody;
